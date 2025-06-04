@@ -1,0 +1,47 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:RepairTracking.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="RepairTracking.Views.MainWindow"
+        x:DataType="vm:CustomersViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="RepairTracking">
+
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        <vm:CustomersViewModel/>
+    </Design.DataContext>
+    <StackPanel Margin="20">
+        <TextBlock Text="Müşteri Listesi" FontSize="24" Margin="0,0,0,10"/>
+        <Button Content="Müşterileri Getir" Command="{Binding  LoadDataCommand}" Margin="0,0,0,10"/>
+        <!-- Or use Avalonia.Controls.DataGrid for a richer grid -->
+        <!-- <ListBox ItemsSource="{Binding Customers}" Height="300" BorderThickness="1" BorderBrush="Gray"> -->
+        <!--     <ListBox.ItemTemplate> -->
+        <!--         <DataTemplate> -->
+        <!--             <StackPanel Orientation="Horizontal" Spacing="10"> -->
+        <!--                 <TextBlock Text="{Binding Id}"/> -->
+        <!--                 <TextBlock Text="{Binding Name}" FontWeight="Bold"/> -->
+        <!--                 <TextBlock Text="{Binding PhoneNumber , StringFormat='Price: {0:C}'}"/> -->
+        <!--             </StackPanel> -->
+        <!--         </DataTemplate> -->
+        <!--     </ListBox.ItemTemplate> -->
+        <!-- </ListBox> -->
+        <DataGrid Margin="20" ItemsSource="{Binding CustomersModels}"
+                  IsReadOnly="False"
+                  CanUserReorderColumns="True"
+                  CanUserResizeColumns="True"
+                  CanUserSortColumns="True"
+                  GridLinesVisibility="All"
+                  BorderThickness="1" BorderBrush="Gray">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Ad"  Binding="{Binding Name}"/>
+                <DataGridTextColumn Header="Soyad" Binding="{Binding Surname}" />
+                <DataGridTextColumn Header="Plaka" Binding="{Binding PlateNumber}" />
+            </DataGrid.Columns>
+        </DataGrid> 
+    </StackPanel>
+</Window>
+
