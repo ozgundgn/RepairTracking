@@ -16,4 +16,8 @@ public partial class CustomersVehicle
     public int Id { get; set; }
 
     public bool Passive { get; set; }
+
+    public virtual Customer Customer { get; set; } = null!;
+
+    public virtual Vehicle Vehicle { get; set; } = null!;
 }

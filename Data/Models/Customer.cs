@@ -19,5 +19,7 @@ public partial class Customer
 
     public bool Passive { get; set; }
 
+    public virtual ICollection<CustomersVehicle> CustomersVehicles { get; set; } = new List<CustomersVehicle>();
+
     public virtual ICollection<Vehicle> Vehicles { get; set; } = new List<Vehicle>();
 }

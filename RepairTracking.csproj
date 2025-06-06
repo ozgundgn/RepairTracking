@@ -10,7 +10,6 @@
 
     <ItemGroup>
         <Folder Include="Data\Models\" />
-        <Folder Include="Models\" />
         <AvaloniaResource Include="Assets\**" />
     </ItemGroup>
 
@@ -26,8 +25,6 @@
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
-        <PackageReference Include="Eremex.Avalonia.Controls" Version="1.1.142" />
-        <PackageReference Include="Eremex.Avalonia.Themes.DeltaDesign" Version="1.1.142" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.5">
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
           <PrivateAssets>all</PrivateAssets>
@@ -46,5 +43,15 @@
       <None Update="appsettings.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Views\LoginView.axaml.cs">
+        <DependentUpon>LoginView.axaml.axaml</DependentUpon>
+      </Compile>
+      <Compile Update="Views\HomeView.axaml.cs">
+        <DependentUpon>HomeView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
     </ItemGroup>
 </Project>

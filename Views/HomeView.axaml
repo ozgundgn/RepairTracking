@@ -1,0 +1,25 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:RepairTracking.ViewModels"
+             x:Class="RepairTracking.Views.HomeView"
+             x:DataType="vm:HomeViewModel">
+    <StackPanel>
+        <TextBlock Text="Müşteri Listesi" FontSize="24" Margin="0,0,0,10"/>
+        <Button Content="Müşterileri Getir" Command="{Binding  LoadDataCommand}" Margin="0,0,0,10"/>
+        <DataGrid Margin="20" ItemsSource="{Binding CustomersModels}"
+                  IsReadOnly="False"
+                  CanUserReorderColumns="True"
+                  CanUserResizeColumns="True"
+                  CanUserSortColumns="True"
+                  GridLinesVisibility="All"
+                  BorderThickness="1" BorderBrush="Gray"
+                  CellEditEnded="DataGrid_OnCellEditEnded">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Ad"  Binding="{Binding Name}"/>
+                <DataGridTextColumn Header="Soyad" Binding="{Binding Surname}" />
+                <DataGridTextColumn Header="Plaka"  Binding="{Binding PlateNumber}" />
+            </DataGrid.Columns>
+        </DataGrid> 
+        <Button Content="View Repairs" Command="{Binding LoadDataCommand}" />
+    </StackPanel>
+</UserControl>

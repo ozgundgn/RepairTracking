@@ -17,5 +17,7 @@ public partial class Renovation
 
     public string? Note { get; set; }
 
+    public virtual ICollection<RenovationDetail> RenovationDetails { get; set; } = new List<RenovationDetail>();
+
     public virtual Vehicle? Vehicle { get; set; }
 }

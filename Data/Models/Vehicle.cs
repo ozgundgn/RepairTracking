@@ -29,5 +29,7 @@ public partial class Vehicle
 
     public virtual Customer Customer { get; set; } = null!;
 
+    public virtual ICollection<CustomersVehicle> CustomersVehicles { get; set; } = new List<CustomersVehicle>();
+
     public virtual ICollection<Renovation> Renovations { get; set; } = new List<Renovation>();
 }

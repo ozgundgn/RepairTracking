@@ -72,6 +72,16 @@ public partial class AppDbContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("updated_date");
             entity.Property(e => e.VehicleId).HasColumnName("vehicle_id");
+
+            entity.HasOne(d => d.Customer).WithMany(p => p.CustomersVehicles)
+                .HasForeignKey(d => d.CustomerId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("customers_vehicles_customers_id_fk");
+
+            entity.HasOne(d => d.Vehicle).WithMany(p => p.CustomersVehicles)
+                .HasForeignKey(d => d.VehicleId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("customers_vehicles_vehicles_id_fk");
         });
 
         modelBuilder.Entity<Renovation>(entity =>
@@ -119,6 +129,10 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Price).HasColumnName("price");
             entity.Property(e => e.RenovationId).HasColumnName("renovation_id");
             entity.Property(e => e.TCode).HasColumnName("t-code");
+
+            entity.HasOne(d => d.Renovation).WithMany(p => p.RenovationDetails)
+                .HasForeignKey(d => d.RenovationId)
+                .HasConstraintName("renovation_details_renovations_id_fk");
         });
 
         modelBuilder.Entity<User>(entity =>

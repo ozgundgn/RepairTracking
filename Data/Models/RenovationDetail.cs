@@ -18,4 +18,6 @@ public partial class RenovationDetail
     public int Id { get; set; }
 
     public int? RenovationId { get; set; }
+
+    public virtual Renovation? Renovation { get; set; }
 }

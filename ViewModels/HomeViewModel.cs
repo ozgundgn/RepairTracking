@@ -1,21 +1,20 @@
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using Avalonia.Media.TextFormatting.Unicode;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.EntityFrameworkCore;
-using RepairTracking.Data;
-using RepairTracking.Data.Models;
 using RepairTracking.Models;
 using RepairTracking.Repositories.Abstract;
-using RepairTracking.Repositories.Concrete;
 
 namespace RepairTracking.ViewModels;
 
-public class CustomersViewModel : ViewModelBase
+public class HomeViewModel : ViewModelBase
 {
+    private readonly MainWindowViewModel _mainWindowViewModel;
+    private VehicleCustomerModel SelectedCustomer;
+
     private ObservableCollection<VehicleCustomerModel> _customersModels;
+    private readonly IVehicleRepository _repository;
+    public IAsyncRelayCommand LoadDataCommand { get; }
 
     public ObservableCollection<VehicleCustomerModel> CustomersModels
     {
@@ -27,21 +26,23 @@ public class CustomersViewModel : ViewModelBase
         }
     }
 
-    private readonly IVehicleRepository _repository;
-    public IAsyncRelayCommand LoadDataCommand { get; }
-
-    public CustomersViewModel(IVehicleRepository repository)
+    public HomeViewModel(IVehicleRepository repository, MainWindowViewModel mainWindowViewModel)
     {
+        if (!AppState.Instance.IsAuthenticated)
+            _mainWindowViewModel.NavigateToLogin();
+
         _customersModels = new ObservableCollection<VehicleCustomerModel>();
         _repository = repository;
+        _mainWindowViewModel = mainWindowViewModel;
         LoadDataCommand = new AsyncRelayCommand(LoadCustomers);
+        if (SelectedCustomer != null)
+            _mainWindowViewModel.NavigateToRepairDetail(SelectedCustomer);
     }
 
     public async Task LoadCustomers()
     {
         // var customers = await _context.Customers.Where(x=>!x.Passive).ToListAsync();
         var vehicles = await _repository.GetVehicleCustomerModel();
-
         CustomersModels = new ObservableCollection<VehicleCustomerModel>(vehicles);
     }
 

@@ -1,21 +1,22 @@
 using System;
 using System.IO;
+using System.Linq;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
-using System.Linq;
 using Avalonia.Markup.Xaml;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RepairTracking.Data;
+using RepairTracking.Repositories.Abstract;
+using RepairTracking.Repositories.Concrete;
 using RepairTracking.ViewModels;
 using RepairTracking.Views;
 
 namespace RepairTracking;
 
-public partial class App : Application
+public class App : Application
 {
     public IServiceProvider? Services { get; private set; } // Property to hold the service provider
 
@@ -48,9 +49,8 @@ public partial class App : Application
             DisableAvaloniaDataAnnotationValidation();
             var mainWindow = Services.GetRequiredService<MainWindow>();
             desktop.MainWindow = mainWindow;
-
             // Option 1: Set DataContext here if not set in MainWindow constructor
-            
+            // mainWindow.DataContext = Services.GetRequiredService<MainWindowViewModel>();
         }
 
         base.OnFrameworkInitializationCompleted();
@@ -58,7 +58,7 @@ public partial class App : Application
 
     public void ConfigureServices(ServiceCollection services)
     {
-        services.AddSingleton<IConfiguration>(Configuration);
+        services.AddSingleton(Configuration);
 
         // 2. Register DbContext
         // Replace YourDbContextName with the actual name (e.g., AppDbContext)
@@ -67,10 +67,16 @@ public partial class App : Application
             options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
         // 3. Register ViewModels and other services
         // Example:
-        services.AddTransient<CustomersViewModel>();
-        services.AddSingleton<MainWindow>();
+        services.AddScoped<LoginViewModel>();
+        services.AddScoped<HomeViewModel>();
+        services.AddScoped<MainWindowViewModel>();
         // services.AddTransient<SomeOtherViewModel>();
         // services.AddSingleton<IMyService, MyServiceImplementation>();
+        services.AddSingleton<MainWindow>();
+        services.AddSingleton<LoginView>();
+        services.AddSingleton<HomeView>();
+        //Repositories
+        services.AddScoped<IVehicleRepository, VehicleRepository>();
 
     }
     private void DisableAvaloniaDataAnnotationValidation()

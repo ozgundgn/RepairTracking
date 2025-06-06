@@ -1,0 +1,15 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls"
+             xmlns:viewModels="clr-namespace:RepairTracking.ViewModels"
+             x:Class="RepairTracking.Views.LoginView"
+             x:DataType="viewModels:LoginViewModel">
+    <StackPanel Margin="20" Spacing="10">
+        <TextBlock Text="Kullanıcı Adı:" />
+        <TextBox Text="{Binding Username}" Width="200" />
+
+        <TextBlock Text="Şifre:" />
+        <TextBox PasswordChar="*" Watermark="Şifrenizi giriniz" Width="200" Text="{Binding Password,Mode=TwoWay}" />
+        <Button Content="Giriş" Command="{Binding LoginCommand}" />
+    </StackPanel>
+</UserControl>
