@@ -1,0 +1,33 @@
+<!-- Views/AddCustomerWindow.axaml -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:RepairTracking.ViewModels"
+        xmlns:viewModels="clr-namespace:RepairTracking.ViewModels"
+        x:Class="RepairTracking.Views.AddCustomerWindow"
+        x:DataType="vm:AddCustomerViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Add New Customer"
+        Width="400" Height="250"
+        WindowStartupLocation="CenterOwner"> <!-- This is important for dialogs -->
+
+    <Design.DataContext>
+        <!-- This provides sample data for the designer -->
+        <viewModels:AddCustomerViewModel/>
+    </Design.DataContext>
+
+    <StackPanel Spacing="15" Margin="20">
+        <TextBlock Text="New Customer Details" FontSize="18" FontWeight="Bold"/>
+        <TextBox Watermark="Name" Text="{Binding CustomerName, Mode=TwoWay}"/>
+        <TextBox Watermark="Email" Text="{Binding CustomerEmail, Mode=TwoWay}"/>
+
+        <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right" Margin="0,20,0,0">
+            <!-- We pass the window itself as a parameter to the commands -->
+            <Button Content="Cancel"
+                    Command="{Binding CancelCommand}"
+                    CommandParameter="{Binding $parent[Window]}"/>
+            <Button Content="Save" Classes="accent"
+                    Command="{Binding SaveCommand}"
+                    CommandParameter="{Binding $parent[Window]}"/>
+        </StackPanel>
+    </StackPanel>
+</Window>
