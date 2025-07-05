@@ -11,8 +11,11 @@ public interface IVehicleRepository:IBaseContext
     Task<Vehicle> AddVehicle(Vehicle vehicle);
     Task<bool> UpdateVehicle(Vehicle vehicle);
     Task<bool> UpdatePlateNumber(int vehicleId, string plateNumber);
-    
-    Task<bool> DeleteVehicle(int id);
-
-    Task<List<VehicleCustomerModel>> GetVehicleCustomerModel(int? vehicleId = null);
+    bool DeleteVehicle(int id);
+    Task<List<VehicleCustomerModel>> GetVehicleCustomerModelAsync(int? vehicleId = null);
+    List<VehicleCustomerModel> GetVehicleCustomerModel(int? vehicleId = null);
+    Vehicle? GetVehicleByCVehicleId(int vehcileId);
+    List<Vehicle>? GetAllVehicleByChassises(IEnumerable<string?> chassisNos);
+    Task<Vehicle?> GetVehicleByChassisNo(string chassisNo);
+    Task<List<int>> GetPassiveVehicleIdsByChassisNo(string chassisNo);
 }

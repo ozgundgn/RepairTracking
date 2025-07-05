@@ -1,47 +1,19 @@
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+using CommunityToolkit.Mvvm.ComponentModel;
+using RepairTracking.ViewModels;
 
 namespace RepairTracking.Models;
 
-public class VehicleCustomerModel : INotifyPropertyChanged
+public partial class VehicleCustomerModel : ViewModelBase
 {
     public int CustomerId { get; set; }
     public int VehicleId { get; set; }
-    private string _name, _surname, _plateNumber;
-
-    public string Name
-    {
-        get => _name;
-        set
-        {
-            _name = value;
-            OnPropertyChanged();
-        }
-    }
-
-    public string Surname
-    {
-        get => _surname;
-        set
-        {
-            _surname = value;
-            OnPropertyChanged();
-        }
-    }
-
-    public string PlateNumber
-    {
-        get => _plateNumber;
-        set
-        {
-            _plateNumber = value;
-            OnPropertyChanged();
-        }
-    }
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
+    public string Name { get; set; }
+    public string? Type { get; set; }
+    public string? ChassisNo { get; set; }
+    public int? Model { get; set; }
+    public string Surname { get; set; }
+    public string PlateNumber { get; set; }
+    public string PhoneNumber { get; set; }
+    public string CreatedUser { get; set; }
+    [ObservableProperty] private bool _isSelected;
 }

@@ -1,5 +1,6 @@
 ﻿using Avalonia;
 using System;
+using Avalonia.ReactiveUI;
 using RepairTracking.Data;
 using RepairTracking.ViewModels;
 using RepairTracking.Views;
@@ -20,5 +21,6 @@ sealed class Program
         => AppBuilder.Configure<App>()
             .UsePlatformDetect()
             .WithInterFont()
+            .UseReactiveUI()
             .LogToTrace();
 }

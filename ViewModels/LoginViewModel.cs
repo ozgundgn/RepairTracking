@@ -1,43 +1,61 @@
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using RepairTracking.Models;
+using RepairTracking.Repositories.Abstract;
+using RepairTracking.Services;
 
 namespace RepairTracking.ViewModels;
 
-public class LoginViewModel : ViewModelBase
+public partial class LoginViewModel : ViewModelBase
 {
-    private readonly MainWindowViewModel _mainWindowViewModel;
+    private readonly IUserRepository _userRepository;
 
-    public string Username { get; set; }
-    private string _password;
+    [ObservableProperty] [Required(ErrorMessage = "Kullanıcı adı boş olamaz.")]
+    private string? _username;
 
-    public string Password
-    {
-        get => _password;
-        set
-        {
-            SetProperty(ref _password, value);
-            OnPropertyChanged();
-        }
-    }
+    [ObservableProperty] [Required(ErrorMessage = "Şifre boş olamaz.")]
+    private string? _password;
 
+    [ObservableProperty] private string? _errorMessage;
+
+    [ObservableProperty] [NotifyPropertyChangedFor(nameof(IsErrorNotVisible))]
+    private bool _isErrorVisible;
+
+    public bool IsErrorNotVisible => !IsErrorVisible;
     public IAsyncRelayCommand LoginCommand { get; }
 
-    public LoginViewModel(MainWindowViewModel mainWindowViewModel)
+    public LoginViewModel(IUserRepository userRepository)
     {
-        _mainWindowViewModel = mainWindowViewModel;
+        _userRepository = userRepository;
         LoginCommand = new AsyncRelayCommand(Login);
     }
 
+    partial void OnUsernameChanged(string? value) => IsErrorVisible = false;
+    partial void OnPasswordChanged(string? value) => IsErrorVisible = false;
+
     private async Task Login()
-    {
-        // Here you would typically validate the username and password
-        // For now, we will just simulate a successful login
-        if (!string.IsNullOrEmpty(Username) && !string.IsNullOrEmpty(Password))
-        {
-            var user = new User() { Username = Username, UserId = "12345" }; // Simulated user ID
-            AppState.Instance.SetUser(user);
-            _mainWindowViewModel.NavigateToHome();
-        }
+     {
+    //     IsErrorVisible = false;
+    //     ValidateAllProperties();
+    //     if (HasErrors) return;
+    //     var user = await _userRepository.GetUserAsync(Username!, Password!);
+    //     if (user == null)
+    //     {
+    //         IsErrorVisible = true; // Show error if user not found
+    //         ErrorMessage = "Kullanıcı Bulunamadı!";
+    //         return;
+    //     }
+    //     
+    //     var userInfo = new UserInfo()
+    //     {
+    //         GuidId = user.UserId,
+    //         Id = user.Id,
+    //         Name = user.Name,
+    //         Surname = user.Surname
+    //     };
+    //     AppServices.UserSessionService.Login(userInfo);
+        AppServices.NavigationService.NavigateToHome();
     }
 }

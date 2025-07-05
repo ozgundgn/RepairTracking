@@ -1,0 +1,151 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Reactive;
+using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using MsBox.Avalonia;
+using MsBox.Avalonia.Enums;
+using ReactiveUI;
+using RepairTracking.Data.Models;
+using RepairTracking.Models;
+using RepairTracking.Services;
+
+namespace RepairTracking.ViewModels;
+
+public partial class AddCustomerViewModel : ViewModelBase
+{
+    [ObservableProperty] private bool _isInValid;
+
+    [ObservableProperty] [Required(ErrorMessage = "Ad alanı boş bırakılamaz.")]
+    private string _name;
+
+    [ObservableProperty] [Required(ErrorMessage = "Soyad alanı boş bırakılamaz.")]
+    private string _surname;
+
+    [ObservableProperty] [Required(ErrorMessage = "Telefon alanı boş bırakılamaz.")]
+    private string _phoneNumber;
+
+    #region Costumer Validation Properties
+
+    [ObservableProperty] private bool _nameHasError;
+
+    [ObservableProperty] private bool _surnameHasError;
+
+    [ObservableProperty] private bool _phoneNumberHasError;
+
+    public string NameError => GetPropertyErrors(nameof(Name));
+    public string SurnameError => GetPropertyErrors(nameof(Surname));
+    public string PhoneNumberError => GetPropertyErrors(nameof(PhoneNumber));
+
+    private string GetPropertyErrors(string propertyName)
+    {
+        var errors = GetErrors(propertyName) as IEnumerable;
+        return string.Join(Environment.NewLine,
+            errors?.Cast<ValidationResult>().Select(e => e.ErrorMessage) ?? Enumerable.Empty<string>());
+    }
+
+    partial void OnNameChanged(string value)
+    {
+        ValidateProperty(value, nameof(Name));
+        OnPropertyChanged(nameof(NameError));
+        IsInValid = NameHasError = !string.IsNullOrEmpty(NameError);
+    }
+
+    partial void OnSurnameChanged(string value)
+    {
+        ValidateProperty(value, nameof(Surname));
+        OnPropertyChanged(nameof(SurnameError));
+        IsInValid = SurnameHasError = !string.IsNullOrEmpty(SurnameError);
+    }
+
+    partial void OnPhoneNumberChanged(string value)
+    {
+        ValidateProperty(value, nameof(PhoneNumber));
+        OnPropertyChanged(nameof(PhoneNumberError));
+        IsInValid = PhoneNumberHasError = !string.IsNullOrEmpty(PhoneNumberError);
+    }
+
+    #endregion
+
+    [ObservableProperty] [Required(ErrorMessage = "Plaka alanı boş bırakılamaz.")]
+    private string _plateNumber;
+
+    [ObservableProperty] [Required(ErrorMessage = "Marka alanı boş bırakılamaz.")]
+    private string _brand;
+
+    [ObservableProperty] [Required(ErrorMessage = "Model alanı boş bırakılamaz.")]
+    private int _model;
+
+    [ObservableProperty] private bool _plateNumberHasError;
+    [ObservableProperty] private bool _brandHasError;
+    [ObservableProperty] private bool _modelHasError;
+
+    public string PlateNumberError => GetPropertyErrors(nameof(PlateNumber));
+    public string BrandError => GetPropertyErrors(nameof(Brand));
+    public string ModelError => GetPropertyErrors(nameof(Model));
+
+    partial void OnPlateNumberChanged(string value)
+    {
+        ValidateProperty(value, nameof(PlateNumber));
+        OnPropertyChanged(nameof(PlateNumberError));
+        IsInValid = PlateNumberHasError = !string.IsNullOrEmpty(PlateNumberError);
+    }
+
+    partial void OnBrandChanged(string value)
+    {
+        ValidateProperty(value, nameof(Brand));
+        OnPropertyChanged(nameof(BrandError));
+        IsInValid = BrandHasError = !string.IsNullOrEmpty(BrandError);
+    }
+
+    partial void OnModelChanged(int value)
+    {
+        ValidateProperty(value, nameof(Model));
+        OnPropertyChanged(nameof(ModelError));
+        IsInValid = ModelHasError = !string.IsNullOrEmpty(ModelError);
+    }
+
+    // public ReactiveCommand<Unit, CustomerViewModel?> SaveCustomerCommand { get; }
+    public List<VehicleCustomerModel> ExistingCustomers { get; set; }
+    public AddCustomerViewModel()
+    {
+        // SaveCustomerCommand = ReactiveCommand.CreateFromTask(Save);
+    }
+
+    // The Save command will close the window and return the new customer
+    
+    public async Task<bool> ValidateCustomerNotExist()
+    {
+        var existingUser = ExistingCustomers
+            .FirstOrDefault(c => c.Name.Equals(Name, StringComparison.OrdinalIgnoreCase) &&
+                                 c.Surname.Equals(Surname, StringComparison.OrdinalIgnoreCase));
+        
+        return existingUser == null;
+    }
+    
+
+    public async Task<CustomerViewModel?> ReturnCustomerViewModel()
+    {
+        return new CustomerViewModel(new Customer()
+        {
+            Surname = Surname,
+            PhoneNumber = PhoneNumber,
+            Name = Name,
+            CreatedUser = AppServices.UserSessionService.CurrentUser?.Id ?? 0,
+            Vehicles = new List<Vehicle>()
+            {
+                new Vehicle()
+                {
+                    PlateNumber = PlateNumber,
+                    Type = Brand,
+                    Model = Model,
+                    Passive = false
+                }
+            }
+        });
+    }
+}

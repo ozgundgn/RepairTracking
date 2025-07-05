@@ -1,32 +1,39 @@
+using System.Reactive;
+using System.Reactive.Disposables;
+using System.Threading.Tasks;
 using Avalonia.Controls;
-using Avalonia.Interactivity;
+using Avalonia.ReactiveUI;
+using Avalonia.VisualTree;
+using ReactiveUI;
 using RepairTracking.Models;
 using RepairTracking.ViewModels;
 
 namespace RepairTracking.Views;
 
-public partial class HomeView : UserControl
+public partial class HomeView : ReactiveUserControl<HomeViewModel>
 {
-    private HomeViewModel? ViewModel => DataContext as HomeViewModel;
+    // private HomeViewModel? ViewModel => DataContext as HomeViewModel;
 
+    // public HomeView()
+    // {
+    //     InitializeComponent();
+    //     AttachedToVisualTree += (_, _) =>
+    //     {
+    //         var vm = ViewModel;
+    //         if (vm != null)
+    //         {
+    //             vm.LoadDataCommand.Execute(this);
+    //         }
+    //     };
+    // this.WhenActivated(disposables =>
+    // {
+    //     ViewModel!.ShowDialog.RegisterHandler(DoShowDialogAsync)
+    //         .DisposeWith(disposables);
+    // });
+    // }
     public HomeView()
     {
         InitializeComponent();
-        AttachedToVisualTree += (_, _) =>
-        {
-            var vm = ViewModel;
-            if (vm != null)
-            {
-                vm.LoadDataCommand.Execute(this);
-            }
-        };
-       
-    }
-    public HomeView(HomeViewModel? viewModel)
-    {
-        InitializeComponent();
-        DataContext = viewModel;
-        viewModel.LoadDataCommand.Execute(this);
         // Option 1: Resolve ViewModel here if not set globally in App.axaml.cs
         // This is good if each window manages its own ViewModel lifecycle
         // var app = (App)Application.Current;
@@ -36,14 +43,58 @@ public partial class HomeView : UserControl
         // }
         // DataContext = viewModel; // Set the ViewModel passed in the constructor
         // viewModel?.LoadDataCommand.Execute(this);
+        this.WhenActivated(disposables =>
+        {
+            ViewModel!.OpenAddCustomerDialogWindow.RegisterHandler(DoOpenAddCustomerDialogWindowAsync)
+                .DisposeWith(disposables);
+            ViewModel!.OpenVehicleDetailsDialogWindow.RegisterHandler(OpenVehicleDetailsDialogWindowAsync)
+                .DisposeWith(disposables);
+            ViewModel!.OpenCustomerDetailsDialogWindow.RegisterHandler(OpenCustomerDetailsDialogWindowAsync)
+                .DisposeWith(disposables);
+            ViewModel!.LoadPagedCustomersCommand.Execute(this);
+        });
     }
 
-    private async void LoadButton_Click(object? sender, RoutedEventArgs e)
+    private async Task DoOpenAddCustomerDialogWindowAsync(
+        IInteractionContext<AddCustomerViewModel, CustomerViewModel?> interaction)
     {
-        if (ViewModel != null)
-        {
-            await ViewModel.LoadCustomers();
-        }
+        var window = this.GetVisualRoot() as Window;
+        if (window == null)
+            return;
+
+        var dialog = new AddCustomerWindow();
+        dialog.DataContext = interaction.Input;
+
+        var result = await dialog.ShowDialog<CustomerViewModel?>(window);
+        interaction.SetOutput(result);
+    }
+
+    private async Task OpenVehicleDetailsDialogWindowAsync(
+        IInteractionContext<VehicleDetailsViewModel, Unit> interaction)
+    {
+        var window = this.GetVisualRoot() as Window;
+        if (window == null)
+            return;
+
+        var dialog = new VehicleDetailsWindow();
+        dialog.DataContext = interaction.Input;
+
+        Unit result = await dialog.ShowDialog<Unit>(window);
+        interaction.SetOutput(result);
+    }
+
+    private async Task OpenCustomerDetailsDialogWindowAsync(
+        IInteractionContext<CustomerWithAllDetailsViewModel, Unit> interaction)
+    {
+        var window = this.GetVisualRoot() as Window;
+        if (window == null)
+            return;
+
+        var dialog = new CustomerDetailsDialogWindow();
+        dialog.DataContext = interaction.Input;
+
+        Unit result = await dialog.ShowDialog<Unit>(window);
+        interaction.SetOutput(result);
     }
 
     private async void DataGrid_OnCellEditEnded(object? sender, DataGridCellEditEndedEventArgs e)

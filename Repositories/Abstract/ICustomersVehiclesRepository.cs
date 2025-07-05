@@ -3,7 +3,7 @@ using RepairTracking.Data.Models;
 
 namespace RepairTracking.Repositories.Abstract;
 
-public interface IUserRepository : IBaseContext
+public interface ICustomersVehiclesRepository:IBaseContext
 {
-    Task<User?> GetUserAsync(string username,string password);
+    Task<bool> Add(CustomersVehicle customerVehicle);
 }

@@ -1,0 +1,98 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModels="clr-namespace:RepairTracking.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="800"
+        Width="1000" Height="800"
+        x:Class="RepairTracking.Views.SaveRepairDetailWindow"
+        x:DataType="viewModels:SaveRepairDetailViewModel"
+        Title="SaveRepairDetailWindow">
+    <Design.DataContext>
+        <viewModels:SaveRepairDetailViewModel />
+    </Design.DataContext>
+    <Grid Margin="15" RowDefinitions="Auto, Auto, *" ColumnDefinitions="*, 250">
+        <!-- Main Repair Info Panel (Top-Left) -->
+        <StackPanel Grid.Row="0" Grid.Column="0" Spacing="10" Margin="5">
+            <TextBlock Text="Tamir Bilgileri" FontSize="18" FontWeight="Bold" />
+            <TextBlock Text="Plaka:" />
+            <TextBlock Text="{Binding SelectedVehicle.PlateNumber}" IsEnabled="False" />
+            <TextBlock Text="Uygulama Tarihi:" />
+            <DatePicker SelectedDate="{Binding RepairDateForPicker}" />
+            <TextBlock Text="Teslim Tarihi:" />
+            <DatePicker SelectedDate="{Binding DeliveryDateForPicker }" />
+            <TextBlock Text="Şikayet:" />
+            <TextBox Text="{Binding Complaint}" />
+            <TextBlock Text="Not:" />
+            <TextBox Text="{Binding Note}" />
+        </StackPanel>
+
+        <!-- Repair Details List (Bottom-Left) -->
+        <Grid Grid.Row="2" Grid.Column="0" Margin="0,20,20,0" RowDefinitions="Auto, *">
+            <TextBlock Grid.Row="0" Text="Tamir Detayları" FontSize="16" FontWeight="Bold" />
+            <ListBox Grid.Row="1" ItemsSource="{Binding RenovationDetails}"
+                     SelectedItem="{Binding SelectedRenovationDetail}" Margin="0,5,0,0">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <!-- This defines how each item in the list looks -->
+                        <Border BorderBrush="Beige" BorderThickness="1" Padding="5" Margin="0,0,0,5">
+                            <StackPanel Spacing="10">
+                                <TextBlock Text="{Binding Name}" FontWeight="Bold" />
+                                <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
+                                <TextBlock Text="{Binding Note}" FontWeight="Bold" />
+                                <TextBlock Text="{Binding TCode}"></TextBlock>
+                                <TextBlock Text="{Binding Price, StringFormat='Price: {0:C}'}" />
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+
+        <!-- Add/Remove Details Panel (Right side) -->
+        <Border Grid.Row="0" Grid.RowSpan="3" Grid.Column="1" Padding="15" BorderThickness="1" BorderBrush="Gray">
+            <StackPanel>
+                <StackPanel Spacing="8">
+                    <TextBlock Text="İşlemler" FontSize="16" FontWeight="Bold" />
+                    <TextBlock Text="Adı:" />
+                    <TextBox Text="{Binding DetailName}" Watermark="{Binding SelectedRenovationDetail.Name}" />
+                    <TextBlock Text="Fiyat:" />
+                    <NumericUpDown Value="{Binding DetailPrice}" Minimum="0" Increment="0.01"
+                                   Watermark="{Binding SelectedRenovationDetail.Price}" />
+                    <TextBlock Text="Açıklama:" />
+                    <TextBox Text="{Binding DetailDescription}" Height="80" TextWrapping="Wrap" AcceptsReturn="True"
+                             Watermark="{Binding SelectedRenovationDetail.Description}" />
+                    <TextBlock Text="Not:" />
+                    <TextBox Text="{Binding DetailNote}" Height="60" TextWrapping="Wrap" AcceptsReturn="True"
+                             Watermark="{Binding SelectedRenovationDetail.Note}" />
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="Ekle" 
+                                IsEnabled="{Binding !SelectedVehicle.Passive}"
+                                Margin="3"
+                                Command="{Binding AddDetailCommand}"
+                                Classes="accent" />
+                        <Button Content="Düzenle" Margin="3"
+                                IsEnabled="{Binding !SelectedVehicle.Passive}"
+                                Command="{Binding UpdateDetailCommand}"
+                                Classes="accent" />
+                        <Button Content="Sil" Margin="3"
+                                IsEnabled="{Binding !SelectedVehicle.Passive}"
+                                Command="{Binding RemoveDetailCommand}" />
+                        <Button Margin="3"
+                                Command="{Binding ClearInputBoxesCommand}">
+                            <PathIcon Data="{StaticResource arrow_rotate_counterclockwise_regular}" />
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel>
+                    <Button Content="Tamirat Kaydet"
+                            IsEnabled="{Binding !SelectedVehicle.Passive}"
+                            Command="{Binding SaveRepairAsyncCommand}"
+                            HorizontalAlignment="Stretch"
+                            Margin="0,40,0,0"
+                            Classes="accent" />
+                </StackPanel>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

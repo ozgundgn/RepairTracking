@@ -5,11 +5,16 @@ public class AppState
     private static AppState _instance;
     public static AppState Instance => _instance ??= new AppState();
 
-    public User? LoggedInUser { get; private set; }
+    public UserInfo? LoggedInUser { get; private set; }
 
-    public void SetUser(User user)
+    public void SetUser(UserInfo? userInfo)
     {
-        LoggedInUser = user;
+        LoggedInUser = userInfo;
+    }
+    
+    public void ClearUser()
+    {
+        LoggedInUser = null;
     }
 
     public bool IsAuthenticated => LoggedInUser != null;

@@ -1,0 +1,26 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModels="clr-namespace:RepairTracking.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="450"
+             x:DataType="viewModels:UserProfileHeaderViewModel"
+             x:Class="RepairTracking.Views.UserProfileHeaderView">
+
+    <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+        <Border Grid.Column="1" BorderBrush="RoyalBlue"
+                BorderThickness="1"
+                CornerRadius="4"
+                Padding="0">
+            <Menu>
+                <MenuItem Header="{Binding Username}" x:Name="UserMenu">
+                    <MenuItem Header="Logout" Command="{Binding LogoutCommand}">
+                        <!-- <MenuItem.Icon> -->
+                        <!--     <PathIcon Data="{StaticResource  music_regular}" /> -->
+                        <!-- </MenuItem.Icon> -->
+                    </MenuItem>
+                </MenuItem>
+            </Menu>
+        </Border>
+    </StackPanel>
+</UserControl>

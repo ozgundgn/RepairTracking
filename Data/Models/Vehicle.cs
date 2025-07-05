@@ -15,7 +15,7 @@ public partial class Vehicle
 
     public string? Color { get; set; }
 
-    public int? Type { get; set; }
+    public string? Type { get; set; }
 
     public string? EngineNo { get; set; }
 

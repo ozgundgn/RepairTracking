@@ -1,0 +1,55 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:RepairTracking.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="RepairTracking.Views.EditCustomerWindow"
+        x:DataType="vm:EditCustomerViewModel"
+        Width="400"
+        Height=""
+        WindowStartupLocation="CenterScreen"
+        Title="Müşteri Düzenle">
+    <Window.Styles>
+        <Style Selector="Button:pointerover">
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+    </Window.Styles>
+    <Grid RowDefinitions="*,*,*,*,*,*" Margin="2">
+        <StackPanel Grid.Row="0">
+            <TextBlock Text="Adı" Margin="10 0 0 0 " />
+            <TextBox Margin="10"
+                     Text="{Binding Name, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+            <TextBlock Text="{Binding NameError}"
+                       IsVisible="{Binding NameHasError}" Foreground="Red" FontSize="12" />
+
+        </StackPanel>
+        <StackPanel Grid.Row="1">
+            <TextBlock Text="Soyad" Margin="10 0 0 0 " />
+            <TextBox Margin="10" Text="{Binding Surname, Mode=TwoWay}" />
+            <TextBlock Text="{Binding SurnameError}"
+                       IsVisible="{Binding SurnameHasError}" Foreground="Red"
+                       FontSize="12" />
+        </StackPanel>
+        <StackPanel Grid.Row="2">
+            <TextBlock Text="Telefon" Margin="10 0 0 0 " />
+            <TextBox Margin="10" Text="{Binding PhoneNumber, Mode=TwoWay}" />
+            <TextBlock Text="{Binding PhoneNumberError}"
+                       IsVisible="{Binding PhoneNumberHasError}" Foreground="Red"
+                       FontSize="12" />
+        </StackPanel>
+        <StackPanel Grid.Row="3">
+            <TextBlock Text="Email" Margin="10 0 0 0 " />
+            <TextBox Margin="10" Text="{Binding Email, Mode=TwoWay}" />
+        </StackPanel>
+        <StackPanel Grid.Row="4">
+            <TextBlock Text="Adres" Margin="10 0 0 0 " />
+            <TextBox Margin="10" Text="{Binding Address, Mode=TwoWay}" />
+        </StackPanel>
+        <DockPanel Grid.Row="5" HorizontalAlignment="Right"
+                   Margin="15">
+            <Button DockPanel.Dock="Bottom" Content="Kaydet" Margin="10" Classes="accent" Click="Button_OnClick"
+                    IsEnabled="{Binding !IsInValid}" />
+        </DockPanel>
+    </Grid>
+</Window>

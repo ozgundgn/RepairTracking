@@ -1,0 +1,305 @@
+<Window
+    x:Name="CustomerDetailWindow"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="clr-namespace:RepairTracking.ViewModels"
+    mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="1000"
+    x:Class="RepairTracking.Views.CustomerDetailsDialogWindow"
+    x:DataType="viewModels:CustomerWithAllDetailsViewModel"
+    Width="1500" Height="1500"
+    Title="CustomerDetailsDialogWindow">
+    <Window.Styles>
+        <Style Selector="Button:pointerover">
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+        <!-- In App.axaml or MainWindow.axaml inside <Application.Styles> or <Window.Styles> -->
+
+        <!-- Define some colors based on your wireframe -->
+        <Style>
+            <Style.Resources>
+                <!-- <Color x:Key="BackgroundColor">#EEEEE</Color> -->
+                <!-- <Color x:Key="SidebarBackgroundColor">#EEEEE</Color> -->
+                <!-- <Color x:Key="CardBackgroundColor">#EEEEE</Color> -->
+                <!-- <Color x:Key="MutedForegroundColor">#888888</Color> -->
+                <Color x:Key="AccentColor">#707070</Color>
+                <Color x:Key="BorderColor">#DCDCDC</Color>
+
+                <!-- <SolidColorBrush x:Key="BackgroundBrush" Color="{StaticResource BackgroundColor}" /> -->
+                <!-- <SolidColorBrush x:Key="SidebarBackgroundBrush" Color="{StaticResource SidebarBackgroundColor}" /> -->
+                <!-- <SolidColorBrush x:Key="CardBackgroundBrush" Color="{StaticResource CardBackgroundColor}" /> -->
+                <!-- <SolidColorBrush x:Key="MutedForegroundBrush" Color="{StaticResource MutedForegroundColor}" /> -->
+                <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource AccentColor}" />
+                <SolidColorBrush x:Key="BorderBrush" Color="{StaticResource BorderColor}" />
+            </Style.Resources>
+        </Style>
+
+        <!-- A Style for all card-like borders -->
+        <Style Selector="Border.Card">
+            <!-- <Setter Property="Background" Value="{StaticResource CardBackgroundBrush}" /> -->
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="15" />
+            <Setter Property="BoxShadow" Value="0 2 4 0 #11000000" />
+        </Style>
+
+        <!-- Style for the small square buttons (D, E, S) -->
+        <Style Selector="Button.SmallSquare">
+            <Setter Property="MinWidth" Value="24" />
+            <Setter Property="Height" Value="24" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Background" Value="Black" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+
+        <!-- Style for the circular 'home' button -->
+        <Style Selector="Button.Circle">
+            <Setter Property="CornerRadius" Value="50" />
+            <Setter Property="Width" Value="40" />
+            <Setter Property="Height" Value="40" />
+        </Style>
+
+    </Window.Styles>
+    <Design.DataContext>
+        <viewModels:CustomerWithAllDetailsViewModel />
+    </Design.DataContext>
+    <Grid RowDefinitions="Auto, *">
+        <!-- ===== 1. HEADER (TOP BAR) ===== -->
+        <Border Grid.Row="0" Padding="20,10" BorderThickness="0,0,0,1">
+            <Grid ColumnDefinitions="*, Auto">
+                <TextBlock Grid.Column="0" Text="MÜŞTERİ DETAYI" FontSize="20" FontWeight="Bold"
+                           VerticalAlignment="Center" />
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10">
+                    <!-- <Button Classes="Circle" Content="home" /> -->
+                    <Button x:Name="Username" Padding="20,10" CornerRadius="8" Background="Gray" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- ===== 2. MAIN CONTENT AREA ===== -->
+        <Grid Grid.Row="1" ColumnDefinitions="350, *">
+
+            <!-- ===== 2A. LEFT SIDEBAR ===== -->
+            <Border Grid.Column="0" Background="{StaticResource SidebarBackgroundBrush}" Padding="15">
+                <ScrollViewer>
+                    <Border BorderBrush="Azure" BorderThickness="1" CornerRadius="2" Padding="5">
+                        <StackPanel Spacing="5">
+                            <!-- Customer Name Section -->
+                            <Grid ColumnDefinitions="250,200" ColumnSpan="5">
+                                <TextBlock Grid.Column="0" Text="Müşteri" Margin="2" FontSize="18"
+                                           FontWeight="SemiBold" />
+                                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                    <Button
+                                        Classes="SmallSquare" VerticalAlignment="Center" Padding="2"
+                                        Content="Düzenle" Command="{Binding OpenEditCustomerDialog}" />
+                                </StackPanel>
+                            </Grid>
+                            <TextBox Watermark="İsim" Margin="2" Text="{Binding Name}" />
+                            <TextBox Watermark="Soyisim" Margin="2" Text="{Binding Surname}" />
+                            <TextBox Watermark="Telefon" Margin="2" Text="{Binding PhoneNumber}" />
+                            <!-- Vehicle List Section -->
+                            <Grid ColumnDefinitions="200,250">
+                                <Button Grid.Column="1" Command="{Binding OpenVehicleDetails}" Content="Araç Ekle"></Button>
+                            </Grid>
+                            <ListBox ItemsSource="{Binding Vehicles}" SelectedValue="{Binding SelectedVehicle}"
+                                     SelectedItem="{Binding SelectedVehicle}">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Classes="Card" Margin="0,0,0,10" IsVisible="{Binding !Passive}">
+                                            <Grid RowDefinitions="Auto, Auto,Auto" ColumnDefinitions="*, Auto">
+                                                <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding PlateNumber}"
+                                                           FontWeight="Bold" />
+                                                <TextBlock Grid.Row="1" Grid.Column="0" Text="{Binding Type}"
+                                                           Foreground="{StaticResource MutedForegroundBrush}" />
+
+                                                <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal"
+                                                            Spacing="5" VerticalAlignment="Center">
+                                                    <Button Classes="SmallSquare" Content="D"
+                                                            VerticalAlignment="Center"
+                                                            HorizontalContentAlignment="Center">
+                                                        <Button.Command>
+                                                            <Binding Path="DataContext.OpenVehicleDetailsCommand"
+                                                                     ElementName="CustomerDetailWindow" />
+                                                        </Button.Command>
+                                                        <Button.CommandParameter>
+                                                            <Binding />
+                                                        </Button.CommandParameter>
+                                                    </Button>
+                                                    <Button Classes="SmallSquare" Content="S"
+                                                            VerticalAlignment="Center"
+                                                            HorizontalContentAlignment="Center">
+                                                        <Button.Command>
+                                                            <Binding Path="DataContext.DeleteVehicleCommand"
+                                                                     ElementName="CustomerDetailWindow" />
+                                                        </Button.Command>
+                                                        <Button.CommandParameter>
+                                                            <Binding />
+                                                        </Button.CommandParameter>
+                                                    </Button>
+                                                </StackPanel>
+                                                <Button Grid.Row="1" Grid.Column="1" Background="OrangeRed" Margin="5"
+                                                        Content="{Binding ButtonText}"
+                                                        IsVisible="{Binding HasPastRocerd}">
+                                                    <Button.Command>
+                                                        <Binding Path="DataContext.ShowPastRecordsCommand"
+                                                                 ElementName="CustomerDetailWindow" />
+                                                    </Button.Command>
+                                                    <Button.CommandParameter>
+                                                        <Binding />
+                                                    </Button.CommandParameter>
+                                                    <ToolTip.Tip>
+                                                        <!-- The content of your tooltip can be any control -->
+                                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                                            <!-- You can even include icons! -->
+                                                            <PathIcon Data="{StaticResource person_regular}" />
+                                                            <StackPanel Spacing="4">
+                                                                <TextBlock
+                                                                    Text="Aynı şasi numarasına sahip eski kayıtlar var."
+                                                                    Foreground="Gray" />
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                    </ToolTip.Tip>
+                                                </Button>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </StackPanel>
+                    </Border>
+                </ScrollViewer>
+            </Border>
+
+            <!-- ===== 2B. RIGHT CONTENT AREA ===== -->
+            <DockPanel Grid.Column="1" Margin="20">
+                <!-- Search and Create Bar -->
+                <Border DockPanel.Dock="Top" Padding="10" Margin="0,0,0,20"
+                        Background="{StaticResource SidebarBackgroundBrush}" CornerRadius="8">
+                    <StackPanel>
+                        <TextBox Watermark="Şikayet, Tamir Detayı,Tamir Detayı Açıklama İle Arama" VerticalAlignment="Center" Margin="0,0,10,0"
+                                 Text="{Binding  SearchText}" />
+                        <Button Content="OLUŞTUR" HorizontalAlignment="Right" Background="{StaticResource AccentBrush}"
+                                Command="{Binding OpenRepairDetailWindowCommand}"
+                                Foreground="Black" Margin="0 20 0 0" />
+                    </StackPanel>
+                </Border>
+                <!-- Repair Orders (Cards) -->
+                <ScrollViewer>
+                    <!-- Use an ItemsControl to handle the data binding -->
+                    <ItemsControl ItemsSource="{Binding CurrentRenovations}">
+
+                        <!-- 1. Define HOW the items should be arranged (the layout) -->
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal" ItemWidth="400" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+
+                        <!-- 2. Define WHAT each item should look like (the template) -->
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Classes="Card" Margin="10">
+                                    <Grid RowDefinitions="Auto,Auto,*,Auto" MaxHeight="500">
+                                        <!-- Card Header -->
+                                        <Grid Grid.Row="0" ColumnDefinitions="*, 200">
+                                            <StackPanel Grid.Column="1" Orientation="Horizontal"
+                                                        VerticalAlignment="Center" HorizontalAlignment="Right"
+                                                        Spacing="5">
+                                                <Button Classes="SmallSquare" Content="DÜZENLE" MinWidth="50"
+                                                        VerticalContentAlignment="Center"
+                                                        Padding="5,0">
+                                                    <Button.Command>
+                                                        <Binding Path="DataContext.OpenRepairDetailWindowCommand"
+                                                                 ElementName="CustomerDetailWindow" />
+                                                    </Button.Command>
+                                                    <Button.CommandParameter>
+                                                        <Binding />
+                                                    </Button.CommandParameter>
+                                                </Button>
+                                                <Button Classes="SmallSquare" VerticalContentAlignment="Center"
+                                                        Content="YAZDIR" MinWidth="50"
+                                                        Padding="5,0" />
+                                            </StackPanel>
+                                        </Grid>
+
+                                        <!-- Card Sub-header -->
+                                        <Grid Grid.Row="1" ColumnDefinitions="*, Auto">
+                                            <StackPanel Grid.Column="0">
+                                                <TextBlock Text="Tamir Detayı" FontSize="16" FontWeight="Bold"
+                                                           VerticalAlignment="Center" />
+                                                <TextBlock>
+                                                    <TextBlock.Text>
+                                                        <MultiBinding StringFormat="{}{0} {1}">
+                                                            <Binding Path="CustomerName" />
+                                                            <Binding Path="CustomerSurname" />
+                                                        </MultiBinding>
+                                                    </TextBlock.Text>
+                                                </TextBlock>
+                                                <TextBlock Text="{Binding Complaint}"
+                                                           Foreground="{StaticResource MutedForegroundBrush}"
+                                                           VerticalAlignment="Center" />
+                                                <TextBlock Text="{Binding DeliveryDate}"
+                                                           Foreground="{StaticResource MutedForegroundBrush}"
+                                                           VerticalAlignment="Center" />
+                                            </StackPanel>
+                                            <Border Grid.Column="1"
+                                                    Background="{StaticResource SidebarBackgroundBrush}"
+                                                    CornerRadius="12" Padding="15,5">
+                                                <TextBlock Text="{Binding Vehicle.PlateNumber}" FontWeight="SemiBold" />
+                                            </Border>
+                                        </Grid>
+                                        <!-- Card Body -->
+                                        <ScrollViewer Grid.Row="2">
+                                            <ItemsControl ItemsSource="{Binding RenovationDetails}">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <WrapPanel Orientation="Vertical" ItemWidth="300" />
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Border BorderThickness="1" BoxShadow="0 1 3 0 #11000000"
+                                                                BorderBrush="{StaticResource BorderBrush}"
+                                                                Margin="0,5,0,5" Padding="10" CornerRadius="8">
+                                                            <StackPanel Orientation="Vertical" Spacing="10">
+                                                                <TextBlock Text="{Binding Name}" FontWeight="SemiBold" />
+                                                                <TextBlock Text="{Binding Description}"
+                                                                           Foreground="{StaticResource MutedForegroundBrush}" />
+                                                                <TextBlock
+                                                                    Text="{Binding Price, StringFormat='{}{0:C} TL'}"
+                                                                    Foreground="{StaticResource AccentBrush}" />
+                                                                <TextBlock Text="{Binding Note}"
+                                                                           Foreground="{StaticResource AccentBrush}" />
+                                                                <TextBlock Text="{Binding TCode}"
+                                                                           Foreground="{StaticResource AccentBrush}" />
+                                                            </StackPanel>
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </ScrollViewer>
+                                        <!-- Card Footer -->
+                                        <Grid Grid.Row="3" ColumnDefinitions="*,*">
+                                            <Button Grid.Column="0" Content="{Binding Status}" Margin="0,0,5,0"
+                                                    HorizontalAlignment="Stretch" />
+                                            <TextBlock Grid.Column="1"
+                                                       Text="{Binding TotalPrice,StringFormat='{}{0:C} TL'}"
+                                                       Margin="5,0,0,0"
+                                                       HorizontalAlignment="Stretch" />
+                                        </Grid>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </DockPanel>
+        </Grid>
+    </Grid>
+</Window>

@@ -37,6 +37,7 @@ public partial class AppDbContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("address");
+            entity.Property(e => e.CreatedUser).HasColumnName("created_user");
             entity.Property(e => e.Email)
                 .HasMaxLength(100)
                 .IsUnicode(false)
@@ -54,6 +55,11 @@ public partial class AppDbContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("surname");
+
+            entity.HasOne(d => d.CreatedUserNavigation).WithMany(p => p.Customers)
+                .HasForeignKey(d => d.CreatedUser)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("customers_users_id_fk");
         });
 
         modelBuilder.Entity<CustomersVehicle>(entity =>
@@ -92,14 +98,14 @@ public partial class AppDbContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Complaint)
-                .HasMaxLength(1)
+                .HasMaxLength(500)
                 .IsUnicode(false)
                 .HasColumnName("complaint");
             entity.Property(e => e.DeliveryDate)
                 .HasColumnType("datetime")
                 .HasColumnName("delivery_date");
             entity.Property(e => e.Note)
-                .HasMaxLength(1)
+                .HasMaxLength(500)
                 .IsUnicode(false)
                 .HasColumnName("note");
             entity.Property(e => e.RepairDate).HasColumnName("repair_date");
@@ -107,6 +113,7 @@ public partial class AppDbContext : DbContext
 
             entity.HasOne(d => d.Vehicle).WithMany(p => p.Renovations)
                 .HasForeignKey(d => d.VehicleId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("renovations_vehicles_id_fk");
         });
 
@@ -118,35 +125,53 @@ public partial class AppDbContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Description)
-                .HasMaxLength(1)
+                .HasMaxLength(500)
                 .IsUnicode(false)
                 .HasColumnName("description");
             entity.Property(e => e.Name)
-                .HasMaxLength(1)
+                .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("name");
-            entity.Property(e => e.Note).HasColumnName("note");
+            entity.Property(e => e.Note)
+                .HasMaxLength(500)
+                .IsUnicode(false)
+                .HasColumnName("note");
             entity.Property(e => e.Price).HasColumnName("price");
             entity.Property(e => e.RenovationId).HasColumnName("renovation_id");
             entity.Property(e => e.TCode).HasColumnName("t-code");
 
             entity.HasOne(d => d.Renovation).WithMany(p => p.RenovationDetails)
                 .HasForeignKey(d => d.RenovationId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("renovation_details_renovations_id_fk");
         });
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("users_pk");
+            entity.HasKey(e => e.Id)
+                .HasName("users_pk_2")
+                .IsClustered(false);
 
             entity.ToTable("users");
 
+            entity.HasIndex(e => e.Id, "users_pk").IsUnique();
+
+            entity.HasIndex(e => e.UserId, "users_pk_3").IsUnique();
+
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Name)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("name");
             entity.Property(e => e.Passive).HasColumnName("passive");
             entity.Property(e => e.Password)
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("password");
+            entity.Property(e => e.Surname)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("surname");
             entity.Property(e => e.UserId).HasColumnName("user_id");
             entity.Property(e => e.UserName)
                 .HasMaxLength(100)
@@ -184,7 +209,10 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.PlateNumber)
                 .HasMaxLength(100)
                 .HasColumnName("plate_number");
-            entity.Property(e => e.Type).HasColumnName("type");
+            entity.Property(e => e.Type)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("type");
 
             entity.HasOne(d => d.Customer).WithMany(p => p.Vehicles)
                 .HasForeignKey(d => d.CustomerId)

@@ -4,19 +4,29 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:RepairTracking.Views"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
         x:Class="RepairTracking.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
+        WindowStartupLocation="CenterScreen"
+        Width="1200"
+        Height="800"
         Title="RepairTracking">
-    
-    <Window.DataTemplates>
-        <DataTemplate DataType="vm:LoginViewModel">
-            <views:LoginView />
-        </DataTemplate>
-        <DataTemplate DataType="vm:HomeViewModel">
-            <views:HomeView />
-        </DataTemplate>
-    </Window.DataTemplates>
-    <ContentControl Content="{Binding CurrentView}"></ContentControl>
+    <Window.Styles>
+        <Style Selector="Button:pointerover">
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+    </Window.Styles>
+    <!-- <Window.DataTemplates> -->
+    <!--     ~1~ <DataTemplate DataType="vm:LoginViewModel"> @1@ -->
+    <!--     ~1~     <views:LoginView /> @1@ -->
+    <!--     ~1~ </DataTemplate> @1@ -->
+    <!--     <DataTemplate DataType="vm:HomeViewModel"> -->
+    <!--         <views:HomeView /> -->
+    <!--     </DataTemplate> -->
+    <!-- </Window.DataTemplates> -->
+    <!-- <ContentControl Content="{Binding CurrentView}" /> -->
+    <Grid RowDefinitions="*,Auto" Margin="10">
+        <TransitioningContentControl Content="{Binding CurrentView}" />
+    </Grid>
 </Window>

@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using CommunityToolkit.Mvvm.ComponentModel;
+using ReactiveUI;
 
 namespace RepairTracking.ViewModels;
 
-public class ViewModelBase : ObservableObject
+public class ViewModelBase : ObservableValidator
 {
     public event PropertyChangedEventHandler? PropertyChanged;
 

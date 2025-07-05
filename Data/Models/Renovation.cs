@@ -9,7 +9,7 @@ public partial class Renovation
 
     public DateTime? DeliveryDate { get; set; }
 
-    public int? VehicleId { get; set; }
+    public int VehicleId { get; set; }
 
     public int Id { get; set; }
 
@@ -19,5 +19,5 @@ public partial class Renovation
 
     public virtual ICollection<RenovationDetail> RenovationDetails { get; set; } = new List<RenovationDetail>();
 
-    public virtual Vehicle? Vehicle { get; set; }
+    public virtual Vehicle Vehicle { get; set; } = null!;
 }

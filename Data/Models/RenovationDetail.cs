@@ -13,11 +13,11 @@ public partial class RenovationDetail
 
     public int? TCode { get; set; }
 
-    public int? Note { get; set; }
+    public string? Note { get; set; }
 
     public int Id { get; set; }
 
-    public int? RenovationId { get; set; }
+    public int RenovationId { get; set; }
 
-    public virtual Renovation? Renovation { get; set; }
+    public virtual Renovation Renovation { get; set; } = null!;
 }

@@ -1,8 +1,9 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using RepairTracking.Models;
 
 namespace RepairTracking.ViewModels;
 
-public class RepairDetailViewModel : ViewModelBase
+public partial class RepairDetailViewModel : ViewModelBase
 {
     private VehicleCustomerModel _repairDetail;
     public void SetCar(VehicleCustomerModel repairDetail)

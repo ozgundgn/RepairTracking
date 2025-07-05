@@ -22,7 +22,15 @@ public class VehicleRepository : BaseContext, IVehicleRepository
     {
         return await context.Vehicles.Where(x => x.Customer.Id == customerId).ToListAsync();
     }
-
+    public async Task<Vehicle?> GetVehicleByChassisNo(string chassisNo)
+    {
+        return await context.Vehicles.FirstOrDefaultAsync(x => x.ChassisNo == chassisNo);
+    }
+    public async Task<List<int>> GetPassiveVehicleIdsByChassisNo(string chassisNo)
+    {
+        var list= await context.Vehicles.Where(x => x.ChassisNo == chassisNo && x.Passive).ToListAsync();
+        return list.Select(x => x.Id).ToList();
+    }
     public async Task<Vehicle> AddVehicle(Vehicle vehicle)
     {
         var entity = await context.Vehicles.AddAsync(vehicle);
@@ -52,12 +60,17 @@ public class VehicleRepository : BaseContext, IVehicleRepository
             .ExecuteUpdateAsync(x => x.SetProperty(v => v.PlateNumber, plateNumber)) > 0;
     }
 
-    public async Task<bool> DeleteVehicle(int id)
+    public bool DeleteVehicle(int id)
     {
-        return await context.Vehicles.Where(x => x.Id == id).ExecuteDeleteAsync() > 0;
+        var enity = context.Vehicles.Find(id);
+        if (enity == null)
+            return false;
+        enity.Passive = true;
+        var result = context.Vehicles.Update(enity);
+        return result.State == EntityState.Modified;
     }
 
-    public async Task<List<VehicleCustomerModel>> GetVehicleCustomerModel(int? vehicleId)
+    public async Task<List<VehicleCustomerModel>> GetVehicleCustomerModelAsync(int? vehicleId)
     {
         Expression<Func<Vehicle, bool>> predicate = x => !x.Passive && !x.Customer.Passive;
 
@@ -73,7 +86,51 @@ public class VehicleRepository : BaseContext, IVehicleRepository
                 Surname = x.Customer.Surname,
                 PlateNumber = x.PlateNumber,
                 CustomerId = x.Customer.Id,
+                PhoneNumber = x.Customer.PhoneNumber,
                 VehicleId = x.Id,
+                Type = x.Type,
+                ChassisNo = x.ChassisNo,
+                Model = x.Model,
+                CreatedUser = x.Customer.CreatedUserNavigation.Name + " " + x.Customer.CreatedUserNavigation.Surname,
             }).ToListAsync();
+    }
+
+    public List<VehicleCustomerModel> GetVehicleCustomerModel(int? vehicleId = null)
+    {
+        Expression<Func<Vehicle, bool>> predicate = x => !x.Passive && !x.Customer.Passive;
+
+        if (vehicleId != null)
+            predicate.And(x => x.Id == vehicleId);
+
+        return context.Vehicles
+            .Include(c => c.Customer)
+            .Where(predicate)
+            .Select(x => new VehicleCustomerModel
+            {
+                Name = x.Customer.Name,
+                Surname = x.Customer.Surname,
+                PlateNumber = x.PlateNumber,
+                CustomerId = x.Customer.Id,
+                PhoneNumber = x.Customer.PhoneNumber,
+                VehicleId = x.Id,
+                Type = x.Type,
+                ChassisNo = x.ChassisNo,
+                Model = x.Model,
+                CreatedUser = x.Customer.CreatedUserNavigation.Name + " " + x.Customer.CreatedUserNavigation.Surname,
+            }).ToList();
+    }
+
+    public Vehicle? GetVehicleByCVehicleId(int vehcileId)
+    {
+        return context.Vehicles
+            .Find(vehcileId);
+    }
+
+    public List<Vehicle>? GetAllVehicleByChassises(IEnumerable<string>? chassisNos)
+    {
+        if (chassisNos != null)
+            return context.Vehicles.Where(x => chassisNos.Contains(x.ChassisNo))
+                .ToList();
+        return null;
     }
 }
