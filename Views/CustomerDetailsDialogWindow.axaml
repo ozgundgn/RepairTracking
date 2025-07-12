@@ -182,7 +182,8 @@
                 <Border DockPanel.Dock="Top" Padding="10" Margin="0,0,0,20"
                         Background="{StaticResource SidebarBackgroundBrush}" CornerRadius="8">
                     <StackPanel>
-                        <TextBox Watermark="Şikayet, Tamir Detayı,Tamir Detayı Açıklama İle Arama" VerticalAlignment="Center" Margin="0,0,10,0"
+                        <TextBox Watermark="Şikayet, Tamir Detayı,Tamir Detayı Açıklama İle Arama"
+                                 VerticalAlignment="Center" Margin="0,0,10,0"
                                  Text="{Binding  SearchText}" />
                         <Button Content="OLUŞTUR" HorizontalAlignment="Right" Background="{StaticResource AccentBrush}"
                                 Command="{Binding OpenRepairDetailWindowCommand}"
@@ -224,7 +225,15 @@
                                                 </Button>
                                                 <Button Classes="SmallSquare" VerticalContentAlignment="Center"
                                                         Content="YAZDIR" MinWidth="50"
-                                                        Padding="5,0" />
+                                                        Padding="5,0">
+                                                    <Button.Command>
+                                                        <Binding Path="DataContext.PrintRepairReportCommand"
+                                                                 ElementName="CustomerDetailWindow" />
+                                                    </Button.Command>
+                                                    <Button.CommandParameter>
+                                                        <Binding></Binding>
+                                                    </Button.CommandParameter>
+                                                </Button>
                                             </StackPanel>
                                         </Grid>
 

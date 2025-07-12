@@ -19,7 +19,7 @@
         <!--     <views:UserProfileHeaderView -->
         <!--         DataContext="{Binding HeaderViewModel}" /> -->
         <!-- </StackPanel> -->
-     
+
         <Grid DockPanel.Dock="Top" ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto,Auto,Auto">
             <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Grid.ColumnSpan="3"
                         HorizontalAlignment="Center"
@@ -60,7 +60,7 @@
                           SelectedItem="{Binding SelectedCustomerModel,Mode=TwoWay}"
                           CellEditEnded="DataGrid_OnCellEditEnded">
                     <DataGrid.Columns>
-                        <DataGridCheckBoxColumn Binding="{Binding IsSelected}"></DataGridCheckBoxColumn>
+                        <!-- <DataGridCheckBoxColumn Binding="{Binding IsSelected}"></DataGridCheckBoxColumn> -->
                         <DataGridTextColumn Header="Ad" Binding="{Binding Name}" />
                         <DataGridTextColumn Header="Soyad" Binding="{Binding Surname}" />
                         <DataGridTextColumn Header="Plaka" Binding="{Binding PlateNumber}" />
@@ -93,7 +93,7 @@
                                                 <Binding />
                                             </Button.CommandParameter>
                                         </Button>
-                                        <Button Content="D" FontSize="7" Margin="20 0 3 0"
+                                        <Button FontSize="7" Margin="10 0 3 0"
                                                 VerticalAlignment="Center" HorizontalAlignment="Center">
                                             <Button.Command>
                                                 <Binding Path="DataContext.DeleteVehicleCommand"
@@ -102,27 +102,37 @@
                                             <Button.CommandParameter>
                                                 <Binding />
                                             </Button.CommandParameter>
-                                            <!-- <PathIcon Data="{StaticResource person_regular}" /> -->
-                                        </Button>
-                                        <Button FontSize="7" Margin="0 0 3 0"
-                                                VerticalAlignment="Center" HorizontalAlignment="Center">
-                                            <Button.Command>
-                                                <Binding Path="DataContext.DeleteVehicleCommand"
-                                                         ElementName="UserControlHome" />
-                                            </Button.Command>
-                                            <Button.CommandParameter>
-                                                <Binding />
-                                            </Button.CommandParameter>
-                                            <PathIcon Data="{StaticResource person_regular}" />
+                                            <PathIcon Data="{StaticResource delete_regular}" />
                                             <ToolTip.Tip>
                                                 <!-- The content of your tooltip can be any control -->
                                                 <StackPanel Orientation="Horizontal" Spacing="8">
                                                     <!-- You can even include icons! -->
-                                                    <PathIcon Data="{StaticResource person_regular}" />
                                                     <StackPanel Spacing="4">
-                                                        <TextBlock Text="View User Details" FontWeight="Bold" />
-                                                        <TextBlock Text="Click to open the user's profile page."
-                                                                   Foreground="Gray" />
+                                                        <TextBlock Text="Aracı Sil" FontWeight="Bold" />
+                                                        <!-- <TextBlock Text="Click to open the user's profile page." -->
+                                                        <!--            Foreground="Gray" /> -->
+                                                    </StackPanel>
+                                                </StackPanel>
+                                            </ToolTip.Tip>
+                                        </Button>
+                                        <Button FontSize="7" Margin="2 0 3 0"
+                                                VerticalAlignment="Center" HorizontalAlignment="Center">
+                                            <Button.Command>
+                                                <Binding Path="DataContext.DeleteCustomerCommand"
+                                                         ElementName="UserControlHome" />
+                                            </Button.Command>
+                                            <Button.CommandParameter>
+                                                <Binding />
+                                            </Button.CommandParameter>
+                                            <PathIcon Data="{StaticResource person_delete_regular}" />
+                                            <ToolTip.Tip>
+                                                <!-- The content of your tooltip can be any control -->
+                                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                                    <!-- You can even include icons! -->
+                                                    <StackPanel Spacing="4">
+                                                        <TextBlock Text="Kişiyi Sil" FontWeight="Bold" />
+                                                        <!-- <TextBlock Text="Click to open the user's profile page." -->
+                                                        <!--            Foreground="Gray" /> -->
                                                     </StackPanel>
                                                 </StackPanel>
                                             </ToolTip.Tip>
@@ -134,10 +144,11 @@
                     </DataGrid.Columns>
                 </DataGrid>
             </StackPanel>
-            <Border Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Padding="10" BorderThickness="0,1,0,0" BorderBrush="LightGray">
+            <Border Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Padding="10" BorderThickness="0,1,0,0"
+                    BorderBrush="LightGray">
                 <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
                     <Button Content="Previous" Command="{Binding PreviousPageCommand}" />
-                    <TextBlock Text="{Binding CurrentPage}" Margin="10,0"/>
+                    <TextBlock Text="{Binding CurrentPage}" Margin="10,0" />
                     <TextBlock Text=" / " />
                     <TextBlock Text="{Binding TotalPages}" />
                     <Button Content="Next >>" Command="{Binding NextPageCommand}" />
@@ -145,6 +156,6 @@
             </Border>
         </Grid>
         <!-- 1. The Pagination Controls at the Bottom -->
-      
+
     </DockPanel>
 </UserControl>

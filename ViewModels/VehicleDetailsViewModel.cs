@@ -50,15 +50,18 @@ public partial class VehicleDetailsViewModel : ViewModelBase
     private readonly int _vehicleId;
 
     private readonly IVehicleRepository _repository;
+    private readonly IRenovationRepository _renovationRepository;
     private readonly ICustomersVehiclesRepository _customersVehiclesRepository;
 
 
     public VehicleDetailsViewModel(IVehicleRepository repository, string custormerFullname,
-        ICustomersVehiclesRepository customersVehiclesRepository, int? vehicleId = null)
+        ICustomersVehiclesRepository customersVehiclesRepository, IRenovationRepository renovationRepository,
+        int? vehicleId = null)
     {
         _repository = repository;
         _custormerFullname = custormerFullname;
         _customersVehiclesRepository = customersVehiclesRepository;
+        _renovationRepository = renovationRepository;
         if (vehicleId != null)
         {
             _vehicleId = vehicleId != null ? vehicleId.Value : 0;
@@ -80,7 +83,7 @@ public partial class VehicleDetailsViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    public async Task AddOrUpdateVehicle()
+    private async Task AddOrUpdateVehicle()
     {
         bool result = false;
         string message = string.Empty;
@@ -101,6 +104,10 @@ public partial class VehicleDetailsViewModel : ViewModelBase
         {
             vehicle.Id = _vehicleId;
             result = await _repository.UpdateVehicle(vehicle);
+
+            if (Passive == true)
+                _renovationRepository.PassiveRenovation(_vehicleId);
+
             await _repository.SaveChangesAsync();
             message = result ? "Kullanıcı başarıyla güncellendi." : "Kullanıcı güncellenirken bir hata oluştu.";
         }

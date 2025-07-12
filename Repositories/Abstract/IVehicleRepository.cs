@@ -18,4 +18,5 @@ public interface IVehicleRepository:IBaseContext
     List<Vehicle>? GetAllVehicleByChassises(IEnumerable<string?> chassisNos);
     Task<Vehicle?> GetVehicleByChassisNo(string chassisNo);
     Task<List<int>> GetPassiveVehicleIdsByChassisNo(string chassisNo);
+    Task DeleteCustomerAsync(int customerId);
 }

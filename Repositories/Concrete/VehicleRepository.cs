@@ -9,28 +9,28 @@ using RepairTracking.Data.Models;
 using RepairTracking.Helpers;
 using RepairTracking.Models;
 using RepairTracking.Repositories.Abstract;
+using RepairTracking.ViewModels;
 
 namespace RepairTracking.Repositories.Concrete;
 
-public class VehicleRepository : BaseContext, IVehicleRepository
+public class VehicleRepository(AppDbContext context) : BaseContext(context), IVehicleRepository
 {
-    public VehicleRepository(AppDbContext context) : base(context)
-    {
-    }
-
     public async Task<List<Vehicle>> GetVehicleByCustomerId(int customerId)
     {
         return await context.Vehicles.Where(x => x.Customer.Id == customerId).ToListAsync();
     }
+
     public async Task<Vehicle?> GetVehicleByChassisNo(string chassisNo)
     {
         return await context.Vehicles.FirstOrDefaultAsync(x => x.ChassisNo == chassisNo);
     }
+
     public async Task<List<int>> GetPassiveVehicleIdsByChassisNo(string chassisNo)
     {
-        var list= await context.Vehicles.Where(x => x.ChassisNo == chassisNo && x.Passive).ToListAsync();
+        var list = await context.Vehicles.Where(x => x.ChassisNo == chassisNo && x.Passive).ToListAsync();
         return list.Select(x => x.Id).ToList();
     }
+
     public async Task<Vehicle> AddVehicle(Vehicle vehicle)
     {
         var entity = await context.Vehicles.AddAsync(vehicle);
@@ -62,12 +62,16 @@ public class VehicleRepository : BaseContext, IVehicleRepository
 
     public bool DeleteVehicle(int id)
     {
-        var enity = context.Vehicles.Find(id);
-        if (enity == null)
-            return false;
-        enity.Passive = true;
-        var result = context.Vehicles.Update(enity);
-        return result.State == EntityState.Modified;
+        var updateVehicleResult = context.Vehicles.Where(v => v.Id == id)
+            .ExecuteUpdate(x => x.SetProperty(pr => pr.Passive, true));
+        var updateRenovationResult = context.Renovations.Where(v => v.VehicleId == id)
+            .ExecuteUpdate(r => r.SetProperty(x => x.Passive, true));
+        return (updateVehicleResult > 0 && updateRenovationResult > 0);
+    }
+
+    public async Task DeleteCustomerAsync(int customerId)
+    {
+        await context.Database.ExecuteSqlRawAsync("EXEC DeactivateCustomer @CustomerId = {0}", customerId);
     }
 
     public async Task<List<VehicleCustomerModel>> GetVehicleCustomerModelAsync(int? vehicleId)

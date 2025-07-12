@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RepairTracking.Data.Models;
 
-public partial class Renovation
+public class Renovation
 {
     public DateOnly RepairDate { get; set; }
 
@@ -16,6 +16,8 @@ public partial class Renovation
     public string? Complaint { get; set; }
 
     public string? Note { get; set; }
+
+    public bool? Passive { get; set; }
 
     public virtual ICollection<RenovationDetail> RenovationDetails { get; set; } = new List<RenovationDetail>();
 

@@ -15,6 +15,7 @@ using RepairTracking.Repositories.Concrete;
 using RepairTracking.ViewModels;
 using RepairTracking.Views;
 using Avalonia.ReactiveUI;
+using QuestPDF.Infrastructure;
 using RepairTracking.Services;
 
 namespace RepairTracking;
@@ -93,6 +94,7 @@ public class App : Application
         services.AddScoped<ICustomerRepository, CustomerRepository>();
         services.AddScoped<ICustomersVehiclesRepository, CustomersVehiclesRepository>();
         services.AddScoped<IRenovationRepository, RenovationRepository>();
+        QuestPDF.Settings.License = LicenseType.Community;
     }
 
     private void DisableAvaloniaDataAnnotationValidation()

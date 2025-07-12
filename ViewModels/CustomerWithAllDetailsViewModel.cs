@@ -5,12 +5,18 @@ using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using Avalonia.Controls;
+using Avalonia.Media;
+using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
+using QuestPDF.Fluent;
 using ReactiveUI;
 using RepairTracking.Data.Models;
+using RepairTracking.Models;
+using RepairTracking.Reporting;
 using RepairTracking.Repositories.Abstract;
 
 namespace RepairTracking.ViewModels;
@@ -51,24 +57,24 @@ public partial class CustomerWithAllDetailsViewModel : ViewModelBase
     private readonly IVehicleRepository _vehicleRepository;
     private readonly ICustomersVehiclesRepository _customersVehiclesRepository;
     private readonly IRenovationRepository _renovationRepository;
-
     private List<Vehicle>? _recordedVehiclesByChassisNo;
 
     public string SearchText
     {
         get => _searchText;
-        set {
+        set
+        {
             SetProperty(ref _searchText, value);
             OnPropertyChanged();
             if (!string.IsNullOrWhiteSpace(value))
             {
-                var searchedRenovations=CurrentRenovations.
-                    Where(
-                        x=>x.Complaint.Contains(value) || x.Note.Contains(value, StringComparison.OrdinalIgnoreCase) || 
-                           x.Note.Contains(value, StringComparison.OrdinalIgnoreCase) ||
-                           x.RenovationDetails.Any(rd=> rd.Name.Contains(value, StringComparison.OrdinalIgnoreCase) || 
-                                                        rd.Description.Contains(value, StringComparison.OrdinalIgnoreCase))
-                    ).ToList();
+                var searchedRenovations = CurrentRenovations.Where(
+                    x => x.Complaint.Contains(value) || x.Note.Contains(value, StringComparison.OrdinalIgnoreCase) ||
+                         x.Note.Contains(value, StringComparison.OrdinalIgnoreCase) ||
+                         x.RenovationDetails.Any(rd => rd.Name.Contains(value, StringComparison.OrdinalIgnoreCase) ||
+                                                       rd.Description.Contains(value,
+                                                           StringComparison.OrdinalIgnoreCase))
+                ).ToList();
                 CurrentRenovations = new ObservableCollection<RenovationViewModel>(searchedRenovations);
             }
             else
@@ -77,6 +83,7 @@ public partial class CustomerWithAllDetailsViewModel : ViewModelBase
             }
         }
     }
+
     public VehicleViewModel? SelectedVehicle
     {
         get => _selectedVehicle;
@@ -131,6 +138,7 @@ public partial class CustomerWithAllDetailsViewModel : ViewModelBase
         _vehicleRepository = vehicleRepository;
         _customersVehiclesRepository = customersVehiclesRepository;
         _renovationRepository = renovationRepository;
+
         GetCustomerDetails(customerId);
 
         OpenEditCustomerDialogWindow = new Interaction<EditCustomerViewModel, CustomerViewModel?>();
@@ -138,9 +146,49 @@ public partial class CustomerWithAllDetailsViewModel : ViewModelBase
         OpenRepairDetailsDialogWindow = new Interaction<SaveRepairDetailViewModel, Unit>();
     }
 
+    public TopLevel? View { get; set; }
+
+    // ... your other ViewModel properties and commands ...
+
+    [RelayCommand]
+    private async Task PrintRepairReport(RenovationViewModel renovationViewModel)
+    {
+        // 2. Open the "Save File" dialog
+        if (View?.StorageProvider is not { } storageProvider)
+        {
+            // This should not happen in a normal desktop app.
+            return;
+        }
+
+        var file = await storageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+        {
+            Title = "Araç Kabul Raporu",
+            SuggestedFileName = $"Rapor-{renovationViewModel.CustomerName}-{System.DateTime.Now:yyyy-MM-dd}",
+            DefaultExtension = "pdf",
+            FileTypeChoices = new[] { new FilePickerFileType("PDF Document") { Patterns = new[] { "*.pdf" } } }
+        });
+
+        // 3. If the user selected a file, generate and save the PDF
+        if (file is not null)
+        {
+            // Using the path from the saved file, generate the PDF
+            var report = new RepairReportDocument(renovationViewModel);
+            report.GeneratePdf(file.Path.AbsolutePath);
+        }
+
+        if (!renovationViewModel.DeliveryDate.HasValue)
+            _renovationRepository.UpdateRenovationDeliveryDate(renovationViewModel.Id, DateTime.Now);
+
+        await _renovationRepository.SaveChangesAsync();
+    }
+
     private void GetCustomerDetails(int customerId)
     {
         var customer = _customerRepository.GetCustomerWithAllDetails(customerId);
+
+        VehicleViewModel reloadSameSelectedVehicleAfterSavinRenovations = null;
+        if (SelectedVehicle != null)
+            reloadSameSelectedVehicleAfterSavinRenovations = SelectedVehicle;
         if (customer != null)
         {
             var vehicleByChassises = customer.Vehicles.Select(x => x.ChassisNo);
@@ -209,6 +257,25 @@ public partial class CustomerWithAllDetailsViewModel : ViewModelBase
                             Complaint = r.Complaint ?? string.Empty,
                             Note = r.Note ?? string.Empty,
                             VehicleId = r.VehicleId,
+                            CustomerName = Name,
+                            CustomerSurname = Surname,
+                            PhoneNumber = PhoneNumber,
+                            Email = Email,
+                            Address = Address,
+                            Vehicle = new VehicleViewModel
+                            {
+                                PlateNumber = r.Vehicle.PlateNumber,
+                                ChassisNo = r.Vehicle.ChassisNo,
+                                CustomerId = r.Vehicle.CustomerId,
+                                Model = r.Vehicle.Model,
+                                Color = r.Vehicle.Color,
+                                Type = r.Vehicle.Type,
+                                EngineNo = r.Vehicle.EngineNo,
+                                Km = r.Vehicle.Km,
+                                Fuel = r.Vehicle.Fuel,
+                                Id = r.Vehicle.Id,
+                                Passive = r.Vehicle.Passive
+                            },
                             RenovationDetails = new ObservableCollection<RenovationDetailViewModel>(
                                 r.RenovationDetails.Select(rd => new RenovationDetailViewModel
                                 {
@@ -225,10 +292,14 @@ public partial class CustomerWithAllDetailsViewModel : ViewModelBase
                                     _recordedVehiclesByChassisNo.Any(x => x.ChassisNo == v.ChassisNo && x.Passive),
                 }));
         }
+
+        if (reloadSameSelectedVehicleAfterSavinRenovations != null)
+            CurrentRenovations = Vehicles.First(r => r.Id == reloadSameSelectedVehicleAfterSavinRenovations.Id)
+                .Renovations;
     }
 
     [RelayCommand]
-    public async Task ShowPastRecords(VehicleViewModel? vehicle)
+    private async Task ShowPastRecords(VehicleViewModel? vehicle)
     {
         if (vehicle != null)
         {
@@ -324,7 +395,7 @@ public partial class CustomerWithAllDetailsViewModel : ViewModelBase
             vehicleId = selectedCustomerModel.Id;
 
         var vehicleDetailsViewModel = new VehicleDetailsViewModel(_vehicleRepository,
-            Name + " " + Surname, _customersVehiclesRepository, vehicleId)
+            Name + " " + Surname, _customersVehiclesRepository, _renovationRepository, vehicleId)
         {
             CustomerId = Id
         };
@@ -336,10 +407,14 @@ public partial class CustomerWithAllDetailsViewModel : ViewModelBase
     private async Task OpenRepairDetailWindow(RenovationViewModel? repairDetailsViewModel)
     {
         int? renovationId = repairDetailsViewModel?.Id;
-        var vehicleDetailsViewModel =
-            new SaveRepairDetailViewModel(_renovationRepository, selectedVehicle: repairDetailsViewModel?.Vehicle,
-                renovationId);
-        var result = await OpenRepairDetailsDialogWindow.Handle(vehicleDetailsViewModel);
+        if (SelectedVehicle != null)
+        {
+            var vehicleDetailsViewModel =
+                new SaveRepairDetailViewModel(_renovationRepository, selectedVehicle: SelectedVehicle,
+                    renovationId);
+            var result = await OpenRepairDetailsDialogWindow.Handle(vehicleDetailsViewModel);
+        }
+
         GetCustomerDetails(Id);
     }
 
@@ -355,6 +430,7 @@ public partial class CustomerWithAllDetailsViewModel : ViewModelBase
         if (deleteResult == ButtonResult.Yes)
         {
             var deleteResponse = _vehicleRepository.DeleteVehicle(selectedVehicleModel.Id);
+            await _vehicleRepository.SaveChangesAsync();
             if (deleteResponse)
             {
                 GetCustomerDetails(Id);
@@ -395,10 +471,6 @@ public partial class CustomersVehicleViewModel : ViewModelBase
 
 public partial class CreatedUserViewModel : ViewModelBase
 {
-    public CreatedUserViewModel()
-    {
-    }
-
     [ObservableProperty] private Guid _userId;
 
     [ObservableProperty] private int _id;
@@ -448,7 +520,8 @@ public partial class RenovationViewModel : ViewModelBase
 
     [ObservableProperty] private DateOnly _repairDate;
 
-    [ObservableProperty] private DateTime? _deliveryDate;
+    [NotifyPropertyChangedFor(nameof(Status))] [ObservableProperty]
+    private DateTime? _deliveryDate;
 
     [ObservableProperty] private string? _complaint;
 
@@ -460,6 +533,9 @@ public partial class RenovationViewModel : ViewModelBase
     private ObservableCollection<RenovationDetailViewModel> _renovationDetails;
     [ObservableProperty] private string _customerName;
     [ObservableProperty] private string _customerSurname;
+    [ObservableProperty] private string? _email;
+    [ObservableProperty] private string? _phoneNumber;
+    [ObservableProperty] private string? _address;
 
     public ObservableCollection<RenovationDetailViewModel> RenovationDetails
     {

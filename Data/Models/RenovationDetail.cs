@@ -19,5 +19,7 @@ public partial class RenovationDetail
 
     public int RenovationId { get; set; }
 
+    public int? Passive { get; set; }
+
     public virtual Renovation Renovation { get; set; } = null!;
 }

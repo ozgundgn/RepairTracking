@@ -108,6 +108,7 @@ public partial class AppDbContext : DbContext
                 .HasMaxLength(500)
                 .IsUnicode(false)
                 .HasColumnName("note");
+            entity.Property(e => e.Passive).HasColumnName("passive");
             entity.Property(e => e.RepairDate).HasColumnName("repair_date");
             entity.Property(e => e.VehicleId).HasColumnName("vehicle_id");
 
@@ -136,6 +137,7 @@ public partial class AppDbContext : DbContext
                 .HasMaxLength(500)
                 .IsUnicode(false)
                 .HasColumnName("note");
+            entity.Property(e => e.Passive).HasColumnName("passive");
             entity.Property(e => e.Price).HasColumnName("price");
             entity.Property(e => e.RenovationId).HasColumnName("renovation_id");
             entity.Property(e => e.TCode).HasColumnName("t-code");

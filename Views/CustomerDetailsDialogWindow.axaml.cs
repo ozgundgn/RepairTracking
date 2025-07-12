@@ -1,3 +1,4 @@
+using System;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Threading.Tasks;
@@ -27,8 +28,17 @@ public partial class CustomerDetailsDialogWindow : ReactiveWindow<CustomerWithAl
             ViewModel!.OpenRepairDetailsDialogWindow.RegisterHandler(OpenRepairDetailsDialogWindowAsync)
                 .DisposeWith(disposables);
         });
+        DataContextChanged += OnDataContextChanged;
     }
-    
+
+    private void OnDataContextChanged(object? sender, EventArgs e)
+    {
+        if (DataContext is CustomerWithAllDetailsViewModel viewModel)
+        {
+            viewModel.View = this;
+        }
+    }
+
     private async Task DoOpenEditCustomerDialogWindowAsync(
         IInteractionContext<EditCustomerViewModel, CustomerViewModel?> interaction)
     {

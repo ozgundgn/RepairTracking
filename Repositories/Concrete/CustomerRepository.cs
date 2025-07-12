@@ -35,7 +35,7 @@ public class CustomerRepository : BaseContext, ICustomerRepository
         return context.Customers
             .Include(x => x.CreatedUserNavigation)
             .Include(c => c.Vehicles)
-            .ThenInclude(v => v.Renovations)
+            .ThenInclude(v => v.Renovations.Where(reno => reno.Passive != true))
             .ThenInclude(r => r.RenovationDetails)
             .FirstOrDefault(c => c.Id == customerId);
     }

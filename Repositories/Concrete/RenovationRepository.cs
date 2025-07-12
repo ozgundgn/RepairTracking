@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +26,17 @@ public class RenovationRepository : BaseContext, IRenovationRepository
         return entity.State == EntityState.Modified;
     }
 
+    public bool UpdateRenovationDeliveryDate(int id, DateTime datetime)
+    {
+        var entity = context.Renovations.Find(id);
+        // If the entity is null or already has a delivery date return 
+        if (entity == null)
+            return false;
+        entity.DeliveryDate = datetime;
+        var result = context.Renovations.Update(entity);
+        return result.State == EntityState.Modified;
+    }
+
     public bool DeleteRenovation(int id)
     {
         var entity = context.Renovations.Find(id);
@@ -32,6 +44,13 @@ public class RenovationRepository : BaseContext, IRenovationRepository
             return false;
         var result = context.Renovations.Remove(entity);
         return result.State == Microsoft.EntityFrameworkCore.EntityState.Deleted;
+    }
+
+    public bool PassiveRenovation(int vehicleId)
+    {
+        var result = context.Renovations.Where(x => x.VehicleId == vehicleId)
+            .ExecuteUpdate(sr => sr.SetProperty(c => c.Passive, true));
+        return result > 0;
     }
 
     public Renovation? GetRenovationById(int id)
@@ -46,13 +65,14 @@ public class RenovationRepository : BaseContext, IRenovationRepository
 
     public List<Renovation> GetRenovationsByVehcileIds(int[] ids)
     {
-        var renovationList = context.Renovations.Where(x=> ids.Contains(x.VehicleId))
+        var renovationList = context.Renovations.Where(x => ids.Contains(x.VehicleId))
             .Include(r => r.Vehicle)
             .ThenInclude(v => v.Customer)
             .Include(r => r.RenovationDetails)
             .ToList();
         return renovationList;
     }
+
     public bool DeleteRenovationDetails(List<RenovationDetail> renovations)
     {
         context.RenovationDetails

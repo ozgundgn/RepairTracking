@@ -7,6 +7,8 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MsBox.Avalonia;
+using MsBox.Avalonia.Enums;
 using ReactiveUI;
 using RepairTracking.Data.Models;
 using RepairTracking.Models;
@@ -56,7 +58,7 @@ public partial class HomeViewModel : ViewModelBase
 
     //Pagination
     private int _currentPage = 1;
-    private int _pageSize = 5;
+    private int _pageSize = 15;
 
     public int CurrentPage
     {
@@ -84,7 +86,8 @@ public partial class HomeViewModel : ViewModelBase
     });
 
     public HomeViewModel(IVehicleRepository repository, UserProfileHeaderViewModel headerViewModel,
-        ICustomerRepository customerRepository, ICustomersVehiclesRepository customersVehiclesRepository, IVehicleRepository vehicleRepository, IRenovationRepository renovationRepository)
+        ICustomerRepository customerRepository, ICustomersVehiclesRepository customersVehiclesRepository,
+        IVehicleRepository vehicleRepository, IRenovationRepository renovationRepository)
     {
         _repository = repository;
         HeaderViewModel = headerViewModel;
@@ -96,7 +99,7 @@ public partial class HomeViewModel : ViewModelBase
         LoggedUser = AppServices.UserSessionService.CurrentUser?.Fullname ?? "Unknown User";
         OpenAddCustomerDialogWindow = new Interaction<AddCustomerViewModel, CustomerViewModel?>();
         OpenVehicleDetailsDialogWindow = new Interaction<VehicleDetailsViewModel, Unit>();
-        OpenCustomerDetailsDialogWindow= new Interaction<CustomerWithAllDetailsViewModel, Unit>();
+        OpenCustomerDetailsDialogWindow = new Interaction<CustomerWithAllDetailsViewModel, Unit>();
         LoadAllData();
     }
 
@@ -133,16 +136,19 @@ public partial class HomeViewModel : ViewModelBase
     {
         var vehicleId = selectedCustomerModel.VehicleId;
         var vehicleDetailsViewModel = new VehicleDetailsViewModel(_repository,
-            selectedCustomerModel.Name + " " + selectedCustomerModel.Surname,_customersVehiclesRepository,vehicleId);
+            selectedCustomerModel.Name + " " + selectedCustomerModel.Surname, _customersVehiclesRepository,
+            _renovationRepository, vehicleId);
         var resul = await OpenVehicleDetailsDialogWindow.Handle(vehicleDetailsViewModel);
         LoadAllData(); // Refresh the list after viewing details
         await LoadPagedCustomers();
     }
+
     [RelayCommand]
     private async Task OpenCustomerDetails(VehicleCustomerModel selectedCustomerModel)
     {
         var customerId = selectedCustomerModel.CustomerId;
-        var customerWithAllDetailsViewModel = new CustomerWithAllDetailsViewModel(_customerRepository,_vehicleRepository,_customersVehiclesRepository,_renovationRepository, customerId);
+        var customerWithAllDetailsViewModel = new CustomerWithAllDetailsViewModel(_customerRepository,
+            _vehicleRepository, _customersVehiclesRepository, _renovationRepository, customerId);
         var result = await OpenCustomerDetailsDialogWindow.Handle(customerWithAllDetailsViewModel);
         LoadAllData(); // Refresh the list after viewing details
         await LoadPagedCustomers();
@@ -165,8 +171,6 @@ public partial class HomeViewModel : ViewModelBase
                             c.Surname.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
                             c.PlateNumber.Contains(SearchText, StringComparison.OrdinalIgnoreCase));
         }
-        else if (_allCustomersModels.Any())
-            vehicles = _allCustomersModels;
         else
         {
             vehicles = _repository.GetVehicleCustomerModel();
@@ -186,10 +190,34 @@ public partial class HomeViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    public async Task DeleteVehicle(VehicleCustomerModel vehicle)
+    private async Task DeleteVehicle(VehicleCustomerModel vehicle)
     {
-        _repository.DeleteVehicle(vehicle.VehicleId);
+        var deleteWarning = MessageBoxManager
+            .GetMessageBoxStandard("",
+                $"{vehicle.PlateNumber} Plakalı, {vehicle.Name + " " + vehicle.Surname} müşterisine ait aracı silmek istediğinize emin misiniz?",
+                ButtonEnum.YesNo);
+        var deleteResult = await deleteWarning.ShowAsync();
+        if (deleteResult == ButtonResult.Yes)
+        {
+            _repository.DeleteVehicle(vehicle.VehicleId);
+            await _vehicleRepository.SaveChangesAsync();
+            await LoadPagedCustomers(); // Refresh the list after deletion
+        }
+    }
+
+    [RelayCommand]
+    private async Task DeleteCustomer(VehicleCustomerModel vehicle)
+    {
+        var deleteWarning = MessageBoxManager
+            .GetMessageBoxStandard("",
+                $"{vehicle.Name + " " + vehicle.Surname} müşterisini silmek istediğinize emin misiniz?",
+                ButtonEnum.YesNo);
+        var deleteResult = await deleteWarning.ShowAsync();
+        if (deleteResult == ButtonResult.Yes)
+            await _repository.DeleteCustomerAsync(vehicle.CustomerId);
+        
         await LoadPagedCustomers(); // Refresh the list after deletion
+
     }
 
     public async Task SaveChanges()
