@@ -39,7 +39,7 @@ public partial class HomeViewModel : ViewModelBase
         }
     }
 
-    public UserProfileHeaderViewModel HeaderViewModel { get; }
+    public UserProfileHeaderViewModel HeaderViewModel => new();
     public Interaction<AddCustomerViewModel, CustomerViewModel?> OpenAddCustomerDialogWindow { get; }
     public Interaction<VehicleDetailsViewModel, Unit> OpenVehicleDetailsDialogWindow { get; }
     public Interaction<CustomerWithAllDetailsViewModel, Unit> OpenCustomerDetailsDialogWindow { get; }
@@ -85,12 +85,11 @@ public partial class HomeViewModel : ViewModelBase
             CurrentPage--;
     });
 
-    public HomeViewModel(IVehicleRepository repository, UserProfileHeaderViewModel headerViewModel,
+    public HomeViewModel(IVehicleRepository repository,
         ICustomerRepository customerRepository, ICustomersVehiclesRepository customersVehiclesRepository,
         IVehicleRepository vehicleRepository, IRenovationRepository renovationRepository)
     {
         _repository = repository;
-        HeaderViewModel = headerViewModel;
         _customerRepository = customerRepository;
         _customersVehiclesRepository = customersVehiclesRepository;
         _vehicleRepository = vehicleRepository;

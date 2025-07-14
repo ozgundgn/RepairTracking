@@ -36,26 +36,27 @@ public partial class LoginViewModel : ViewModelBase
     partial void OnPasswordChanged(string? value) => IsErrorVisible = false;
 
     private async Task Login()
-     {
-    //     IsErrorVisible = false;
-    //     ValidateAllProperties();
-    //     if (HasErrors) return;
-    //     var user = await _userRepository.GetUserAsync(Username!, Password!);
-    //     if (user == null)
-    //     {
-    //         IsErrorVisible = true; // Show error if user not found
-    //         ErrorMessage = "Kullanıcı Bulunamadı!";
-    //         return;
-    //     }
-    //     
-    //     var userInfo = new UserInfo()
-    //     {
-    //         GuidId = user.UserId,
-    //         Id = user.Id,
-    //         Name = user.Name,
-    //         Surname = user.Surname
-    //     };
-    //     AppServices.UserSessionService.Login(userInfo);
+    {
+        IsErrorVisible = false;
+    ValidateAllProperties();
+    if (HasErrors) return;
+    var user = await _userRepository.GetUserAsync(Username!, Password!);
+    if (user == null)
+    {
+        IsErrorVisible = true; // Show error if user not found
+        ErrorMessage = "Kullanıcı Bulunamadı!";
+        return;
+    }
+    
+    var userInfo = new UserInfo()
+    {
+        GuidId = user.UserId,
+        Id = user.Id,
+        Name = user.Name,
+        Surname = user.Surname
+    };
+    AppServices.UserSessionService.Login(userInfo);
         AppServices.NavigationService.NavigateToHome();
+        // return Task.CompletedTask;
     }
 }
