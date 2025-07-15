@@ -15,9 +15,9 @@
             <Menu>
                 <MenuItem Header="{Binding Username}" x:Name="UserMenu">
                     <MenuItem Header="Logout" Command="{Binding LogoutCommand}">
-                        <!-- <MenuItem.Icon> -->
-                        <!--     <PathIcon Data="{StaticResource  music_regular}" /> -->
-                        <!-- </MenuItem.Icon> -->
+                        <MenuItem.Icon>
+                            <PathIcon Data="{StaticResource  sign_out_regular}" />
+                        </MenuItem.Icon>
                     </MenuItem>
                 </MenuItem>
             </Menu>

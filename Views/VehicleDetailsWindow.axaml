@@ -69,7 +69,7 @@
             <TextBlock Text="KAYITLI OLDUĞU KİŞİ" FontSize="16" HorizontalAlignment="Left" Width="200"
                        VerticalAlignment="Center">
             </TextBlock>
-            <TextBlock Text="{Binding _custormerFullname}" MinWidth="400" Margin="5"></TextBlock>
+            <TextBlock Text="{Binding CustormerFullname}" MinWidth="400" Margin="5"></TextBlock>
         </StackPanel>
         <DockPanel>
 

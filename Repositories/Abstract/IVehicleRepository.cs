@@ -5,13 +5,13 @@ using RepairTracking.Models;
 
 namespace RepairTracking.Repositories.Abstract;
 
-public interface IVehicleRepository:IBaseContext
+public interface IVehicleRepository : IBaseContext
 {
     Task<List<Vehicle>> GetVehicleByCustomerId(int customerId);
-    Task<Vehicle> AddVehicle(Vehicle vehicle);
+    Task<Vehicle?> AddVehicle(Vehicle vehicle);
     Task<bool> UpdateVehicle(Vehicle vehicle);
     Task<bool> UpdatePlateNumber(int vehicleId, string plateNumber);
-    bool DeleteVehicle(int id);
+    Task DeleteVehicle(int id);
     Task<List<VehicleCustomerModel>> GetVehicleCustomerModelAsync(int? vehicleId = null);
     List<VehicleCustomerModel> GetVehicleCustomerModel(int? vehicleId = null);
     Vehicle? GetVehicleByCVehicleId(int vehcileId);

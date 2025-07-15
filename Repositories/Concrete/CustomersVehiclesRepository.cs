@@ -13,7 +13,7 @@ public class CustomersVehiclesRepository : BaseContext, ICustomersVehiclesReposi
 
     public async Task<bool> Add(CustomersVehicle customerVehicle)
     {
-        var entity = await context.CustomersVehicles.AddAsync(customerVehicle);
+        var entity = await Context.CustomersVehicles.AddAsync(customerVehicle);
         return entity.State == Microsoft.EntityFrameworkCore.EntityState.Added;
     }
 }

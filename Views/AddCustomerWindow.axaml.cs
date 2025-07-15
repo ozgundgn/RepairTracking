@@ -28,21 +28,23 @@ public partial class AddCustomerWindow : ReactiveWindow<AddCustomerViewModel>
     {
         if (DataContext is AddCustomerViewModel vm)
         {
-            bool isValid = await vm.ValidateCustomerNotExist();
-            if (isValid)
+            bool isExist = await vm.ValidateCustomerNotExist();
+            if (!isExist)
             {
-                Close(await vm.ReturnCustomerViewModel()); // Return result to Interaction
+                Close(vm.ReturnCustomerViewModel()); // Return result to Interaction
                 var addedBox = MessageBoxManager
                     .GetMessageBoxStandard("İşlem Başarılı", "Kullanıcı başarıyla eklendi.",
                         ButtonEnum.Ok);
                 await addedBox.ShowAsync();
                 return;
             }
+
             var box = MessageBoxManager
-                .GetMessageBoxStandard("Uyarı", "Eklemek istediğiniz kullanıcı zaten mevcut. Lütfen farklı bir kullanıcı adı ile eklemeyi deneyin.",
+                .GetMessageBoxStandard("Uyarı",
+                    "Eklemek istediğiniz kullanıcı zaten mevcut. Lütfen farklı bir kullanıcı adı ile eklemeyi deneyin.",
                     ButtonEnum.Ok);
 
-             await box.ShowAsync();
+            await box.ShowAsync();
         }
     }
 }

@@ -45,13 +45,12 @@ public partial class HomeView : ReactiveUserControl<HomeViewModel>
         // viewModel?.LoadDataCommand.Execute(this);
         this.WhenActivated(disposables =>
         {
-            ViewModel!.OpenAddCustomerDialogWindow.RegisterHandler(DoOpenAddCustomerDialogWindowAsync)
-                .DisposeWith(disposables);
-            ViewModel!.OpenVehicleDetailsDialogWindow.RegisterHandler(OpenVehicleDetailsDialogWindowAsync)
-                .DisposeWith(disposables);
-            ViewModel!.OpenCustomerDetailsDialogWindow.RegisterHandler(OpenCustomerDetailsDialogWindowAsync)
-                .DisposeWith(disposables);
-            ViewModel!.LoadPagedCustomersCommand.Execute(this);
+            // ViewModel?.OpenAddCustomerDialogWindow.RegisterHandler(DoOpenAddCustomerDialogWindowAsync)
+            //     .DisposeWith(disposables);
+            // ViewModel?.OpenVehicleDetailsDialogWindow.RegisterHandler(OpenVehicleDetailsDialogWindowAsync)
+            //     .DisposeWith(disposables);
+            // ViewModel?.OpenCustomerDetailsDialogWindow.RegisterHandler(OpenCustomerDetailsDialogWindowAsync)
+            //     .DisposeWith(disposables);
         });
     }
 
@@ -62,8 +61,10 @@ public partial class HomeView : ReactiveUserControl<HomeViewModel>
         if (window == null)
             return;
 
-        var dialog = new AddCustomerWindow();
-        dialog.DataContext = interaction.Input;
+        var dialog = new AddCustomerWindow
+        {
+            DataContext = interaction.Input
+        };
 
         var result = await dialog.ShowDialog<CustomerViewModel?>(window);
         interaction.SetOutput(result);
@@ -76,8 +77,10 @@ public partial class HomeView : ReactiveUserControl<HomeViewModel>
         if (window == null)
             return;
 
-        var dialog = new VehicleDetailsWindow();
-        dialog.DataContext = interaction.Input;
+        var dialog = new VehicleDetailsWindow
+        {
+            DataContext = interaction.Input
+        };
 
         Unit result = await dialog.ShowDialog<Unit>(window);
         interaction.SetOutput(result);
@@ -90,8 +93,10 @@ public partial class HomeView : ReactiveUserControl<HomeViewModel>
         if (window == null)
             return;
 
-        var dialog = new CustomerDetailsDialogWindow();
-        dialog.DataContext = interaction.Input;
+        var dialog = new CustomerDetailsDialogWindow
+        {
+            DataContext = interaction.Input
+        };
 
         Unit result = await dialog.ShowDialog<Unit>(window);
         interaction.SetOutput(result);

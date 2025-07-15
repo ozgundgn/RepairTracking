@@ -18,15 +18,14 @@ public partial class CustomerDetailsDialogWindow : ReactiveWindow<CustomerWithAl
     public CustomerDetailsDialogWindow()
     {
         InitializeComponent();
-        Username.Content = AppServices.UserSessionService.CurrentUser?.Fullname ?? "Unknown User";
         this.WhenActivated(disposables =>
         {
-            ViewModel!.OpenEditCustomerDialogWindow.RegisterHandler(DoOpenEditCustomerDialogWindowAsync)
-                .DisposeWith(disposables);
-            ViewModel!.OpenVehicleDetailsDialogWindow.RegisterHandler(OpenVehicleDetailsDialogWindowAsync)
-                .DisposeWith(disposables);
-            ViewModel!.OpenRepairDetailsDialogWindow.RegisterHandler(OpenRepairDetailsDialogWindowAsync)
-                .DisposeWith(disposables);
+            // ViewModel!.OpenEditCustomerDialogWindow.RegisterHandler(DoOpenEditCustomerDialogWindowAsync)
+            //     .DisposeWith(disposables);
+            // ViewModel!.OpenVehicleDetailsDialogWindow.RegisterHandler(OpenVehicleDetailsDialogWindowAsync)
+            //     .DisposeWith(disposables);
+            // ViewModel!.OpenRepairDetailsDialogWindow.RegisterHandler(OpenRepairDetailsDialogWindowAsync)
+            //     .DisposeWith(disposables);
         });
         DataContextChanged += OnDataContextChanged;
     }

@@ -1,12 +1,15 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
 using RepairTracking.Data.Models;
+using RepairTracking.Helpers;
 using RepairTracking.Repositories.Abstract;
+using RepairTracking.Services;
 
 namespace RepairTracking.ViewModels;
 
@@ -78,16 +81,23 @@ public partial class SaveRepairDetailViewModel : ViewModelBase
         }
     }
 
-    public SaveRepairDetailViewModel(IRenovationRepository renovationRepository, VehicleViewModel selectedVehicle,
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IDialogService _dialogService;
+
+    public SaveRepairDetailViewModel(IUnitOfWork unitOfWork, VehicleViewModel selectedVehicle,
+        IDialogService dialogService,
         int? renovationId)
     {
-        _renovationRepository = renovationRepository;
+        _unitOfWork = unitOfWork;
+        _dialogService = dialogService;
+        _renovationRepository = unitOfWork.RenovationsRepository;
         _renovationId = renovationId;
         SelectedVehicle = selectedVehicle;
+
         GetRenovationDetails();
     }
 
-    public void GetRenovationDetails()
+    private void GetRenovationDetails()
     {
         if (_renovationId.HasValue)
         {
@@ -135,15 +145,12 @@ public partial class SaveRepairDetailViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private async void AddDetail()
+    private async Task AddDetail()
     {
         // Basic validation
         if (string.IsNullOrWhiteSpace(DetailName) || DetailPrice <= 0)
         {
-            var detailErrorMessage = MessageBoxManager
-                .GetMessageBoxStandard("", "Lütfen geçerli bir isim ve fiyat girin.",
-                    ButtonEnum.Ok);
-            await detailErrorMessage.ShowAsync();
+            await _dialogService.OkMessageBox("Lütfen geçerli bir isim ve fiyat girin.", MessageTitleType.WarningTitle);
             return;
         }
 
@@ -182,10 +189,7 @@ public partial class SaveRepairDetailViewModel : ViewModelBase
             // Basic validation
             if (string.IsNullOrWhiteSpace(DetailName) || DetailPrice <= 0)
             {
-                var detailErrorMessage = MessageBoxManager
-                    .GetMessageBoxStandard("", "Lütfen geçerli bir isim ve fiyat girin.",
-                        ButtonEnum.Ok);
-                detailErrorMessage.ShowAsync().GetAwaiter();
+                _dialogService.OkMessageBox("Lütfen geçerli bir isim ve fiyat girin", MessageTitleType.WarningTitle);
                 return;
             }
 
@@ -252,15 +256,12 @@ public partial class SaveRepairDetailViewModel : ViewModelBase
                 var existingRenovation = _renovationRepository.GetRenovationById(RenovationId.Value);
                 if (existingRenovation == null)
                 {
-                    var messageBoxControl = MessageBoxManager
-                        .GetMessageBoxStandard("Hata", "Güncellenecek tamir kaydı bulunamadı.",
-                            ButtonEnum.Ok);
-                    await messageBoxControl.ShowAsync();
+                    await _dialogService.OkMessageBox("Güncellenecek tamir kaydı bulunamadı.",
+                        MessageTitleType.WarningTitle);
                     return;
                 }
 
-                var result =
-                    _renovationRepository.DeleteRenovationDetails(existingRenovation.RenovationDetails.ToList());
+                _renovationRepository.DeleteRenovationDetails(existingRenovation.RenovationDetails.ToList());
 
                 existingRenovation.Complaint = Complaint;
                 existingRenovation.RepairDate = RepairDate;
@@ -279,16 +280,10 @@ public partial class SaveRepairDetailViewModel : ViewModelBase
                 _renovationRepository.UpdateRenovation(existingRenovation);
             }
 
-            await _renovationRepository.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
         }
 
-        await _renovationRepository.SaveChangesAsync();
-        var messageBox = MessageBoxManager
-            .GetMessageBoxStandard("İşlem Başarılı", "Tamir bilgileri kaydedildi.",
-                ButtonEnum.Ok);
-        await messageBox.ShowAsync();
-        // For now, let's just imagine it's saved.
-        // In a real app, you would pass this 'finalRepair' object back
-        // to the main window or a service layer.
+        await _unitOfWork.SaveChangesAsync();
+        await _dialogService.OkMessageBox("Tamir bilgileri kaydedildi.", MessageTitleType.SuccessTitle);
     }
 }

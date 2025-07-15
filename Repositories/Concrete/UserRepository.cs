@@ -6,15 +6,11 @@ using RepairTracking.Repositories.Abstract;
 
 namespace RepairTracking.Repositories.Concrete;
 
-public class UserRepository : BaseContext, IUserRepository
+public class UserRepository(AppDbContext context) : BaseContext(context), IUserRepository
 {
-    public UserRepository(AppDbContext context) : base(context)
-    {
-    }
-
     public async Task<User?> GetUserAsync(string username, string password)
     {
-        var user = await context.Users
+        var user = await Context.Users.AsNoTracking()
             .FirstOrDefaultAsync(u => u.UserName == username && u.Password == password && !u.Passive);
         return user;
     }

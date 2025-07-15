@@ -1,7 +1,6 @@
 <UserControl x:Name="UserControlHome" xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:RepairTracking.ViewModels"
-             xmlns:services="clr-namespace:RepairTracking.Services"
              xmlns:views="clr-namespace:RepairTracking.Views"
              x:Class="RepairTracking.Views.HomeView"
              x:DataType="vm:HomeViewModel">
@@ -28,14 +27,15 @@
                 <!--            Text="Özenir Oto Müşteri Yönetim Paneli" -->
                 <!--            FontSize="25" HorizontalAlignment="Center" /> -->
             </StackPanel>
-            <StackPanel Grid.Row="1" Grid.Column="0" Margin="0 20 0 0" Grid.ColumnSpan="3">
-                <TextBlock Text="LOGO"></TextBlock>
+            <StackPanel Grid.Row="1" Grid.Column="0" Margin="0 20 0 0">
+                <Image Margin="10 0 0 0 " Height="80" Width="80" HorizontalAlignment="Left"
+                       Source="/Assets/ozenir-png.png" />
             </StackPanel>
             <StackPanel Grid.Row="1" Grid.Column="2" Margin="20 20 0 0">
                 <Grid ColumnDefinitions="*,*" RowDefinitions="*">
                     <Button Grid.Column="0" Margin="5" HorizontalAlignment="Right"
                             Command="{Binding OpenAddCustomerDialogCommand}">
-                        <PathIcon Data="{StaticResource person_regular}" />
+                        <PathIcon Data="{StaticResource person_add_regular}" />
                     </Button>
                     <ItemsControl
                         Grid.Column="1" Margin="5">

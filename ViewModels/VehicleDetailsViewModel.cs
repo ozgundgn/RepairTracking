@@ -5,10 +5,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using MsBox.Avalonia;
-using MsBox.Avalonia.Enums;
 using RepairTracking.Data.Models;
+using RepairTracking.Helpers;
 using RepairTracking.Repositories.Abstract;
+using RepairTracking.Services;
 
 namespace RepairTracking.ViewModels;
 
@@ -36,7 +36,7 @@ public partial class VehicleDetailsViewModel : ViewModelBase
     {
         var errors = GetErrors(propertyName) as IEnumerable;
         return string.Join(Environment.NewLine,
-            errors?.Cast<ValidationResult>().Select(e => e.ErrorMessage) ?? Enumerable.Empty<string>());
+            errors?.Cast<ValidationResult>().Select(e => e.ErrorMessage) ?? []);
     }
 
     partial void OnPlateNumberChanged(string value)
@@ -46,38 +46,39 @@ public partial class VehicleDetailsViewModel : ViewModelBase
         IsInValid = PlateNumberHasError = !string.IsNullOrEmpty(PlateNumberError);
     }
 
-    public string _custormerFullname { get; set; }
-    private readonly int _vehicleId;
+    [ObservableProperty] private string _custormerFullname;
+    [ObservableProperty] private int? _vehicleId;
 
     private readonly IVehicleRepository _repository;
     private readonly IRenovationRepository _renovationRepository;
     private readonly ICustomersVehiclesRepository _customersVehiclesRepository;
 
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IDialogService _dialogService;
 
-    public VehicleDetailsViewModel(IVehicleRepository repository, string custormerFullname,
-        ICustomersVehiclesRepository customersVehiclesRepository, IRenovationRepository renovationRepository,
-        int? vehicleId = null)
+    public VehicleDetailsViewModel(IUnitOfWork unitOfWork, IDialogService dialogService, int? vehicleId)
     {
-        _repository = repository;
-        _custormerFullname = custormerFullname;
-        _customersVehiclesRepository = customersVehiclesRepository;
-        _renovationRepository = renovationRepository;
+        _unitOfWork = unitOfWork;
+        _dialogService = dialogService;
+        _repository = _unitOfWork.VehiclesRepository;
+        _customersVehiclesRepository = _unitOfWork.CustomersVehiclesRepository;
+        _renovationRepository = _unitOfWork.RenovationsRepository;
         if (vehicleId != null)
         {
-            _vehicleId = vehicleId != null ? vehicleId.Value : 0;
-            var vehicle = _repository.GetVehicleByCVehicleId(_vehicleId);
-            if (vehicle != null)
+            var registeredVehicle = _repository.GetVehicleByCVehicleId(vehicleId.Value);
+            if (registeredVehicle != null)
             {
-                PlateNumber = vehicle.PlateNumber;
-                ChassisNo = vehicle.ChassisNo;
-                EngineNo = vehicle.EngineNo;
-                Model = vehicle.Model.ToString();
-                Color = vehicle.Color;
-                Km = vehicle.Km;
-                Fuel = vehicle.Fuel;
-                Passive = vehicle.Passive;
-                CustomerId = vehicle.CustomerId;
-                Type = vehicle.Type;
+                VehicleId = registeredVehicle.Id;
+                PlateNumber = registeredVehicle.PlateNumber;
+                ChassisNo = registeredVehicle.ChassisNo;
+                EngineNo = registeredVehicle.EngineNo;
+                Model = registeredVehicle.Model.ToString();
+                Color = registeredVehicle.Color;
+                Km = registeredVehicle.Km;
+                Fuel = registeredVehicle.Fuel;
+                Passive = registeredVehicle.Passive;
+                CustomerId = registeredVehicle.CustomerId;
+                Type = registeredVehicle.Type;
             }
         }
     }
@@ -85,8 +86,8 @@ public partial class VehicleDetailsViewModel : ViewModelBase
     [RelayCommand]
     private async Task AddOrUpdateVehicle()
     {
-        bool result = false;
-        string message = string.Empty;
+        bool result;
+        string message;
         var vehicle = new Vehicle()
         {
             PlateNumber = PlateNumber,
@@ -100,16 +101,16 @@ public partial class VehicleDetailsViewModel : ViewModelBase
             CustomerId = CustomerId,
             Type = Type
         };
-        if (_vehicleId > 0)
+        if (VehicleId > 0)
         {
-            vehicle.Id = _vehicleId;
+            vehicle.Id = VehicleId.Value;
             result = await _repository.UpdateVehicle(vehicle);
 
             if (Passive == true)
-                _renovationRepository.PassiveRenovation(_vehicleId);
+                _renovationRepository.PassiveRenovation(VehicleId.Value);
 
-            await _repository.SaveChangesAsync();
-            message = result ? "Kullanıcı başarıyla güncellendi." : "Kullanıcı güncellenirken bir hata oluştu.";
+            await _unitOfWork.SaveChangesAsync();
+            message = result ? "Araç bilgisi başarıyla güncellendi." : "Araç bilgisi güncellenirken bir hata oluştu.";
         }
         else
         {
@@ -119,39 +120,37 @@ public partial class VehicleDetailsViewModel : ViewModelBase
             {
                 if (!existingVehicle.Passive)
                 {
-                    message = "Bu şasi numarasına sahip bir araç zaten mevcut. Lütfen farklı bir şasi numarası girin.";
-                    var activeExist = MessageBoxManager
-                        .GetMessageBoxStandard("", message,
-                            ButtonEnum.Ok);
-                    await activeExist.ShowAsync();
+                    await _dialogService.OkMessageBox(
+                        "Bu şasi numarasına sahip bir araç zaten mevcut. Lütfen farklı bir şasi numarası girin.",
+                        MessageTitleType.WarningTitle);
                     return;
                 }
-                else
-                    pastChassisNoExist = " Bu şasi numarasına sahip bir araç daha önce eklenmiş ancak pasif durumda!";
+
+                pastChassisNoExist = " Bu şasi numarasına sahip bir araç daha önce eklenmiş ancak pasif durumda!";
             }
 
             vehicle.CustomerId = CustomerId;
             var addedVehicle = await _repository.AddVehicle(vehicle);
-            await _repository.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
             result = addedVehicle != null;
             message = result
-                ? "Kullanıcı başarıyla eklendi." + pastChassisNoExist
-                : "Kullanıcı eklerken bir hata oluştu.";
+                ? "Araç bilgisi başarıyla eklendi." + pastChassisNoExist
+                : "Ara bilgisi eklenirken bir hata oluştu.";
 
-            var CustomerVehicle = new CustomersVehicle()
+            if (addedVehicle != null)
             {
-                CustomerId = customerId,
-                VehicleId = addedVehicle.Id,
-                CreatedDate = DateTime.Now
-            };
-            await _customersVehiclesRepository.Add(CustomerVehicle);
-            await _customersVehiclesRepository.SaveChangesAsync();
+                var customerVehicle = new CustomersVehicle()
+                {
+                    CustomerId = CustomerId,
+                    VehicleId = addedVehicle.Id,
+                    CreatedDate = DateTime.Now
+                };
+                await _customersVehiclesRepository.Add(customerVehicle);
+            }
+
+            await _unitOfWork.SaveChangesAsync();
         }
 
-        var addedBox = MessageBoxManager
-            .GetMessageBoxStandard("", message,
-                ButtonEnum.Ok);
-
-        await addedBox.ShowAsync();
+        await _dialogService.OkMessageBox(message, "");
     }
 }

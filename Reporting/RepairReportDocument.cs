@@ -8,16 +8,9 @@ using Colors = Avalonia.Media.Colors;
 
 namespace RepairTracking.Reporting;
 
-public class RepairReportDocument : IDocument
+public class RepairReportDocument(RenovationViewModel repairData) : IDocument
 {
-    private readonly RenovationViewModel _repairData;
-    private readonly Byte[] image;
-
-    public RepairReportDocument(RenovationViewModel repairData)
-    {
-        _repairData = repairData;
-        image = File.ReadAllBytes("Assets/ozenir-png.png");
-    }
+    private readonly Byte[] image = File.ReadAllBytes("Assets/ozenir-png.png");
 
     public void Compose(IDocumentContainer container)
     {
@@ -64,7 +57,7 @@ public class RepairReportDocument : IDocument
             // Here is the table for the repair details
             column.Item().Element(ComposeHeaderInfoTable);
             column.Item().Element(ComposeDetailsTable);
-            var notes = _repairData.RenovationDetails.Select(x => x.Note).Where(x => !string.IsNullOrEmpty(x)).ToList();
+            var notes = repairData.RenovationDetails.Select(x => x.Note).Where(x => !string.IsNullOrEmpty(x)).ToList();
             var joinedNotes = string.Join(", ", notes);
             column.Item().MultiColumn(handler =>
             {
@@ -74,7 +67,7 @@ public class RepairReportDocument : IDocument
             // Add a space between the table and the total price
             column.Item().Height(20);
             // Total Price
-            var totalPrice = _repairData.RenovationDetails.Sum(x => x.Price);
+            var totalPrice = repairData.RenovationDetails.Sum(x => x.Price);
             column.Item().Row(row =>
             {
                 row.RelativeItem().Column(col =>
@@ -121,7 +114,7 @@ public class RepairReportDocument : IDocument
                 });
                 var index = 1;
                 // Add rows for each renovation detail
-                foreach (var detail in _repairData.RenovationDetails)
+                foreach (var detail in repairData.RenovationDetails)
                 {
                     table.Cell().TableValueCell().Text(index++);
                     table.Cell().TableValueCell().Text(detail.Description);
@@ -152,44 +145,44 @@ public class RepairReportDocument : IDocument
                 });
 
                 table.Cell().TableLabelCell("İsim");
-                table.Cell().TableValueCell().Text(_repairData.CustomerName);
+                table.Cell().TableValueCell().Text(repairData.CustomerName);
 
                 table.Cell().TableLabelCell("Uygulama Tarihi");
-                table.Cell().TableValueCell().Text(_repairData.RepairDate);
+                table.Cell().TableValueCell().Text(repairData.RepairDate);
 
                 table.Cell().TableLabelCell("Soyisim");
-                table.Cell().TableValueCell().Text(_repairData.CustomerSurname);
+                table.Cell().TableValueCell().Text(repairData.CustomerSurname);
 
                 table.Cell().TableLabelCell("Plaka No");
-                table.Cell().TableValueCell().Text(_repairData.Vehicle?.PlateNumber);
+                table.Cell().TableValueCell().Text(repairData.Vehicle?.PlateNumber);
 
                 table.Cell().TableLabelCell("Tel");
-                table.Cell().TableValueCell().Text(_repairData.Vehicle?.PlateNumber);
+                table.Cell().TableValueCell().Text(repairData.Vehicle?.PlateNumber);
 
                 table.Cell().TableLabelCell("Araç Tipi");
-                table.Cell().TableValueCell().Text(_repairData.Vehicle?.Type);
+                table.Cell().TableValueCell().Text(repairData.Vehicle?.Type);
 
                 table.Cell().TableLabelCell("Email");
-                table.Cell().TableValueCell().Text(_repairData.CustomerName);
+                table.Cell().TableValueCell().Text(repairData.CustomerName);
 
                 table.Cell().TableLabelCell("Şasi No");
-                table.Cell().TableValueCell().Text(_repairData.Vehicle?.ChassisNo);
+                table.Cell().TableValueCell().Text(repairData.Vehicle?.ChassisNo);
 
                 table.Cell().ColumnSpan(1).RowSpan(3).TableLabelCell("Adres");
-                table.Cell().ColumnSpan(1).RowSpan(3).TableValueCell().Text(_repairData.Address);
+                table.Cell().ColumnSpan(1).RowSpan(3).TableValueCell().Text(repairData.Address);
 
                 // table.Cell().ColumnSpan(2).TableValueCell().AspectRatio(16 / 9f).Image(Placeholders.Image);
 
                 table.Cell().Row(row =>
                 {
                     row.ConstantItem(50).TableLabelCell("Km:");
-                    row.RelativeItem().TableValueCell().AlignCenter().Text(_repairData.Vehicle?.Km.ToString());
+                    row.RelativeItem().TableValueCell().AlignCenter().Text(repairData.Vehicle?.Km.ToString());
                 });
 
                 table.Cell().Row(row =>
                 {
                     row.ConstantItem(50).TableLabelCell("Yakıt:");
-                    row.RelativeItem().TableValueCell().AlignCenter().Text(_repairData.Vehicle?.Fuel);
+                    row.RelativeItem().TableValueCell().AlignCenter().Text(repairData.Vehicle?.Fuel);
                 });
 
                 table.Cell().TableLabelCell("Teslim Tarihi");
@@ -201,13 +194,13 @@ public class RepairReportDocument : IDocument
                 table.Cell().Row(row =>
                 {
                     row.ConstantItem(50).TableLabelCell("Model:");
-                    row.RelativeItem().TableValueCell().AlignCenter().Text(_repairData.Vehicle?.Model.ToString());
+                    row.RelativeItem().TableValueCell().AlignCenter().Text(repairData.Vehicle?.Model.ToString());
                 });
 
                 table.Cell().Row(row =>
                 {
                     row.ConstantItem(50).TableLabelCell("Renk:");
-                    row.RelativeItem().TableValueCell().AlignCenter().Text(_repairData.Vehicle?.Color);
+                    row.RelativeItem().TableValueCell().AlignCenter().Text(repairData.Vehicle?.Color);
                 });
             });
     }

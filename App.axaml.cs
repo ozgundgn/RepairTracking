@@ -17,6 +17,7 @@ using RepairTracking.Views;
 using Avalonia.ReactiveUI;
 using QuestPDF.Infrastructure;
 using RepairTracking.Services;
+using RepairTracking.ViewModels.Factories;
 
 namespace RepairTracking;
 
@@ -58,7 +59,7 @@ public class App : Application
             {
                 DataContext = mainWindowViewModel
             };
-            NavigationService = new NavigationService(mainWindowViewModel,Services);
+            NavigationService = new NavigationService(mainWindowViewModel, Services);
             AppServices.NavigationService = NavigationService;
         }
 
@@ -82,8 +83,6 @@ public class App : Application
         services.AddTransient<AddCustomerViewModel>();
         services.AddTransient<UserProfileHeaderViewModel>();
         services.AddTransient<VehicleDetailsViewModel>();
-        // services.AddTransient<SomeOtherViewModel>();
-        // services.AddSingleton<IMyService, MyServiceImplementation>();
 
         services.AddTransient<LoginView>();
         services.AddTransient<HomeView>();
@@ -94,6 +93,10 @@ public class App : Application
         services.AddScoped<ICustomerRepository, CustomerRepository>();
         services.AddScoped<ICustomersVehiclesRepository, CustomersVehiclesRepository>();
         services.AddScoped<IRenovationRepository, RenovationRepository>();
+        //unitofwork
+        services.AddSingleton<IUnitOfWork, UnitOfWork>();
+        services.AddSingleton<IViewModelFactory, ViewModelFactory>();
+        services.AddSingleton<IDialogService, DialogService>();
         QuestPDF.Settings.License = LicenseType.Community;
     }
 

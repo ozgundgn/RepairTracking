@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using RepairTracking.Data.Models;
 using RepairTracking.Models;
+using RepairTracking.Repositories.Abstract;
 using RepairTracking.Services;
 
 namespace RepairTracking.ViewModels;
@@ -106,24 +107,22 @@ public partial class AddCustomerViewModel : ViewModelBase
 
     // public ReactiveCommand<Unit, CustomerViewModel?> SaveCustomerCommand { get; }
     public List<VehicleCustomerModel> ExistingCustomers { get; set; }
-    public AddCustomerViewModel()
+    private readonly IUnitOfWork _unitOfWork;
+
+    public AddCustomerViewModel(IUnitOfWork unitOfWork)
     {
-        // SaveCustomerCommand = ReactiveCommand.CreateFromTask(Save);
+        _unitOfWork = unitOfWork;
     }
 
     // The Save command will close the window and return the new customer
     
     public async Task<bool> ValidateCustomerNotExist()
     {
-        var existingUser = ExistingCustomers
-            .FirstOrDefault(c => c.Name.Equals(Name, StringComparison.OrdinalIgnoreCase) &&
-                                 c.Surname.Equals(Surname, StringComparison.OrdinalIgnoreCase));
-        
-        return existingUser == null;
+        return await _unitOfWork.CustomersRepository.CheckIfCustomerExistsAsync(Name, Surname);
     }
     
 
-    public async Task<CustomerViewModel?> ReturnCustomerViewModel()
+    public CustomerViewModel ReturnCustomerViewModel()
     {
         return new CustomerViewModel(new Customer()
         {
@@ -133,7 +132,7 @@ public partial class AddCustomerViewModel : ViewModelBase
             CreatedUser = AppServices.UserSessionService.CurrentUser?.Id ?? 0,
             Vehicles = new List<Vehicle>()
             {
-                new Vehicle()
+                new()
                 {
                     PlateNumber = PlateNumber,
                     Type = Brand,
