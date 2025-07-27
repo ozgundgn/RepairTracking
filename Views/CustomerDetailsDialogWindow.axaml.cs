@@ -1,14 +1,10 @@
 using System;
 using System.Reactive;
-using System.Reactive.Disposables;
 using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using Avalonia.VisualTree;
 using ReactiveUI;
-using RepairTracking.Services;
 using RepairTracking.ViewModels;
 
 namespace RepairTracking.Views;

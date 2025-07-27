@@ -1,15 +1,19 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Reactive;
 using System.Threading.Tasks;
+using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using QuestPDF.Fluent;
 using ReactiveUI;
 using RepairTracking.Data.Models;
 using RepairTracking.Helpers;
 using RepairTracking.Models;
+using RepairTracking.Reporting;
 using RepairTracking.Repositories.Abstract;
 using RepairTracking.Services;
 using RepairTracking.ViewModels.Factories;
@@ -27,7 +31,7 @@ public partial class HomeViewModel : ViewModelBase
     private readonly IVehicleRepository _vehicleRepository;
     private readonly ICustomersVehiclesRepository _customersVehiclesRepository;
 
-    public UserProfileHeaderViewModel HeaderViewModel => new();
+    public UserProfileHeaderViewModel HeaderViewModel => new(_dialogService, _viewModelFactory);
 
     // public Interaction<AddCustomerViewModel, CustomerViewModel?> OpenAddCustomerDialogWindow { get; }
 
@@ -73,6 +77,7 @@ public partial class HomeViewModel : ViewModelBase
     private readonly IUnitOfWork _unitOfWork;
     private readonly IViewModelFactory _viewModelFactory;
     private readonly IDialogService _dialogService;
+    public Func<TopLevel?> GetTopLevel { get; set; }
 
     public HomeViewModel(IUnitOfWork unitOfWork, IViewModelFactory viewModelFactory, IDialogService dialogService)
     {
@@ -194,6 +199,55 @@ public partial class HomeViewModel : ViewModelBase
         if (deleteResult)
             await _vehicleRepository.DeleteCustomerAsync(vehicle.CustomerId);
         Initialize(); // Refresh the list after deletion
+    }
+
+    [RelayCommand]
+    private async Task ShowLastRenovation(VehicleCustomerModel vehicle)
+    {
+        if (GetTopLevel() is not { } topLevel)
+            return;
+
+        var renovation = _unitOfWork.RenovationsRepository.GetLastRenovation(vehicle.VehicleId);
+        if (renovation == null)
+        {
+            await _dialogService.OkMessageBox("Bu araç için henüz bir tamir kaydı bulunmamaktadır.",
+                MessageTitleType.WarningTitle);
+            return;
+        }
+
+        string reportPath;
+        if (string.IsNullOrWhiteSpace(renovation.ReportPath) || !File.Exists(renovation.ReportPath))
+        {
+            var renovationViewModel = _viewModelFactory.CreateRenovationViewModel(renovation);
+            var file = await _dialogService.SaveFilePickerAsync(topLevel,
+                "Araç Kabul Raporu",
+                $"{renovationViewModel.CustomerName}-{renovationViewModel.Complaint}-{renovationViewModel.UpdatedDate}");
+
+            if (file is null || string.IsNullOrWhiteSpace(file.Path.AbsolutePath))
+            {
+                await _dialogService.OkMessageBox("Rapor kaydedilemedi. Lütfen tekrar deneyin.",
+                    MessageTitleType.ErrorTitle);
+                return;
+            }
+
+            // Using the path from the saved file, generate the PDF
+            var report = new RepairReportDocument(renovationViewModel);
+            report.GeneratePdf(file.Path.AbsolutePath);
+            reportPath = file.Path.AbsolutePath;
+        }
+        else
+            reportPath = renovation.ReportPath;
+
+        string userHomeDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+
+        // Combine the home directory path with the "Downloads" folder name
+        string downloadsPath = Path.Combine(userHomeDirectory, "Downloads");
+        var firstPdfFile = Directory.EnumerateFiles(downloadsPath, "*.pdf", SearchOption.TopDirectoryOnly)
+            .FirstOrDefault();
+        
+        var pdfViewModel =
+            _viewModelFactory.CreatePdfViewerViewModel(firstPdfFile);
+        await _dialogService.OpenPdfViewerWindow(pdfViewModel);
     }
 
     public async Task SaveChanges()

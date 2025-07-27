@@ -1,5 +1,8 @@
+using System;
 using System.Reactive;
 using System.Threading.Tasks;
+using Avalonia.Controls;
+using Avalonia.Platform.Storage;
 using RepairTracking.ViewModels;
 
 namespace RepairTracking.Services;
@@ -14,6 +17,12 @@ public interface IDialogService
     Task<Unit> OpenCustomerDetailsDialogWindow(CustomerWithAllDetailsViewModel viewModel);
 
     Task<Unit> OpenRepairDetailsDialogWindow(SaveRepairDetailViewModel viewModel);
+    Task<Unit> OpenChangePasswordDialogWindow(ChangePasswordViewModel viewModel);
+    Task<Unit> OpenForgotPasswordDialogWindow(ForgotPasswordViewModel viewModel);
+    Task<Unit> OpenUsersWindow(UserViewModel viewModel);
+    Task<Unit> OpenAddOrUpdateUserDialogWindow(AddOrUpdateUserViewModel viewModel);
+    Task<Unit> OpenPdfViewerWindow(PdfViewerViewModel viewModel);
     Task<bool> YesNoMessageBox(string message, string title);
     Task OkMessageBox(string message, string title);
+    Task<IStorageFile?> SaveFilePickerAsync(TopLevel topLevel, string title, string fileName);
 }

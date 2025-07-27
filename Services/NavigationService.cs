@@ -3,10 +3,11 @@ using Avalonia.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using RepairTracking.Repositories.Abstract;
 using RepairTracking.ViewModels;
+using RepairTracking.ViewModels.Factories;
 
 namespace RepairTracking.Services;
 
-public class NavigationService(MainWindowViewModel mainWindowViewModel, IServiceProvider serviceProvider)
+public class NavigationService(MainWindowViewModel mainWindowViewModel, IServiceProvider serviceProvider,IViewModelFactory viewModelFactory)
     : INavigationService
 {
     public void NavigateTo<TWindow>() where TWindow : Window, new()
@@ -23,7 +24,7 @@ public class NavigationService(MainWindowViewModel mainWindowViewModel, IService
     public void NavigateToLogin()
     {
         var userRepository = serviceProvider.GetRequiredService<IUserRepository>();
-        var loginVm = new LoginViewModel(userRepository);
+        var loginVm = viewModelFactory.CreateLoginViewModel();
         mainWindowViewModel.CurrentView = loginVm;
     }
 

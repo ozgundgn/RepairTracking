@@ -31,7 +31,10 @@ public partial class AddCustomerWindow : ReactiveWindow<AddCustomerViewModel>
             bool isExist = await vm.ValidateCustomerNotExist();
             if (!isExist)
             {
-                Close(vm.ReturnCustomerViewModel()); // Return result to Interaction
+                var dialogResult = vm.ReturnCustomerViewModel();
+                if (dialogResult == null)
+                    return;
+                Close(dialogResult); // Return result to Interaction
                 var addedBox = MessageBoxManager
                     .GetMessageBoxStandard("İşlem Başarılı", "Kullanıcı başarıyla eklendi.",
                         ButtonEnum.Ok);

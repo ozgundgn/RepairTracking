@@ -18,7 +18,7 @@
         <!-- This provides sample data for the designer -->
         <viewModels:AddCustomerViewModel />
     </Design.DataContext>
-    <Grid ColumnDefinitions="*,*,*" RowDefinitions="*,*,*,*,*,*" Margin="2">
+    <Grid ColumnDefinitions="*,*,*,*" RowDefinitions="*,*,*,*,*,*" Margin="2">
         <TextBlock Grid.Column="0" Grid.Row="0" Margin="10 0 0 0 " Text="Araç Sahibi" FontSize="18" Height="20"
                    FontWeight="Bold" />
         <StackPanel Grid.Column="0" Grid.Row="1">
@@ -58,6 +58,12 @@
                        IsVisible="{Binding BrandHasError}" Foreground="Red" FontSize="12" />
         </StackPanel>
         <StackPanel Grid.Column="2" Grid.Row="3">
+            <TextBlock Text="ŞasiNo" Margin="10 0 0 0 "></TextBlock>
+            <TextBox Text="{Binding Brand, Mode=TwoWay}" Margin="10" />
+            <TextBlock Text="{Binding ChassisError}"
+                       IsVisible="{Binding ChassisNumberHasError}" Foreground="Red" FontSize="12" />
+        </StackPanel>
+        <StackPanel Grid.Column="3" Grid.Row="3">
 
             <TextBlock Margin="10 0 0 0 ">Model</TextBlock>
             <AutoCompleteBox x:Name="years" FilterMode="StartsWith" Text="{Binding Model}" Margin="10" />
@@ -77,9 +83,9 @@
 
             </Border>
         </StackPanel>
-        <DockPanel Grid.Column="2" Grid.Row="5" HorizontalAlignment="Right"
+        <DockPanel Grid.Column="3" Grid.Row="5" HorizontalAlignment="Right"
                    Margin="15">
-            <Button DockPanel.Dock="Bottom" Content="Kaydet" Margin="10" Classes="accent"
+            <Button DockPanel.Dock="Bottom"  HorizontalAlignment="Right" Content="Kaydet" Margin="10" Classes="accent"
                     IsEnabled="{Binding !IsInValid}"
                     Click="Button_OnClick" />
         </DockPanel>

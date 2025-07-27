@@ -141,6 +141,24 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
+                        <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Content="Görüntüle" FontSize="10"
+                                                VerticalAlignment="Center" HorizontalAlignment="Center">
+                                            <Button.Command>
+                                                <Binding Path="DataContext.ShowLastRenovationCommand"
+                                                         ElementName="UserControlHome" />
+                                            </Button.Command>
+                                            <Button.CommandParameter>
+                                                <Binding />
+                                            </Button.CommandParameter>
+                                        </Button>
+                                    </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
                     </DataGrid.Columns>
                 </DataGrid>
             </StackPanel>

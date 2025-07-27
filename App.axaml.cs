@@ -23,9 +23,9 @@ namespace RepairTracking;
 
 public class App : Application
 {
-    public IServiceProvider? Services { get; private set; } // Property to hold the service provider
-    public IConfiguration Configuration { get; private set; } // Property to hold the configuration
-    public INavigationService NavigationService { get; private set; }
+    private IServiceProvider? Services { get; set; } // Property to hold the service provider
+    private IConfiguration Configuration { get; set; } // Property to hold the configuration
+    private INavigationService NavigationService { get; set; }
 
     public override void Initialize()
     {
@@ -59,7 +59,8 @@ public class App : Application
             {
                 DataContext = mainWindowViewModel
             };
-            NavigationService = new NavigationService(mainWindowViewModel, Services);
+            NavigationService = new NavigationService(mainWindowViewModel, Services,
+                Services.GetRequiredService<IViewModelFactory>());
             AppServices.NavigationService = NavigationService;
         }
 

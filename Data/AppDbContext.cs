@@ -101,6 +101,9 @@ public partial class AppDbContext : DbContext
                 .HasMaxLength(500)
                 .IsUnicode(false)
                 .HasColumnName("complaint");
+            entity.Property(e => e.CreatedDate)
+                .HasColumnType("datetime")
+                .HasColumnName("created_date");
             entity.Property(e => e.DeliveryDate)
                 .HasColumnType("datetime")
                 .HasColumnName("delivery_date");
@@ -110,6 +113,13 @@ public partial class AppDbContext : DbContext
                 .HasColumnName("note");
             entity.Property(e => e.Passive).HasColumnName("passive");
             entity.Property(e => e.RepairDate).HasColumnName("repair_date");
+            entity.Property(e => e.ReportPath)
+                .HasMaxLength(150)
+                .IsUnicode(false)
+                .HasColumnName("report_path");
+            entity.Property(e => e.UpdatedDate)
+                .HasColumnType("datetime")
+                .HasColumnName("updated_date");
             entity.Property(e => e.VehicleId).HasColumnName("vehicle_id");
 
             entity.HasOne(d => d.Vehicle).WithMany(p => p.Renovations)
@@ -140,7 +150,10 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Passive).HasColumnName("passive");
             entity.Property(e => e.Price).HasColumnName("price");
             entity.Property(e => e.RenovationId).HasColumnName("renovation_id");
-            entity.Property(e => e.TCode).HasColumnName("t-code");
+            entity.Property(e => e.TCode)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("t-code");
 
             entity.HasOne(d => d.Renovation).WithMany(p => p.RenovationDetails)
                 .HasForeignKey(d => d.RenovationId)
@@ -170,6 +183,10 @@ public partial class AppDbContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("password");
+            entity.Property(e => e.Phone)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("phone");
             entity.Property(e => e.Surname)
                 .HasMaxLength(100)
                 .IsUnicode(false)

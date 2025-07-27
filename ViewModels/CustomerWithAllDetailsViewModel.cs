@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
@@ -14,7 +16,6 @@ using RepairTracking.Reporting;
 using RepairTracking.Repositories.Abstract;
 using RepairTracking.Services;
 using RepairTracking.ViewModels.Factories;
-using Tmds.DBus.Protocol;
 
 namespace RepairTracking.ViewModels;
 
@@ -45,7 +46,7 @@ public partial class CustomerWithAllDetailsViewModel : ViewModelBase
     private VehicleViewModel? _selectedVehicle;
 
     private List<Vehicle>? _recordedVehiclesByChassisNo;
-    public UserProfileHeaderViewModel HeaderViewModel => new();
+    public UserProfileHeaderViewModel HeaderViewModel => new(_dialogService, _viewModelFactory);
     private string _searchText;
 
     public string SearchText
@@ -68,7 +69,8 @@ public partial class CustomerWithAllDetailsViewModel : ViewModelBase
             }
             else
             {
-                CurrentRenovations = SelectedVehicle.Renovations;
+                if (SelectedVehicle != null)
+                    CurrentRenovations = SelectedVehicle.Renovations;
             }
         }
     }
@@ -230,20 +232,10 @@ public partial class CustomerWithAllDetailsViewModel : ViewModelBase
     private async Task PrintRepairReport(RenovationViewModel renovationViewModel)
     {
         // 2. Open the "Save File" dialog
-        if (View?.StorageProvider is not { } storageProvider)
-        {
-            // This should not happen in a normal desktop app.
-            return;
-        }
 
-        var file = await storageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
-        {
-            Title = "Araç Kabul Raporu",
-            SuggestedFileName = $"Rapor-{renovationViewModel.CustomerName}-{DateTime.Now:yyyy-MM-dd}",
-            DefaultExtension = "pdf",
-            FileTypeChoices = new[] { new FilePickerFileType("PDF Document") { Patterns = new[] { "*.pdf" } } }
-        });
-
+        var file = await _dialogService.SaveFilePickerAsync(View,
+            $"{renovationViewModel.CustomerName}-{renovationViewModel.Complaint}-{renovationViewModel.UpdatedDate}",
+            "Araç Kabul Raporu");
         // 3. If the user selected a file, generate and save the PDF
         if (file is not null)
         {
@@ -252,10 +244,10 @@ public partial class CustomerWithAllDetailsViewModel : ViewModelBase
             report.GeneratePdf(file.Path.AbsolutePath);
         }
 
-        if (!renovationViewModel.DeliveryDate.HasValue)
-            _renovationRepository.UpdateRenovationDeliveryDate(renovationViewModel.Id, DateTime.Now);
+        if (!string.IsNullOrWhiteSpace(file?.Path.AbsolutePath))
+            _renovationRepository.UpdateRenovationReportPath(renovationViewModel.Id, file.Path.AbsolutePath);
 
-        await _unitOfWork.SaveChangesAsync();
+        await _dialogService.OkMessageBox("Rapor başarıyla oluşturuldu.", MessageTitleType.SuccessTitle);
     }
 
     [RelayCommand]
@@ -481,6 +473,8 @@ public partial class RenovationViewModel : ViewModelBase
     [ObservableProperty] private string? _phoneNumber;
     [ObservableProperty] private string? _address;
     [ObservableProperty] private bool? _passive;
+    [ObservableProperty] private DateTime? _createdDate;
+    [ObservableProperty] private DateTime? _updatedDate;
 
     public double TotalPrice => RenovationDetails?.Count > 0
         ? Math.Round(RenovationDetails.Sum(rd => rd.Price), 2)
@@ -499,7 +493,7 @@ public partial class RenovationDetailViewModel : ViewModelBase
 
     [ObservableProperty] private double _price;
 
-    [ObservableProperty] private int? _tCode;
+    [ObservableProperty] private string? _tCode;
 
     [ObservableProperty] private string? _note;
 

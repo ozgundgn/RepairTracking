@@ -14,10 +14,12 @@
                 Padding="0">
             <Menu>
                 <MenuItem Header="{Binding Username}" x:Name="UserMenu">
-                    <MenuItem Header="Logout" Command="{Binding LogoutCommand}">
+                    <MenuItem Header="Çıkış Yap" Command="{Binding LogoutCommand}">
                         <MenuItem.Icon>
                             <PathIcon Data="{StaticResource  sign_out_regular}" />
                         </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Kullanıcılar" Command="{Binding OpenUsersWindowCommand}">
                     </MenuItem>
                 </MenuItem>
             </Menu>

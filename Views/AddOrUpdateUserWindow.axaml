@@ -1,0 +1,54 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModels="clr-namespace:RepairTracking.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        Width="500" Height="450"
+        x:Class="RepairTracking.Views.AddOrUpdateUserWindow"
+        x:DataType="viewModels:AddOrUpdateUserViewModel"
+        Title="AddOrUpdateUserWindow">
+    <StackPanel Spacing="10" Margin="20">
+        <Grid ColumnDefinitions="75,*">
+            <TextBlock Grid.Column="0" HorizontalAlignment="Right" Margin="0 10 0 0 ">Ad</TextBlock>
+            <TextBox Grid.Column="1" Margin="10 " Text="{Binding Name}"></TextBox>
+        </Grid>
+        <Grid ColumnDefinitions="75,*">
+            <TextBlock Grid.Column="0" HorizontalAlignment="Right" Margin="0 10 0 0 ">Soyad</TextBlock>
+            <TextBox Grid.Column="1" Margin="10 " Text="{Binding Surname}"></TextBox>
+        </Grid>
+        <Grid ColumnDefinitions="75,*">
+            <TextBlock Grid.Column="0" Margin="0 10 0 0 " HorizontalAlignment="Right">Kullanıcı Adı</TextBlock>
+            <TextBox Grid.Column="1" Margin="10" Text="{Binding Username}"></TextBox>
+        </Grid>
+        <Grid ColumnDefinitions="75,*">
+            <TextBlock Grid.Column="0" Margin="0 10 0 0 " HorizontalAlignment="Right">Telefon</TextBlock>
+            <TextBox Grid.Column="1" Margin="10" Text="{Binding Phone}"></TextBox>
+        </Grid>
+        <Grid IsVisible="{Binding ShowPassword}" Margin="0 10 0 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="75"></ColumnDefinition>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="35" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" HorizontalAlignment="Right">Şifre</TextBlock>
+            <TextBox Grid.Column="1"  Margin="0 10 0 0 "
+                     PasswordChar="{Binding IsPasswordVisible, Converter={StaticResource PasswordCharConverter}}"
+                     Text="{Binding Password ,Mode=TwoWay}"
+                     Watermark="Şifre" />
+            <!-- Icon -->
+            <!-- Eye Icon Button -->
+            <Button Grid.Column="2" Width="32" Height="32"
+                    Command="{Binding TogglePasswordVisibilityCommand}"
+                    Padding="8" Margin="0 10 0 0"
+                    VerticalAlignment="Center">
+                <Path Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center"
+                      Fill="White"
+                      Data="{StaticResource  eye_hide_regular}" />
+            </Button>
+        </Grid>
+        <Button HorizontalAlignment="Right" VerticalAlignment="Center" Content="Kaydet" Margin="10"
+                Command="{Binding SaveUserCommand}">
+        </Button>
+    </StackPanel>
+</Window>

@@ -14,5 +14,7 @@ public interface IRenovationRepository : IBaseContext
     bool DeleteRenovationDetails(List<RenovationDetail> renovations);
     bool AddRenovationDetail(RenovationDetail renovationDetail);
     List<Renovation> GetRenovationsByVehcileIds(int[]? ids);
-    bool UpdateRenovationDeliveryDate(int id,DateTime datetime);
+    bool UpdateRenovationDeliveryDate(int id, DateTime datetime);
+    Renovation? GetLastRenovation(int vehicleId);
+    bool UpdateRenovationReportPath(int id, string path);
 }

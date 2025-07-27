@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using RepairTracking.Data.Models;
 using RepairTracking.Models;
+using RepairTracking.Repositories.Abstract;
 
 namespace RepairTracking.ViewModels.Factories;
 
@@ -14,4 +16,17 @@ public interface IViewModelFactory
 
     SaveRepairDetailViewModel CreateSaveRepairDetailViewModel(VehicleViewModel selectedVehicleModel,
         int? renovationId = null);
+
+    ChangePasswordViewModel CreateChangePasswordViewModel(string username);
+    
+    ForgotPasswordViewModel CreateForgotPasswordViewModel(string phone);
+
+    LoginViewModel CreateLoginViewModel();
+    
+    UserViewModel CreateUserViewModel();
+
+    AddOrUpdateUserViewModel CreateAddOrUpdateUserViewModel(int? userId, string? name, string? surname, string? phone,
+        string? username);
+    RenovationViewModel CreateRenovationViewModel(Renovation renovation);
+    PdfViewerViewModel CreatePdfViewerViewModel(string reportPath);
 }

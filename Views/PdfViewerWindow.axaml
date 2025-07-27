@@ -1,0 +1,49 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModels="clr-namespace:RepairTracking.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        Width="1000" Height="1000"
+        x:Class="RepairTracking.Views.PdfViewerWindow"
+        x:DataType="viewModels:PdfViewerViewModel"
+        Title="PdfViewerWindow">
+
+    <DockPanel>
+        <!-- Pagination Controls -->
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center" Margin="10">
+            <Button Command="{Binding PreviousPageCommand}" IsEnabled="{Binding CanGoToPreviousPage}">Previous</Button>
+            <TextBlock Text="{Binding PageInfo}" VerticalAlignment="Center" />
+            <Button Command="{Binding NextPageCommand}" IsEnabled="{Binding CanGoToNextPage}">Next</Button>
+            <!-- -->
+            <!-- <Separator Margin="10,0" /> -->
+            <!-- ~1~ NEW Zoom Controls @1@ -->
+            <!-- <Button Command="{Binding ZoomOutCommand}">-</Button> -->
+            <!-- <Button Command="{Binding ResetZoomCommand}" IsEnabled="{Binding CanResetZoom}"> -->
+            <!--     <TextBlock Text="{Binding ZoomPercentageText}" /> -->
+            <!-- </Button> -->
+            <!-- <Button Command="{Binding ZoomInCommand}">+</Button> -->
+            <!-- PDF Page Display -->
+        </StackPanel>
+        <Border BorderBrush="Gray" BorderThickness="1" Margin="10">
+            <Image Source="{Binding PdfPageImage}" Stretch="Uniform" />
+        </Border>
+        <!-- Content Area with Scrolling -->
+        <!-- Use a ScrollViewer to allow panning when the image is zoomed in -->
+        <!-- <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"> -->
+        <!--     <Border BorderBrush="Gray" BorderThickness="1" Margin="10"> -->
+        <!--         ~1~ The Image now has a RenderTransform applied @1@ -->
+        <!--         <Image Source="{Binding PdfPageImage}" -->
+        <!--                Stretch="Uniform" -->
+        <!--                RenderTransformOrigin="0.5,0.5">  This makes the zoom centered  -->
+        <!--             <Image.RenderTransform> -->
+        <!--                 ~1~ We bind the zoom factor from the ViewModel to the scale of the transform @1@ -->
+        <!--                 <ScaleTransform ScaleX="{Binding ZoomFactor}" -->
+        <!--                                 ScaleY="{Binding ZoomFactor}" /> -->
+        <!--             </Image.RenderTransform> -->
+        <!--         </Image> -->
+        <!--     </Border> -->
+        <!-- </ScrollViewer> -->
+    </DockPanel>
+
+</Window>

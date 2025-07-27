@@ -37,7 +37,7 @@ public partial class SaveRepairDetailViewModel : ViewModelBase
 
     [ObservableProperty] private double _detailPrice;
 
-    [ObservableProperty] private int? _detailTCode;
+    [ObservableProperty] private string? _detailTCode;
 
     [ObservableProperty] private string? _detailNote;
 
@@ -239,6 +239,8 @@ public partial class SaveRepairDetailViewModel : ViewModelBase
                     DeliveryDate = DeliveryDate,
                     Note = Note,
                     VehicleId = SelectedVehicle.Id,
+                    CreatedDate = DateTime.Now,
+                    UpdatedDate = DateTime.Now,
                     RenovationDetails = RenovationDetails.Select(x => new RenovationDetail()
                     {
                         Description = x.Description,

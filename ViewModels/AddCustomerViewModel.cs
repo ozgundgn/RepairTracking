@@ -24,7 +24,7 @@ public partial class AddCustomerViewModel : ViewModelBase
 
     [ObservableProperty] [Required(ErrorMessage = "Telefon alanı boş bırakılamaz.")]
     private string _phoneNumber;
-
+  
     #region Costumer Validation Properties
 
     [ObservableProperty] private bool _nameHasError;
@@ -75,14 +75,19 @@ public partial class AddCustomerViewModel : ViewModelBase
 
     [ObservableProperty] [Required(ErrorMessage = "Model alanı boş bırakılamaz.")]
     private int _model;
+    
+    [ObservableProperty] [Required(ErrorMessage = "Şasino alanı boş bırakılamaz.")]
+    private string _chassisNumber;
 
     [ObservableProperty] private bool _plateNumberHasError;
     [ObservableProperty] private bool _brandHasError;
     [ObservableProperty] private bool _modelHasError;
+    [ObservableProperty] private bool _chassisNumberHasError;
 
     public string PlateNumberError => GetPropertyErrors(nameof(PlateNumber));
     public string BrandError => GetPropertyErrors(nameof(Brand));
     public string ModelError => GetPropertyErrors(nameof(Model));
+    public string ChassisError => GetPropertyErrors(nameof(ChassisNumber));
 
     partial void OnPlateNumberChanged(string value)
     {
@@ -104,6 +109,13 @@ public partial class AddCustomerViewModel : ViewModelBase
         OnPropertyChanged(nameof(ModelError));
         IsInValid = ModelHasError = !string.IsNullOrEmpty(ModelError);
     }
+    
+    partial void OnChassisNumberChanged(string value)
+    {
+        ValidateProperty(value, nameof(ChassisNumber));
+        OnPropertyChanged(nameof(ChassisError));
+        IsInValid = ChassisNumberHasError = !string.IsNullOrEmpty(ChassisError);
+    }
 
     // public ReactiveCommand<Unit, CustomerViewModel?> SaveCustomerCommand { get; }
     public List<VehicleCustomerModel> ExistingCustomers { get; set; }
@@ -122,8 +134,10 @@ public partial class AddCustomerViewModel : ViewModelBase
     }
     
 
-    public CustomerViewModel ReturnCustomerViewModel()
+    public CustomerViewModel? ReturnCustomerViewModel()
     {
+        ValidateAllProperties();
+        if (HasErrors) return null;
         return new CustomerViewModel(new Customer()
         {
             Surname = Surname,

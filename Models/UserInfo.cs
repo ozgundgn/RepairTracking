@@ -6,10 +6,9 @@ public class UserInfo
 {
     public Guid GuidId { get; set; }
     public int Id { get; set; }
-    public string? Name { get; set; } = null!;
-     public string? Surname { get; set; } = null!;
-    public string Fullname
-    {
-        get=> $"{Name} {Surname}";
-    }
+    public string? Name { get; set; }
+     public string? Surname { get; set; }
+     public string? Username { get; set; }
+     public string? PhoneNumber { get; set; }
+    public string Fullname => $"{Name} {Surname}";
 }

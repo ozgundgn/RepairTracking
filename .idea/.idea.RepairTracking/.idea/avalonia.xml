@@ -7,19 +7,24 @@
         <entry key="Icons.axaml" value="RepairTracking.csproj" />
         <entry key="ViewModels/EditCustomerWindow.axaml" value="RepairTracking.csproj" />
         <entry key="Views/AddCustomerWindow.axaml" value="RepairTracking.csproj" />
+        <entry key="Views/AddOrUpdateUserWindow.axaml" value="RepairTracking.csproj" />
         <entry key="Views/AlbumView.axaml" value="RepairTracking.csproj" />
+        <entry key="Views/ChangePasswordWindow.axaml" value="RepairTracking.csproj" />
         <entry key="Views/CustomerDetailsDialogWindow.axaml" value="RepairTracking.csproj" />
         <entry key="Views/EditCustomerWindow.axaml" value="RepairTracking.csproj" />
+        <entry key="Views/ForgotPasswordWindow.axaml" value="RepairTracking.csproj" />
         <entry key="Views/HomeView.axaml" value="RepairTracking.csproj" />
         <entry key="Views/LoginView.axaml" value="RepairTracking.csproj" />
         <entry key="Views/LoginWindow.axaml" value="RepairTracking.csproj" />
         <entry key="Views/MainWindow.axaml" value="RepairTracking.csproj" />
         <entry key="Views/MusicStoreView.axaml" value="RepairTracking.csproj" />
         <entry key="Views/MusicStoreWindow.axaml" value="RepairTracking.csproj" />
+        <entry key="Views/PdfViewerWindow.axaml" value="RepairTracking.csproj" />
         <entry key="Views/SaveRepairDetailWindow.axaml" value="RepairTracking.csproj" />
         <entry key="Views/SilmeMusteriListesi.axaml" value="RepairTracking.csproj" />
         <entry key="Views/TestWindow.axaml" value="RepairTracking.csproj" />
         <entry key="Views/UserProfileHeaderView.axaml" value="RepairTracking.csproj" />
+        <entry key="Views/UsersWindow.axaml" value="RepairTracking.csproj" />
         <entry key="Views/VehicleDetailsWindow.axaml" value="RepairTracking.csproj" />
       </map>
     </option>

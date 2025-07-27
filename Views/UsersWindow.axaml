@@ -1,0 +1,111 @@
+<Window x:Name="UserControlUsersWindow" xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModels="clr-namespace:RepairTracking.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="RepairTracking.Views.UsersWindow"
+        x:DataType="viewModels:UserViewModel"
+        Title="UsersWindow">
+    <Design.DataContext>
+        <viewModels:UserViewModel />
+    </Design.DataContext>
+    <DockPanel>
+        <Grid DockPanel.Dock="Top" ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto,Auto,Auto">
+            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Grid.ColumnSpan="3"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center" Margin="0 0 0 10">
+                <!-- <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" -->
+                <!--            Text="Özenir Oto Müşteri Yönetim Paneli" -->
+                <!--            FontSize="25" HorizontalAlignment="Center" /> -->
+            </StackPanel>
+            <StackPanel Grid.Row="1" Grid.Column="0" Margin="0 20 0 0">
+                <Image Margin="10 0 0 0 " Height="80" Width="80" HorizontalAlignment="Left"
+                       Source="/Assets/ozenir-png.png" />
+            </StackPanel>
+            <StackPanel Grid.Row="1" Grid.Column="2" Margin="20 20 0 0">
+                <Grid ColumnDefinitions="*,*" RowDefinitions="*">
+                    <Button Grid.Column="1" Margin="5" HorizontalAlignment="Right" Content="Kullanıcı Ekle"
+                            Command="{Binding OpenAddOrUpdateUserWindowCommand}">
+                        <!-- <PathIcon Data="{StaticResource person_add_regular}" /> -->
+                    </Button>
+                </Grid>
+            </StackPanel>
+            <StackPanel Grid.Column="0" Grid.Row="2" Margin="0 10 0 10" Grid.ColumnSpan="3">
+                <!-- <Grid ColumnDefinitions="*,*,*" RowDefinitions="*" Margin="0 20 0 10"> -->
+                <!--     <TextBox Text="{Binding SearchText}" Grid.Column="0" -->
+                <!--              Watermark="Ad, Soyad, Telefon, Plaka ile arama yapın" /> -->
+                <!--     <Button Grid.Column="1" Margin="5 0" Content="Ara" Command="{Binding LoadPagedCustomersCommand}" /> -->
+                <!-- </Grid> -->
+                <DataGrid x:Name="VehicleGrid" ItemsSource="{Binding Users}"
+                          IsReadOnly="False"
+                          CanUserReorderColumns="True"
+                          CanUserResizeColumns="True"
+                          CanUserSortColumns="True"
+                          GridLinesVisibility="All"
+                          BorderThickness="1" BorderBrush="Gray"
+                          SelectedItem="{Binding SelectedUser,Mode=TwoWay}">
+                    <DataGrid.Columns>
+                        <!-- <DataGridCheckBoxColumn Binding="{Binding IsSelected}"></DataGridCheckBoxColumn> -->
+                        <DataGridTextColumn Header="Ad" Binding="{Binding Name}" />
+                        <DataGridTextColumn Header="Soyad" Binding="{Binding Surname}" />
+                        <DataGridTextColumn Header="Kullanıcı Adı" Binding="{Binding Username}" />
+                        <DataGridTextColumn Header="Telefon" Binding="{Binding PhoneNumber}" />
+                        <DataGridTemplateColumn Header="Detay" Width="Auto">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" >
+                                        <Button Content="Düzenle" FontSize="10" Margin="3 0"
+                                                VerticalAlignment="Center" HorizontalAlignment="Center">
+                                            <Button.Command>
+                                                <Binding Path="DataContext.OpenAddOrUpdateUserWindowCommand"
+                                                         ElementName="UserControlUsersWindow" />
+                                            </Button.Command>
+                                            <Button.CommandParameter>
+                                                <Binding />
+                                            </Button.CommandParameter>
+                                        </Button>
+                                        <Button FontSize="7" Margin="2 0 3 0"
+                                                VerticalAlignment="Center" HorizontalAlignment="Center">
+                                            <Button.Command>
+                                                <Binding Path="DataContext.DeleteUserCommand"
+                                                         ElementName="UserControlUsersWindow" />
+                                            </Button.Command>
+                                            <Button.CommandParameter>
+                                                <Binding />
+                                            </Button.CommandParameter>
+                                            <PathIcon Data="{StaticResource person_delete_regular}" />
+                                            <ToolTip.Tip>
+                                                <!-- The content of your tooltip can be any control -->
+                                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                                    <!-- You can even include icons! -->
+                                                    <StackPanel Spacing="4">
+                                                        <TextBlock Text="Kişiyi Sil" FontWeight="Bold" />
+                                                        <!-- <TextBlock Text="Click to open the user's profile page." -->
+                                                        <!--            Foreground="Gray" /> -->
+                                                    </StackPanel>
+                                                </StackPanel>
+                                            </ToolTip.Tip>
+                                        </Button>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </StackPanel>
+            <!-- <Border Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Padding="10" BorderThickness="0,1,0,0" -->
+            <!--         BorderBrush="LightGray"> -->
+            <!--     <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center"> -->
+            <!--         <Button Content="Previous" Command="{Binding PreviousPageCommand}" /> -->
+            <!--         <TextBlock Text="{Binding CurrentPage}" Margin="10,0" /> -->
+            <!--         <TextBlock Text=" / " /> -->
+            <!--         <TextBlock Text="{Binding TotalPages}" /> -->
+            <!--         <Button Content="Next >>" Command="{Binding NextPageCommand}" /> -->
+            <!--     </StackPanel> -->
+            <!-- </Border> -->
+        </Grid>
+        <!-- 1. The Pagination Controls at the Bottom -->
+
+    </DockPanel>
+</Window>

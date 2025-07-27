@@ -2,16 +2,16 @@ using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using RepairTracking.Helpers;
 using RepairTracking.Models;
 using RepairTracking.Repositories.Abstract;
 using RepairTracking.Services;
+using RepairTracking.ViewModels.Factories;
 
 namespace RepairTracking.ViewModels;
 
-public partial class LoginViewModel : ViewModelBase
+public partial class LoginViewModel(IUserRepository userRepository,IDialogService dialogService,IViewModelFactory viewModelFactory) : ViewModelBase
 {
-    private readonly IUserRepository _userRepository;
-
     [ObservableProperty] [Required(ErrorMessage = "Kullanıcı adı boş olamaz.")]
     private string? _username;
 
@@ -22,23 +22,16 @@ public partial class LoginViewModel : ViewModelBase
 
     [ObservableProperty] [NotifyPropertyChangedFor(nameof(IsErrorNotVisible))]
     private bool _isErrorVisible;
-
     public bool IsErrorNotVisible => !IsErrorVisible;
-    public IAsyncRelayCommand LoginCommand { get; }
-
-    public LoginViewModel(IUserRepository userRepository)
-    {
-        _userRepository = userRepository;
-        LoginCommand = new AsyncRelayCommand(Login);
-    }
     partial void OnUsernameChanged(string? value) => IsErrorVisible = false;
     partial void OnPasswordChanged(string? value) => IsErrorVisible = false;
+    [RelayCommand]
     private async Task Login()
     {
         IsErrorVisible = false;
         ValidateAllProperties();
         if (HasErrors) return;
-        var user = await _userRepository.GetUserAsync(Username!, Password!);
+        var user = await userRepository.GetUserAsync(Username!, Password!);
         if (user == null)
         {
             IsErrorVisible = true;
@@ -57,4 +50,30 @@ public partial class LoginViewModel : ViewModelBase
         AppServices.UserSessionService.Login(userInfo);
         AppServices.NavigationService.NavigateToHome();
     }
-}
+    
+    [RelayCommand]
+    private async Task OpenChangePasswordWindow()
+    {
+        var changePasswordViewModel = viewModelFactory.CreateChangePasswordViewModel(Username);
+        await dialogService.OpenChangePasswordDialogWindow(changePasswordViewModel);
+    }
+    
+    [RelayCommand]
+    private async Task OpenForgotPasswordWindow()
+    {
+        if (string.IsNullOrWhiteSpace(Username))
+        {
+           await dialogService.OkMessageBox("Kullanıcı adını boş bırakmayınız.",MessageTitleType.WarningTitle);
+           return;
+        }
+        
+        var user= await userRepository.GetUserByUsernameAsync(Username);
+        if (user == null)
+        {
+            await dialogService.OkMessageBox("Kullanıcı bulunamadı.",MessageTitleType.WarningTitle);
+            return;
+        }
+        var forgotPassword = viewModelFactory.CreateForgotPasswordViewModel(Username);
+        await dialogService.OpenForgotPasswordDialogWindow(forgotPassword);
+    }
+}       

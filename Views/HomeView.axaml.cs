@@ -1,7 +1,12 @@
+using System;
+using System.IO;
+using System.Linq;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Threading.Tasks;
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.ReactiveUI;
 using Avalonia.VisualTree;
 using ReactiveUI;
@@ -13,24 +18,6 @@ namespace RepairTracking.Views;
 public partial class HomeView : ReactiveUserControl<HomeViewModel>
 {
     // private HomeViewModel? ViewModel => DataContext as HomeViewModel;
-
-    // public HomeView()
-    // {
-    //     InitializeComponent();
-    //     AttachedToVisualTree += (_, _) =>
-    //     {
-    //         var vm = ViewModel;
-    //         if (vm != null)
-    //         {
-    //             vm.LoadDataCommand.Execute(this);
-    //         }
-    //     };
-    // this.WhenActivated(disposables =>
-    // {
-    //     ViewModel!.ShowDialog.RegisterHandler(DoShowDialogAsync)
-    //         .DisposeWith(disposables);
-    // });
-    // }
     public HomeView()
     {
         InitializeComponent();
@@ -53,6 +40,16 @@ public partial class HomeView : ReactiveUserControl<HomeViewModel>
             //     .DisposeWith(disposables);
         });
     }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        if (DataContext is HomeViewModel viewModel)
+        {
+            viewModel.GetTopLevel = () => TopLevel.GetTopLevel(this);
+        }
+    }
+
 
     private async Task DoOpenAddCustomerDialogWindowAsync(
         IInteractionContext<AddCustomerViewModel, CustomerViewModel?> interaction)

@@ -58,7 +58,11 @@ public class RepairReportDocument(RenovationViewModel repairData) : IDocument
             column.Item().Element(ComposeHeaderInfoTable);
             column.Item().Element(ComposeDetailsTable);
             var notes = repairData.RenovationDetails.Select(x => x.Note).Where(x => !string.IsNullOrEmpty(x)).ToList();
+
             var joinedNotes = string.Join(", ", notes);
+
+            joinedNotes += joinedNotes.Length > 0 ? "," + repairData.Note : repairData.Note;
+
             column.Item().MultiColumn(handler =>
             {
                 handler.Content().Text($"NOT: {joinedNotes}").SemiBold().FontSize(12);

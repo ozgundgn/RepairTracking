@@ -33,6 +33,24 @@ public class RenovationRepository(AppDbContext context) : BaseContext(context), 
         return result.State == EntityState.Modified;
     }
 
+    public Renovation? GetLastRenovation(int vehicleId)
+    {
+        var renovation = Context.Renovations.AsNoTracking()
+            .Include(x=>x.Vehicle)
+            .ThenInclude(v => v.Customer)
+            .Include(x => x.RenovationDetails)
+            .OrderByDescending(x => x.Id)
+            .FirstOrDefault(x => x.VehicleId == vehicleId && x.Passive != true);
+        return renovation;
+    }
+
+    public bool UpdateRenovationReportPath(int id, string path)
+    {
+        var result = Context.Renovations.Where(x => x.Id == id)
+            .ExecuteUpdate(x => x.SetProperty(y => y.ReportPath, path));
+        return result > 0;
+    }
+
     public bool DeleteRenovation(int id)
     {
         var result = Context.Renovations.Where(x => x.Id == id)

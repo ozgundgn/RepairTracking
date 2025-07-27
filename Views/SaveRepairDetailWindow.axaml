@@ -65,8 +65,11 @@
                     <TextBlock Text="Not:" />
                     <TextBox Text="{Binding DetailNote}" Height="60" TextWrapping="Wrap" AcceptsReturn="True"
                              Watermark="{Binding SelectedRenovationDetail.Note}" />
+                    <TextBlock Text="T.Kod:" />
+                    <TextBox Text="{Binding DetailTCode}" Height="60" TextWrapping="Wrap" AcceptsReturn="True"
+                             Watermark="{Binding SelectedRenovationDetail.TCode}" />
                     <StackPanel Orientation="Horizontal">
-                        <Button Content="Ekle" 
+                        <Button Content="Ekle"
                                 IsEnabled="{Binding !SelectedVehicle.Passive}"
                                 Margin="3"
                                 Command="{Binding AddDetailCommand}"

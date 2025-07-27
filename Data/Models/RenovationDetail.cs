@@ -11,7 +11,7 @@ public partial class RenovationDetail
 
     public double Price { get; set; }
 
-    public int? TCode { get; set; }
+    public string? TCode { get; set; }
 
     public string? Note { get; set; }
 
