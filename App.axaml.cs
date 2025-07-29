@@ -2,8 +2,10 @@ using System;
 using System.IO;
 using System.Linq;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
+using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -15,6 +17,7 @@ using RepairTracking.Repositories.Concrete;
 using RepairTracking.ViewModels;
 using RepairTracking.Views;
 using Avalonia.ReactiveUI;
+using Avalonia.Threading;
 using QuestPDF.Infrastructure;
 using RepairTracking.Services;
 using RepairTracking.ViewModels.Factories;
@@ -23,6 +26,7 @@ namespace RepairTracking;
 
 public class App : Application
 {
+    private InactivityService? _inactivityService;
     private IServiceProvider? Services { get; set; } // Property to hold the service provider
     private IConfiguration Configuration { get; set; } // Property to hold the configuration
     private INavigationService NavigationService { get; set; }
@@ -62,9 +66,57 @@ public class App : Application
             NavigationService = new NavigationService(mainWindowViewModel, Services,
                 Services.GetRequiredService<IViewModelFactory>());
             AppServices.NavigationService = NavigationService;
+
+            // ========== AUTO-LOGOUT SETUP ==========
+
+            // 1. Initialize the Inactivity Service with a timeout (e.g., 15 minutes)
+            _inactivityService = new InactivityService(TimeSpan.FromMinutes(45));
+            _inactivityService.OnInactive += HandleInactiveUser; // Subscribe to the event
+            _inactivityService.Start(); // Start the timer
+
+            // 2. Hook into the global input manager to detect activity
+            Avalonia.Input.InputElement.PointerPressedEvent.AddClassHandler<Control>((_, _) =>
+            {
+                _inactivityService?.ResetTimer();
+            });
+            Avalonia.Input.InputElement.KeyDownEvent.AddClassHandler<Control>((_, _) =>
+            {
+                _inactivityService?.ResetTimer();
+            });
+            // ========================================
         }
 
         base.OnFrameworkInitializationCompleted();
+    }
+
+    private void HandleInactiveUser()
+    {
+        Console.WriteLine("User is inactive. Logging out now.");
+
+        // IMPORTANT: Ensure this code runs on the UI thread.
+        // DispatcherTimer already ensures this, but it's good practice to be explicit.
+        Dispatcher.UIThread.Post(() =>
+        {
+            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                // This is where you put your actual logout logic.
+                // For example, show the login window and close the main window.
+
+                // 1. Clear any session data (current user, tokens, etc.)
+                // e.g., SessionManager.ClearCurrentUser();
+
+                // 2. Navigate back to the LoginView
+                // How you do this depends on your navigation system.
+                // A simple approach is to close the main window and open a new login window.
+                // var currentMainWindow = desktop.MainWindow;
+
+                // var loginWindow = new LoginView(); // Assuming you have a LoginWindow
+                // loginWindow.Show();
+                AppServices.UserSessionService.Logout();
+                AppServices.NavigationService.NavigateToLogin();
+                // currentMainWindow?.Close();
+            }
+        });
     }
 
     public void ConfigureServices(ServiceCollection services)

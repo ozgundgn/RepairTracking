@@ -30,7 +30,7 @@ public class UserRepository(AppDbContext context) : BaseContext(context), IUserR
 
     public async Task<User?> GetUserByUsernameAsync(string userName)
     {
-        return new User();
+        return await Context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.UserName == userName && !x.Passive);
     }
 
     public List<UserInfo> GetActiveUsers()
@@ -60,13 +60,14 @@ public class UserRepository(AppDbContext context) : BaseContext(context), IUserR
         return result.State == EntityState.Added;
     }
 
-    public async Task<bool> UpdateUserAsync(int userId, string name, string surname, string username, string phone)
+    public async Task<bool> UpdateUserAsync(int userId, string name, string surname, string username, string phone,string email)
     {
         var result = await Context.Users
             .Where(x => x.Id == userId)
             .ExecuteUpdateAsync(x => x.SetProperty(y => y.Name, name)
                 .SetProperty(y => y.Surname, surname)
                 .SetProperty(y => y.UserName, username)
+                .SetProperty(y => y.Email, email)
                 .SetProperty(y => y.Phone, phone));
         return result > 0;
     }
@@ -74,5 +75,15 @@ public class UserRepository(AppDbContext context) : BaseContext(context), IUserR
     public async Task SaveChangesAsync()
     {
         await Context.SaveChangesAsync();
+    }
+
+    public Task UpdateUserCodeAsync(int userId, string code)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public Task ConfirmUserCodeAsync(int userId, string code)
+    {
+        throw new System.NotImplementedException();
     }
 }

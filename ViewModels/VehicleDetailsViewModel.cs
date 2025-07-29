@@ -3,6 +3,7 @@ using System.Collections;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using RepairTracking.Data.Models;
@@ -16,20 +17,23 @@ public partial class VehicleDetailsViewModel : ViewModelBase
 {
     [ObservableProperty] private bool _isInValid;
 
-    [ObservableProperty] [Required(ErrorMessage = "Ad alanı boş bırakılamaz.")]
-    private string plateNumber;
+    [ObservableProperty] [Required(ErrorMessage = "Plaka alanı boş bırakılamaz.")]
+    private string _plateNumber;
 
-    [ObservableProperty] private string? chassisNo;
-    [ObservableProperty] private string? engineNo;
-    [ObservableProperty] private string? model;
-    [ObservableProperty] private string? color;
-    [ObservableProperty] private int? km;
-    [ObservableProperty] private string? fuel;
-    [ObservableProperty] private bool? passive = false;
-    [ObservableProperty] private int customerId;
-    [ObservableProperty] private string? type;
+    [ObservableProperty] [Required(ErrorMessage = "Şasi no alanı boş bırakılamaz.")]
+    private string? _chassisNo;
+
+    [ObservableProperty] private string? _engineNo;
+    [ObservableProperty] private string? _model;
+    [ObservableProperty] private string? _color;
+    [ObservableProperty] private int? _km;
+    [ObservableProperty] private string? _fuel;
+    [ObservableProperty] private bool? _passive = false;
+    [ObservableProperty] private int? _customerId;
+    [ObservableProperty] private string? _type;
+    [ObservableProperty] private byte[]? _image;
     [ObservableProperty] private bool _plateNumberHasError;
-
+    [ObservableProperty] private FilePickerViewModel _filePickerViewModel;
     public string PlateNumberError => GetPropertyErrors(nameof(PlateNumber));
 
     private string GetPropertyErrors(string propertyName)
@@ -56,13 +60,15 @@ public partial class VehicleDetailsViewModel : ViewModelBase
     private readonly IUnitOfWork _unitOfWork;
     private readonly IDialogService _dialogService;
 
-    public VehicleDetailsViewModel(IUnitOfWork unitOfWork, IDialogService dialogService, int? vehicleId)
+    public VehicleDetailsViewModel(IUnitOfWork unitOfWork, IDialogService dialogService, int? vehicleId,
+        int? customerId)
     {
         _unitOfWork = unitOfWork;
         _dialogService = dialogService;
         _repository = _unitOfWork.VehiclesRepository;
         _customersVehiclesRepository = _unitOfWork.CustomersVehiclesRepository;
         _renovationRepository = _unitOfWork.RenovationsRepository;
+
         if (vehicleId != null)
         {
             var registeredVehicle = _repository.GetVehicleByCVehicleId(vehicleId.Value);
@@ -79,6 +85,12 @@ public partial class VehicleDetailsViewModel : ViewModelBase
                 Passive = registeredVehicle.Passive;
                 CustomerId = registeredVehicle.CustomerId;
                 Type = registeredVehicle.Type;
+                FilePickerViewModel = new FilePickerViewModel(registeredVehicle.Image)
+                {
+                    PickingButtonText = "Araç Resmi Seç",
+                    FilePickerTypes = [FilePickerFileTypes.ImageAll],
+                    SelectedImageData = registeredVehicle.Image
+                };
             }
         }
     }
@@ -86,6 +98,8 @@ public partial class VehicleDetailsViewModel : ViewModelBase
     [RelayCommand]
     private async Task AddOrUpdateVehicle()
     {
+        ValidateAllProperties();
+        if (HasErrors) return;
         bool result;
         string message;
         var vehicle = new Vehicle()
@@ -98,8 +112,9 @@ public partial class VehicleDetailsViewModel : ViewModelBase
             Km = Km,
             Fuel = Fuel,
             Passive = Passive ?? false,
-            CustomerId = CustomerId,
-            Type = Type
+            CustomerId = CustomerId ?? 0,
+            Type = Type,
+            Image = FilePickerViewModel.SelectedImageData
         };
         if (VehicleId > 0)
         {
@@ -129,19 +144,18 @@ public partial class VehicleDetailsViewModel : ViewModelBase
                 pastChassisNoExist = " Bu şasi numarasına sahip bir araç daha önce eklenmiş ancak pasif durumda!";
             }
 
-            vehicle.CustomerId = CustomerId;
             var addedVehicle = await _repository.AddVehicle(vehicle);
             await _unitOfWork.SaveChangesAsync();
             result = addedVehicle != null;
             message = result
                 ? "Araç bilgisi başarıyla eklendi." + pastChassisNoExist
-                : "Ara bilgisi eklenirken bir hata oluştu.";
+                : "Araç bilgisi eklenirken bir hata oluştu.";
 
             if (addedVehicle != null)
             {
                 var customerVehicle = new CustomersVehicle()
                 {
-                    CustomerId = CustomerId,
+                    CustomerId = CustomerId ?? 0,
                     VehicleId = addedVehicle.Id,
                     CreatedDate = DateTime.Now
                 };

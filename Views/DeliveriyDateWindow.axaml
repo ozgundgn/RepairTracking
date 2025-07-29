@@ -1,0 +1,16 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModels="clr-namespace:RepairTracking.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="200"
+        Width="400" Height="150"
+        x:Class="RepairTracking.Views.DeliveriyDateWindow"
+        x:DataType="viewModels:DeliveryDateViewModel"
+        Title="DeliveriyDateWindow">
+    <StackPanel Spacing="10" Margin="15">
+        <TextBlock Text="Teslim Tarihi:" HorizontalAlignment="Center" VerticalAlignment="Top"></TextBlock>
+        <DatePicker HorizontalAlignment="Center" VerticalAlignment="Center"  SelectedDate="{Binding DeliveryDateForPicker}"></DatePicker>
+        <Button HorizontalAlignment="Center" VerticalAlignment="Bottom" Content="Kaydet" Command="{Binding SaveDeliveryDateCommand}" />
+    </StackPanel>
+</Window>

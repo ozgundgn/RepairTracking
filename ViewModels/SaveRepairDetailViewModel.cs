@@ -270,6 +270,7 @@ public partial class SaveRepairDetailViewModel : ViewModelBase
                 existingRenovation.DeliveryDate = DeliveryDate;
                 existingRenovation.Note = Note;
                 existingRenovation.VehicleId = SelectedVehicle.Id;
+                existingRenovation.UpdatedDate = DateTime.Now;
                 existingRenovation.RenovationDetails = RenovationDetails.Select(x => new RenovationDetail()
                 {
                     Description = x.Description,

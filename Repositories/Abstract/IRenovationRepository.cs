@@ -9,6 +9,8 @@ public interface IRenovationRepository : IBaseContext
     bool AddRenovation(Renovation renovation);
     bool UpdateRenovation(Renovation renovation);
     bool DeleteRenovation(int id);
+    bool DeleteRenovationDeliveryDate(int id);
+
     bool PassiveRenovation(int vehicleId);
     Renovation? GetRenovationById(int id);
     bool DeleteRenovationDetails(List<RenovationDetail> renovations);
@@ -17,4 +19,5 @@ public interface IRenovationRepository : IBaseContext
     bool UpdateRenovationDeliveryDate(int id, DateTime datetime);
     Renovation? GetLastRenovation(int vehicleId);
     bool UpdateRenovationReportPath(int id, string path);
+    void SaveChanges();
 }

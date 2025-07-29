@@ -7,7 +7,7 @@ namespace RepairTracking.ViewModels.Factories;
 
 public interface IViewModelFactory
 {
-    VehicleDetailsViewModel CreateVehicleDetailsViewModel(string customerFullName, int? vehicleId = null);
+    VehicleDetailsViewModel CreateVehicleDetailsViewModel(string customerFullName, int? vehicleId = null,int? customerId=null);
     AddCustomerViewModel CreateAddCustomerViewModel(IEnumerable<VehicleCustomerModel> existingCustomers);
     CustomerWithAllDetailsViewModel CreateCustomerWithAllDetailsViewModel(int customerId);
 
@@ -19,7 +19,7 @@ public interface IViewModelFactory
 
     ChangePasswordViewModel CreateChangePasswordViewModel(string username);
     
-    ForgotPasswordViewModel CreateForgotPasswordViewModel(string phone);
+    ForgotPasswordViewModel CreateForgotPasswordViewModel(string code,int userId);
 
     LoginViewModel CreateLoginViewModel();
     
@@ -29,4 +29,5 @@ public interface IViewModelFactory
         string? username);
     RenovationViewModel CreateRenovationViewModel(Renovation renovation);
     PdfViewerViewModel CreatePdfViewerViewModel(string reportPath);
+    DeliveryDateViewModel CreateDeliveryDateViewModel(RenovationViewModel renovationViewModel);
 }

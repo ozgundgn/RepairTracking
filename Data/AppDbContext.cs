@@ -164,16 +164,25 @@ public partial class AppDbContext : DbContext
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasKey(e => e.Id)
-                .HasName("users_pk_2")
+                .HasName("users_pk_3")
                 .IsClustered(false);
 
             entity.ToTable("users");
 
             entity.HasIndex(e => e.Id, "users_pk").IsUnique();
 
-            entity.HasIndex(e => e.UserId, "users_pk_3").IsUnique();
+            entity.HasIndex(e => e.UserId, "users_pk_2").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Code)
+                .HasMaxLength(4)
+                .IsUnicode(false)
+                .HasColumnName("code");
+            entity.Property(e => e.Confirmed).HasColumnName("confirmed");
+            entity.Property(e => e.Email)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("email");
             entity.Property(e => e.Name)
                 .HasMaxLength(100)
                 .IsUnicode(false)
@@ -222,6 +231,7 @@ public partial class AppDbContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("fuel");
+            entity.Property(e => e.Image).HasColumnName("image");
             entity.Property(e => e.Km).HasColumnName("km");
             entity.Property(e => e.Model).HasColumnName("model");
             entity.Property(e => e.Passive).HasColumnName("passive");

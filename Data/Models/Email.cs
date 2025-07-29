@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RepairTracking.Data.Models;
 
-public partial class User
+public partial class Email
 {
     public Guid UserId { get; set; }
 
@@ -25,7 +25,7 @@ public partial class User
 
     public bool? Confirmed { get; set; }
 
-    public string? Email { get; set; }
+    public string? Email1 { get; set; }
 
     public virtual ICollection<Customer> Customers { get; set; } = new List<Customer>();
 }

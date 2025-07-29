@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Avalonia.Platform.Storage;
 using RepairTracking.Data.Models;
 using RepairTracking.Models;
 using RepairTracking.Repositories.Abstract;
@@ -10,12 +11,14 @@ namespace RepairTracking.ViewModels.Factories;
 
 public class ViewModelFactory(IUnitOfWork unitOfWork, IDialogService dialogService) : IViewModelFactory
 {
-    public VehicleDetailsViewModel CreateVehicleDetailsViewModel(string customerFullName, int? vehicleId = null)
+    public VehicleDetailsViewModel CreateVehicleDetailsViewModel(string customerFullName, int? vehicleId = null,
+        int? customerId = null)
     {
-        return new VehicleDetailsViewModel(unitOfWork, dialogService, vehicleId)
+        return new VehicleDetailsViewModel(unitOfWork, dialogService, vehicleId, customerId)
         {
             CustormerFullname = customerFullName,
-            VehicleId = vehicleId
+            VehicleId = vehicleId,
+            CustomerId = customerId
         };
     }
 
@@ -61,11 +64,12 @@ public class ViewModelFactory(IUnitOfWork unitOfWork, IDialogService dialogServi
         };
     }
 
-    public ForgotPasswordViewModel CreateForgotPasswordViewModel(string phone)
+    public ForgotPasswordViewModel CreateForgotPasswordViewModel(string code,int userId)
     {
         return new ForgotPasswordViewModel()
         {
-            Phone = phone
+            Code = code,
+            UserId = userId
         };
     }
 
@@ -140,4 +144,12 @@ public class ViewModelFactory(IUnitOfWork unitOfWork, IDialogService dialogServi
     }
 
     public PdfViewerViewModel CreatePdfViewerViewModel(string reportPath) => new(reportPath);
+
+    public DeliveryDateViewModel CreateDeliveryDateViewModel(RenovationViewModel renovationViewModel)
+    {
+        return new DeliveryDateViewModel(unitOfWork.RenovationsRepository, dialogService)
+        {
+            RenovationViewModel = renovationViewModel
+        };
+    }
 }

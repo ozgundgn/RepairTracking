@@ -15,6 +15,7 @@ public partial class AddOrUpdateUserViewModel : ViewModelBase
     [ObservableProperty] private string? _username;
     [ObservableProperty] private string? _phone;
     [ObservableProperty] private string? _password;
+    [ObservableProperty] private string? _email;
 
     private readonly IUserRepository _userRepository;
     private readonly IDialogService _dialogService;
@@ -76,7 +77,7 @@ public partial class AddOrUpdateUserViewModel : ViewModelBase
                 return;
             }
 
-            var result = await _userRepository.UpdateUserAsync((int)UserId, Name, Surname, Username, Phone);
+            var result = await _userRepository.UpdateUserAsync((int)UserId, Name, Surname, Username, Phone,Email);
             if (result)
                 await _dialogService.OkMessageBox("Kullanıcı başarıyla güncellendi.", MessageTitleType.SuccessTitle);
             else

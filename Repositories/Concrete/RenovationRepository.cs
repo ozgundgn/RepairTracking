@@ -36,7 +36,7 @@ public class RenovationRepository(AppDbContext context) : BaseContext(context), 
     public Renovation? GetLastRenovation(int vehicleId)
     {
         var renovation = Context.Renovations.AsNoTracking()
-            .Include(x=>x.Vehicle)
+            .Include(x => x.Vehicle)
             .ThenInclude(v => v.Customer)
             .Include(x => x.RenovationDetails)
             .OrderByDescending(x => x.Id)
@@ -51,10 +51,22 @@ public class RenovationRepository(AppDbContext context) : BaseContext(context), 
         return result > 0;
     }
 
+    public void SaveChanges()
+    {
+        Context.SaveChanges();
+    }
+
     public bool DeleteRenovation(int id)
     {
         var result = Context.Renovations.Where(x => x.Id == id)
             .ExecuteUpdate(sr => sr.SetProperty(c => c.Passive, true));
+        return result > 0;
+    }
+
+    public bool DeleteRenovationDeliveryDate(int id)
+    {
+        var result = Context.Renovations.Where(x => x.Id == id)
+            .ExecuteUpdate(x => x.SetProperty(y => y.DeliveryDate, (DateTime?)null));
         return result > 0;
     }
 

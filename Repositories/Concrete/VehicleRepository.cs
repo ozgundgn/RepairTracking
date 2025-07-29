@@ -49,6 +49,7 @@ public class VehicleRepository(AppDbContext context) : BaseContext(context), IVe
                 .SetProperty(v => v.EngineNo, vehicle.EngineNo)
                 .SetProperty(v => v.Model, vehicle.Model)
                 .SetProperty(v => v.Color, vehicle.Color)
+                .SetProperty(v=> v.Image, vehicle.Image)
                 .SetProperty(v => v.CustomerId, vehicle.CustomerId)) > 0;
     }
 

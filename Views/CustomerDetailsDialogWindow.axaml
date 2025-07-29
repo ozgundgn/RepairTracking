@@ -107,7 +107,7 @@
                             <TextBox Watermark="Telefon" Margin="2" Text="{Binding PhoneNumber}" />
                             <!-- Vehicle List Section -->
                             <Grid ColumnDefinitions="200,250">
-                                <Button Grid.Column="1" Command="{Binding OpenVehicleDetails}" Content="Araç Ekle"></Button>
+                                <Button Grid.Column="1" Command="{Binding OpenVehicleDetailsCommand}" Content="Araç Ekle"></Button>
                             </Grid>
                             <ListBox ItemsSource="{Binding Vehicles}" SelectedValue="{Binding SelectedVehicle}"
                                      SelectedItem="{Binding SelectedVehicle}">
@@ -308,8 +308,29 @@
                                         </ScrollViewer>
                                         <!-- Card Footer -->
                                         <Grid Grid.Row="3" ColumnDefinitions="*,*">
-                                            <Button Grid.Column="0" Content="{Binding Status}" Margin="0,0,5,0"
-                                                    HorizontalAlignment="Stretch" />
+                                            <Menu Grid.Column="0">
+                                                <MenuItem Header="{Binding Status}" x:Name="StatusMenu">
+                                                    <MenuItem Header="İşleme Al">
+                                                        <MenuItem.Command>
+                                                            <Binding Path="DataContext.MakeInProgressCommand"
+                                                                     ElementName="CustomerDetailWindow" />
+
+                                                        </MenuItem.Command>
+                                                        <MenuItem.CommandParameter>
+                                                            <Binding />
+                                                        </MenuItem.CommandParameter>
+                                                    </MenuItem>
+                                                    <MenuItem Header="Teslim Et">
+                                                        <MenuItem.Command>
+                                                            <Binding Path="DataContext.OpenDeliveriyDateWindowCommand"
+                                                                     ElementName="CustomerDetailWindow" />
+                                                        </MenuItem.Command>
+                                                        <MenuItem.CommandParameter>
+                                                            <Binding />
+                                                        </MenuItem.CommandParameter>
+                                                    </MenuItem>
+                                                </MenuItem>
+                                            </Menu>
                                             <TextBlock Grid.Column="1"
                                                        Text="{Binding TotalPrice,StringFormat='{}{0:C} TL'}"
                                                        Margin="5,0,0,0"

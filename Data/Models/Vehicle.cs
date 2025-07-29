@@ -27,6 +27,8 @@ public partial class Vehicle
 
     public bool Passive { get; set; }
 
+    public byte[]? Image { get; set; }
+
     public virtual Customer Customer { get; set; } = null!;
 
     public virtual ICollection<CustomersVehicle> CustomersVehicles { get; set; } = new List<CustomersVehicle>();

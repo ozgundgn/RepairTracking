@@ -4,5 +4,6 @@ namespace RepairTracking.ViewModels;
 
 public partial class ForgotPasswordViewModel : ViewModelBase
 {
-    [ObservableProperty] private string _phone;
+    [ObservableProperty] private int _userId;
+    [ObservableProperty] private string _code = string.Empty;
 }

@@ -81,6 +81,8 @@ public partial class HomeViewModel : ViewModelBase
 
     public HomeViewModel(IUnitOfWork unitOfWork, IViewModelFactory viewModelFactory, IDialogService dialogService)
     {
+        var smtp = new NotificationFactory(new MailService());
+        smtp.SendMessage("erte");
         _unitOfWork = unitOfWork;
         _viewModelFactory = viewModelFactory;
         _dialogService = dialogService;
@@ -234,19 +236,21 @@ public partial class HomeViewModel : ViewModelBase
             var report = new RepairReportDocument(renovationViewModel);
             report.GeneratePdf(file.Path.AbsolutePath);
             reportPath = file.Path.AbsolutePath;
+            
+            _unitOfWork.RenovationsRepository.UpdateRenovationReportPath(renovation.Id, reportPath);
         }
         else
             reportPath = renovation.ReportPath;
 
-        string userHomeDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-
-        // Combine the home directory path with the "Downloads" folder name
-        string downloadsPath = Path.Combine(userHomeDirectory, "Downloads");
-        var firstPdfFile = Directory.EnumerateFiles(downloadsPath, "*.pdf", SearchOption.TopDirectoryOnly)
-            .FirstOrDefault();
+        // string userHomeDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+        //
+        // // Combine the home directory path with the "Downloads" folder name
+        // string downloadsPath = Path.Combine(userHomeDirectory, "Downloads");
+        // var firstPdfFile = Directory.EnumerateFiles(downloadsPath, "*.pdf", SearchOption.TopDirectoryOnly)
+        //     .FirstOrDefault();
         
         var pdfViewModel =
-            _viewModelFactory.CreatePdfViewerViewModel(firstPdfFile);
+            _viewModelFactory.CreatePdfViewerViewModel(reportPath);
         await _dialogService.OpenPdfViewerWindow(pdfViewModel);
     }
 

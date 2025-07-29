@@ -160,6 +160,19 @@ public class DialogService : IDialogService
         return result;
     }
 
+    public async Task<Unit> OpenDeliveryDateDialogWindow(DeliveryDateViewModel viewModel)
+    {
+        var dialog = new DeliveriyDateWindow()
+        {
+            DataContext = viewModel
+        };
+        var result = await dialog.ShowDialog<Unit>(
+            App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
+                ? desktop.Windows.FirstOrDefault(x => x.Name == "CustomerDetailWindow")
+                : null);
+        return result;
+    }
+
     public async Task<bool> YesNoMessageBox(string message, string title = "Uyarı")
     {
         var warning = MessageBoxManager

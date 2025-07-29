@@ -1,12 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using Avalonia.Controls;
-using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using QuestPDF.Fluent;
@@ -34,6 +31,7 @@ public partial class CustomerWithAllDetailsViewModel : ViewModelBase
     [ObservableProperty] private string? _address;
 
     [ObservableProperty] private bool _passive;
+    [ObservableProperty] private int _customerId;
 
     [ObservableProperty] private CreatedUserViewModel _createdUser;
 
@@ -102,7 +100,7 @@ public partial class CustomerWithAllDetailsViewModel : ViewModelBase
         _viewModelFactory = viewModelFactory;
         _dialogService = dialogService;
         _unitOfWork = unitOfWork;
-
+        CustomerId = customerId;
         _customerRepository = unitOfWork.CustomersRepository;
         _vehicleRepository = unitOfWork.VehiclesRepository;
         _renovationRepository = unitOfWork.RenovationsRepository;
@@ -176,6 +174,7 @@ public partial class CustomerWithAllDetailsViewModel : ViewModelBase
                     Fuel = v.Fuel,
                     Id = v.Id,
                     Passive = v.Passive,
+                    Image = v.Image,
                     Renovations = new ObservableCollection<RenovationViewModel>(
                         v.Renovations.Select(r => new RenovationViewModel
                         {
@@ -246,8 +245,6 @@ public partial class CustomerWithAllDetailsViewModel : ViewModelBase
 
         if (!string.IsNullOrWhiteSpace(file?.Path.AbsolutePath))
             _renovationRepository.UpdateRenovationReportPath(renovationViewModel.Id, file.Path.AbsolutePath);
-
-        await _dialogService.OkMessageBox("Rapor başarıyla oluşturuldu.", MessageTitleType.SuccessTitle);
     }
 
     [RelayCommand]
@@ -329,14 +326,14 @@ public partial class CustomerWithAllDetailsViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    public async Task OpenVehicleDetails(VehicleViewModel? selectedCustomerModel)
+    private async Task OpenVehicleDetails(VehicleViewModel? selectedCustomerModel)
     {
         int? vehicleId = null;
         if (selectedCustomerModel != null)
             vehicleId = selectedCustomerModel.Id;
 
         var vehicleDetailsViewModel = _viewModelFactory.CreateVehicleDetailsViewModel(
-            $"{Name} {Surname}", vehicleId);
+            $"{Name} {Surname}", vehicleId, CustomerId);
         await _dialogService.OpenVehicleDetailsDialogWindow(vehicleDetailsViewModel);
         GetCustomerDetails(Id);
     }
@@ -383,6 +380,24 @@ public partial class CustomerWithAllDetailsViewModel : ViewModelBase
         _renovationRepository.DeleteRenovation(selectedVehicleModel.Id);
         GetCustomerDetails(Id);
         await _dialogService.OkMessageBox("İşlem başarıyla silindi.", MessageTitleType.SuccessTitle);
+    }
+
+    [RelayCommand]
+    private async Task MakeInProgress(RenovationViewModel renovationViewModel)
+    {
+        var result = _renovationRepository.DeleteRenovationDeliveryDate(renovationViewModel.Id);
+        if (result)
+            await _dialogService.OkMessageBox("İşlem başarıyla güncellendi.", MessageTitleType.SuccessTitle);
+        else
+            await _dialogService.OkMessageBox("İşlem güncellenirken bir hata oluştu.", MessageTitleType.ErrorTitle);
+        renovationViewModel.DeliveryDate = null;
+    }
+
+    [RelayCommand]
+    private async Task OpenDeliveriyDateWindow(RenovationViewModel renovationViewModel)
+    {
+        var viewModel = _viewModelFactory.CreateDeliveryDateViewModel(renovationViewModel);
+        await _dialogService.OpenDeliveryDateDialogWindow(viewModel);
     }
 }
 
@@ -439,6 +454,8 @@ public partial class VehicleViewModel : ViewModelBase
     [ObservableProperty] private int _id;
 
     [ObservableProperty] private bool _passive;
+
+    [ObservableProperty] private byte[]? _image;
 
     [ObservableProperty] private ObservableCollection<RenovationViewModel>? _renovations;
 

@@ -22,6 +22,7 @@ public interface IDialogService
     Task<Unit> OpenUsersWindow(UserViewModel viewModel);
     Task<Unit> OpenAddOrUpdateUserDialogWindow(AddOrUpdateUserViewModel viewModel);
     Task<Unit> OpenPdfViewerWindow(PdfViewerViewModel viewModel);
+    Task<Unit> OpenDeliveryDateDialogWindow(DeliveryDateViewModel viewModel);
     Task<bool> YesNoMessageBox(string message, string title);
     Task OkMessageBox(string message, string title);
     Task<IStorageFile?> SaveFilePickerAsync(TopLevel topLevel, string title, string fileName);

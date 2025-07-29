@@ -13,6 +13,11 @@ public interface IUserRepository : IBaseContext
     List<UserInfo> GetActiveUsers();
     bool DeleteUser(int userId); 
     Task<bool> AddUserAsync(User user);
-    Task<bool> UpdateUserAsync(int userId, string name, string surname, string username, string phone);
+    Task<bool> UpdateUserAsync(int userId, string name, string surname, string username, string phone,string email);
     Task SaveChangesAsync();
+    
+    Task UpdateUserCodeAsync(int userId, string code);
+    Task ConfirmUserCodeAsync(int userId, string code);
+    
+    
 }
