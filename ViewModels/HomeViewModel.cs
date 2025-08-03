@@ -81,8 +81,8 @@ public partial class HomeViewModel : ViewModelBase
 
     public HomeViewModel(IUnitOfWork unitOfWork, IViewModelFactory viewModelFactory, IDialogService dialogService)
     {
-        var smtp = new NotificationFactory(new MailService());
-        smtp.SendMessage("erte");
+        var smtp = new NotificationFactory(new MailService("ozgundgn0@gmail.com"));
+        smtp.SendMessage("", "erte");
         _unitOfWork = unitOfWork;
         _viewModelFactory = viewModelFactory;
         _dialogService = dialogService;
@@ -236,7 +236,7 @@ public partial class HomeViewModel : ViewModelBase
             var report = new RepairReportDocument(renovationViewModel);
             report.GeneratePdf(file.Path.AbsolutePath);
             reportPath = file.Path.AbsolutePath;
-            
+
             _unitOfWork.RenovationsRepository.UpdateRenovationReportPath(renovation.Id, reportPath);
         }
         else
@@ -248,7 +248,7 @@ public partial class HomeViewModel : ViewModelBase
         // string downloadsPath = Path.Combine(userHomeDirectory, "Downloads");
         // var firstPdfFile = Directory.EnumerateFiles(downloadsPath, "*.pdf", SearchOption.TopDirectoryOnly)
         //     .FirstOrDefault();
-        
+
         var pdfViewModel =
             _viewModelFactory.CreatePdfViewerViewModel(reportPath);
         await _dialogService.OpenPdfViewerWindow(pdfViewModel);

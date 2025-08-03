@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Avalonia.Platform.Storage;
 using RepairTracking.Data.Models;
 using RepairTracking.Models;
 using RepairTracking.Repositories.Abstract;
@@ -64,12 +63,13 @@ public class ViewModelFactory(IUnitOfWork unitOfWork, IDialogService dialogServi
         };
     }
 
-    public ForgotPasswordViewModel CreateForgotPasswordViewModel(string code,int userId)
+    public ForgotPasswordViewModel CreateForgotPasswordViewModel(int userId,string sendedCode,string email)
     {
-        return new ForgotPasswordViewModel()
+        return new ForgotPasswordViewModel(unitOfWork.UsersRepository, dialogService)
         {
-            Code = code,
-            UserId = userId
+            UserId = userId,
+            SendedCode = sendedCode,
+            Email = email
         };
     }
 

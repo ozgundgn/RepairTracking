@@ -84,7 +84,17 @@ public partial class LoginViewModel(
         var code = rnd.Next(1000, 10000).ToString();
         user.Code = code;
         await userRepository.UpdateUserCodeAsync(user.Id, code);
-        var forgotPassword = viewModelFactory.CreateForgotPasswordViewModel(code, user.Id);
-        await dialogService.OpenForgotPasswordDialogWindow(forgotPassword);
+        if (user.Email != null)
+        {
+            var smtp = new NotificationFactory(new MailService(user.Email));
+            smtp.SendMessage("Şifre Hatırlatma",code);
+
+            var forgotPassword = viewModelFactory.CreateForgotPasswordViewModel(user.Id,code,user.Email!);
+            await dialogService.OpenForgotPasswordDialogWindow(forgotPassword);
+        }
+        else
+        {
+            await dialogService.OkMessageBox("Kullanıcının e-posta adresi bulunamadı.", MessageTitleType.WarningTitle);
+        }
     }
 }

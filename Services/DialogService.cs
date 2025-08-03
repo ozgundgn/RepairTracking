@@ -14,13 +14,15 @@ namespace RepairTracking.Services;
 
 public class DialogService : IDialogService
 {
+    public Window? CurrentWindow { get; set; }
+
     public async Task<CustomerViewModel?> OpenAddCustomerDialogAsync(AddCustomerViewModel viewModel)
     {
         var dialog = new AddCustomerWindow
         {
             DataContext = viewModel
         };
-
+        CurrentWindow = dialog;
         var result = await dialog.ShowDialog<CustomerViewModel?>(
             App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
                 ? desktop.MainWindow
@@ -35,7 +37,7 @@ public class DialogService : IDialogService
         {
             DataContext = viewModel
         };
-
+        CurrentWindow = dialog;
         var result = await dialog.ShowDialog<Unit>(
             App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
                 ? desktop.Windows.FirstOrDefault(x => x.Name == "CustomerDetailWindow") ?? desktop.MainWindow
@@ -49,6 +51,7 @@ public class DialogService : IDialogService
         {
             DataContext = viewModel
         };
+        CurrentWindow = dialog;
         var result = await dialog.ShowDialog<CustomerViewModel>(
             App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
                 ? desktop.Windows.FirstOrDefault(x => x.Name == "CustomerDetailWindow")
@@ -62,6 +65,7 @@ public class DialogService : IDialogService
         {
             DataContext = viewModel
         };
+        CurrentWindow = dialog;
         var result = await dialog.ShowDialog<Unit>(
             App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
                 ? desktop.MainWindow
@@ -75,6 +79,7 @@ public class DialogService : IDialogService
         {
             DataContext = viewModel
         };
+        CurrentWindow = dialog;
         var result = await dialog.ShowDialog<Unit>(
             App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
                 ? desktop.MainWindow
@@ -88,6 +93,7 @@ public class DialogService : IDialogService
         {
             DataContext = viewModel
         };
+        CurrentWindow = dialog;
         var result = await dialog.ShowDialog<Unit>(
             App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
                 ? desktop.Windows.FirstOrDefault(x => x.Name == "CustomerDetailWindow")
@@ -101,6 +107,7 @@ public class DialogService : IDialogService
         {
             DataContext = viewModel
         };
+        CurrentWindow = dialog;
         var result = await dialog.ShowDialog<Unit>(
             App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
                 ? desktop.MainWindow
@@ -114,6 +121,7 @@ public class DialogService : IDialogService
         {
             DataContext = viewModel
         };
+        CurrentWindow = dialog;
         var result = await dialog.ShowDialog<Unit>(
             App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
                 ? desktop.MainWindow
@@ -127,6 +135,7 @@ public class DialogService : IDialogService
         {
             DataContext = viewModel
         };
+        CurrentWindow = dialog;
         var result = await dialog.ShowDialog<Unit>(
             App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
                 ? desktop.MainWindow
@@ -140,6 +149,7 @@ public class DialogService : IDialogService
         {
             DataContext = viewModel
         };
+        CurrentWindow = dialog;
         var result = await dialog.ShowDialog<Unit>(
             App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
                 ? desktop.MainWindow
@@ -153,6 +163,7 @@ public class DialogService : IDialogService
         {
             DataContext = viewModel
         };
+        CurrentWindow = dialog;
         var result = await dialog.ShowDialog<Unit>(
             App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
                 ? desktop.MainWindow
@@ -166,6 +177,7 @@ public class DialogService : IDialogService
         {
             DataContext = viewModel
         };
+        CurrentWindow = dialog;
         var result = await dialog.ShowDialog<Unit>(
             App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
                 ? desktop.Windows.FirstOrDefault(x => x.Name == "CustomerDetailWindow")
@@ -179,6 +191,7 @@ public class DialogService : IDialogService
             .GetMessageBoxStandard(title,
                 message,
                 ButtonEnum.YesNo);
+
         var deleteResult = await warning.ShowAsync();
         return deleteResult == ButtonResult.Yes;
     }
@@ -205,5 +218,14 @@ public class DialogService : IDialogService
             FileTypeChoices = [new FilePickerFileType("PDF Document") { Patterns = ["*.pdf"] }]
         });
         return file;
+    }
+
+    public void CloseCurrentWindow()
+    {
+        if (CurrentWindow is not null)
+        {
+            CurrentWindow.Close();
+            CurrentWindow = null;
+        }
     }
 }

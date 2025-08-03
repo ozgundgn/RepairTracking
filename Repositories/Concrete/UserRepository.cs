@@ -60,7 +60,8 @@ public class UserRepository(AppDbContext context) : BaseContext(context), IUserR
         return result.State == EntityState.Added;
     }
 
-    public async Task<bool> UpdateUserAsync(int userId, string name, string surname, string username, string phone,string email)
+    public async Task<bool> UpdateUserAsync(int userId, string name, string surname, string username, string phone,
+        string email)
     {
         var result = await Context.Users
             .Where(x => x.Id == userId)
@@ -77,13 +78,32 @@ public class UserRepository(AppDbContext context) : BaseContext(context), IUserR
         await Context.SaveChangesAsync();
     }
 
-    public Task UpdateUserCodeAsync(int userId, string code)
+    public async Task UpdateUserCodeAsync(int userId, string code)
     {
-        throw new System.NotImplementedException();
+        await Context.Users
+            .Where(x => x.Id == userId)
+            .ExecuteUpdateAsync(x => x.SetProperty(y => y.Code, code)
+                .SetProperty(y => y.Confirmed, false));
     }
 
-    public Task ConfirmUserCodeAsync(int userId, string code)
+    public async Task<bool> ConfirmUserCodeAsync(int userId, string code)
     {
-        throw new System.NotImplementedException();
+        var user = await Context.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Id == userId && x.Code == code);
+
+        if (user != null)
+        {
+            user.Confirmed = true;
+            Context.Users.Update(user);
+            await Context.SaveChangesAsync();
+        }
+
+        return user != null && user.Confirmed == true;
+    }
+    
+    public async Task<User?> GetUserByIdAsync(int userId)
+    {
+        return await Context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == userId && !x.Passive);
     }
 }

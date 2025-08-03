@@ -9,6 +9,7 @@ namespace RepairTracking.Services;
 
 public interface IDialogService
 {
+    protected Window? CurrentWindow { get; set; }
     Task<CustomerViewModel?> OpenAddCustomerDialogAsync(AddCustomerViewModel viewModel);
     Task<Unit> OpenVehicleDetailsDialogWindow(VehicleDetailsViewModel viewModel);
     Task<CustomerViewModel?> OpenEditCustomerDialogWindow(EditCustomerViewModel viewModel);
@@ -23,6 +24,7 @@ public interface IDialogService
     Task<Unit> OpenAddOrUpdateUserDialogWindow(AddOrUpdateUserViewModel viewModel);
     Task<Unit> OpenPdfViewerWindow(PdfViewerViewModel viewModel);
     Task<Unit> OpenDeliveryDateDialogWindow(DeliveryDateViewModel viewModel);
+    void CloseCurrentWindow();
     Task<bool> YesNoMessageBox(string message, string title);
     Task OkMessageBox(string message, string title);
     Task<IStorageFile?> SaveFilePickerAsync(TopLevel topLevel, string title, string fileName);
