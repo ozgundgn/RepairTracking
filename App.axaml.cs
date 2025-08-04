@@ -150,6 +150,7 @@ public class App : Application
         services.AddSingleton<IUnitOfWork, UnitOfWork>();
         services.AddSingleton<IViewModelFactory, ViewModelFactory>();
         services.AddSingleton<IDialogService, DialogService>();
+    
         QuestPDF.Settings.License = LicenseType.Community;
     }
 

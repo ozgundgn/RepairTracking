@@ -23,6 +23,7 @@
         <entry key="Views/MusicStoreWindow.axaml" value="RepairTracking.csproj" />
         <entry key="Views/PdfViewerWindow.axaml" value="RepairTracking.csproj" />
         <entry key="Views/SaveRepairDetailWindow.axaml" value="RepairTracking.csproj" />
+        <entry key="Views/SendMailWindow.axaml" value="RepairTracking.csproj" />
         <entry key="Views/SilmeMusteriListesi.axaml" value="RepairTracking.csproj" />
         <entry key="Views/TestWindow.axaml" value="RepairTracking.csproj" />
         <entry key="Views/UserProfileHeaderView.axaml" value="RepairTracking.csproj" />

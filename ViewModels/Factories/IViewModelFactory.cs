@@ -20,11 +20,13 @@ public interface IViewModelFactory
 
     ChangePasswordViewModel CreateChangePasswordViewModel(string username);
 
-    ForgotPasswordViewModel CreateForgotPasswordViewModel(int userId,string sendedCode,string email);
+    ForgotPasswordViewModel CreateForgotPasswordViewModel(int userId, string sendedCode, string email);
 
     LoginViewModel CreateLoginViewModel();
 
     UserViewModel CreateUserViewModel();
+
+    SendMailViewModel CreateSendMailViewModel(string email = "");
 
     AddOrUpdateUserViewModel CreateAddOrUpdateUserViewModel(int? userId, string? name, string? surname, string? phone,
         string? username);

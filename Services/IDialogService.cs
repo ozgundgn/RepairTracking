@@ -24,6 +24,7 @@ public interface IDialogService
     Task<Unit> OpenAddOrUpdateUserDialogWindow(AddOrUpdateUserViewModel viewModel);
     Task<Unit> OpenPdfViewerWindow(PdfViewerViewModel viewModel);
     Task<Unit> OpenDeliveryDateDialogWindow(DeliveryDateViewModel viewModel);
+    Task<Unit> OpenSendMailWindow(SendMailViewModel viewModel);
     void CloseCurrentWindow();
     Task<bool> YesNoMessageBox(string message, string title);
     Task OkMessageBox(string message, string title);

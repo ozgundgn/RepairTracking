@@ -63,7 +63,7 @@ public class ViewModelFactory(IUnitOfWork unitOfWork, IDialogService dialogServi
         };
     }
 
-    public ForgotPasswordViewModel CreateForgotPasswordViewModel(int userId,string sendedCode,string email)
+    public ForgotPasswordViewModel CreateForgotPasswordViewModel(int userId, string sendedCode, string email)
     {
         return new ForgotPasswordViewModel(unitOfWork.UsersRepository, dialogService)
         {
@@ -81,6 +81,14 @@ public class ViewModelFactory(IUnitOfWork unitOfWork, IDialogService dialogServi
     public UserViewModel CreateUserViewModel()
     {
         return new UserViewModel(unitOfWork.UsersRepository, dialogService, this);
+    }
+
+    public SendMailViewModel CreateSendMailViewModel(string email = "")
+    {
+        return new SendMailViewModel(dialogService)
+        {
+            ToEmail = email
+        };
     }
 
     public AddOrUpdateUserViewModel CreateAddOrUpdateUserViewModel(int? userId, string? name, string? surname,

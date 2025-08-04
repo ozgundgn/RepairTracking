@@ -21,6 +21,8 @@
                     </MenuItem>
                     <MenuItem Header="Kullanıcılar" Command="{Binding OpenUsersWindowCommand}">
                     </MenuItem>
+                    <MenuItem Header="Mail Gönder" Command="{Binding OpenSendMailWindowCommand}">
+                    </MenuItem>
                 </MenuItem>
             </Menu>
         </Border>

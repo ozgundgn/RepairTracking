@@ -81,8 +81,6 @@ public partial class HomeViewModel : ViewModelBase
 
     public HomeViewModel(IUnitOfWork unitOfWork, IViewModelFactory viewModelFactory, IDialogService dialogService)
     {
-        var smtp = new NotificationFactory(new MailService("ozgundgn0@gmail.com"));
-        smtp.SendMessage("", "erte");
         _unitOfWork = unitOfWork;
         _viewModelFactory = viewModelFactory;
         _dialogService = dialogService;

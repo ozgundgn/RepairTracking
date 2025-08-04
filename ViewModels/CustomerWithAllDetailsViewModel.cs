@@ -44,7 +44,9 @@ public partial class CustomerWithAllDetailsViewModel : ViewModelBase
     private VehicleViewModel? _selectedVehicle;
 
     private List<Vehicle>? _recordedVehiclesByChassisNo;
-    public UserProfileHeaderViewModel HeaderViewModel => new(_dialogService, _viewModelFactory);
+
+    public UserProfileHeaderViewModel HeaderViewModel { get; private set; }
+
     private string _searchText;
 
     public string SearchText
@@ -119,6 +121,10 @@ public partial class CustomerWithAllDetailsViewModel : ViewModelBase
         {
             var vehicleByChassises = customer.Vehicles.Select(x => x.ChassisNo);
             _recordedVehiclesByChassisNo = _vehicleRepository.GetAllVehicleByChassises(vehicleByChassises);
+            HeaderViewModel = new UserProfileHeaderViewModel(_dialogService, _viewModelFactory)
+            {
+                Email = customer.Email,
+            };
 
             Name = customer.Name;
             Surname = customer.Surname;
@@ -127,7 +133,6 @@ public partial class CustomerWithAllDetailsViewModel : ViewModelBase
             Address = customer.Address;
             Id = customer.Id;
             Passive = customer.Passive;
-
             CreatedUser = new CreatedUserViewModel
             {
                 UserId = customer.CreatedUserNavigation.UserId,

@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Reactive;
 using System.Threading.Tasks;
@@ -139,6 +138,20 @@ public class DialogService : IDialogService
         var result = await dialog.ShowDialog<Unit>(
             App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
                 ? desktop.MainWindow
+                : null);
+        return result;
+    }
+
+    public async Task<Unit> OpenSendMailWindow(SendMailViewModel viewModel)
+    {
+        var dialog = new SendMailWindow
+        {
+            DataContext = viewModel
+        };
+        CurrentWindow = dialog;
+        var result = await dialog.ShowDialog<Unit>(
+            App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
+                ? desktop.Windows.LastOrDefault(x => x.IsActive)
                 : null);
         return result;
     }

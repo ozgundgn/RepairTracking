@@ -86,8 +86,10 @@ public partial class LoginViewModel(
         await userRepository.UpdateUserCodeAsync(user.Id, code);
         if (user.Email != null)
         {
-            var smtp = new NotificationFactory(new MailService(user.Email));
-            smtp.SendMessage("Şifre Hatırlatma",code);
+            var mailService = new MailKitSmptClient();
+            mailService.SendEmailAsync("fsfsf");
+            // var smtp = new NotificationFactory(new MailService(user.Email));
+            // smtp.SendMessage("Şifre Hatırlatma",code);
 
             var forgotPassword = viewModelFactory.CreateForgotPasswordViewModel(user.Id,code,user.Email!);
             await dialogService.OpenForgotPasswordDialogWindow(forgotPassword);

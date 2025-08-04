@@ -5,9 +5,11 @@ using System.Text;
 
 namespace RepairTracking.Services;
 
-public class MailService(string toMail) : IMailService
+public class MailService(string toMail, string? filePath = null) : IMailService
 {
     public string ToMail { get; set; } = toMail;
+    public string FilePath { get; set; } = filePath;
+
 
     public void SendMessage(string subject, string messageText)
     {
@@ -20,6 +22,9 @@ public class MailService(string toMail) : IMailService
         message.Body = mailbody;
         message.BodyEncoding = Encoding.UTF8;
         message.IsBodyHtml = true;
+        if (!string.IsNullOrWhiteSpace(FilePath))
+            message.Attachments.Add(new Attachment(FilePath));
+
         SmtpClient client = new SmtpClient("mail.ozenir.com", 587); //Gmail smtp    
         NetworkCredential basicCredential1 = new
             NetworkCredential("ozenir@ozenir.com", "ozenir.1594");
