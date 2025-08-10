@@ -25,25 +25,36 @@ public class MailService(string toMail, string? filePath = null) : IMailService
         if (!string.IsNullOrWhiteSpace(FilePath))
             message.Attachments.Add(new Attachment(FilePath));
 
-        SmtpClient client = new SmtpClient("mail.ozenir.com", 587); //Gmail smtp    
-        NetworkCredential basicCredential1 = new
-            NetworkCredential("ozenir@ozenir.com", "ozenir.1594");
-        client.EnableSsl = true;
-        client.UseDefaultCredentials = false;
-        client.Credentials = basicCredential1;
 
-        try
+        var _emailfrom = "ozeniroto@yandex.com"; //Your yandex email adress
+        var _password = "ykdkcklnfwpevlwz"; //Your yandex app password
+        using (var smtpClient = new SmtpClient("smtp.yandex.com", 587))
         {
-            client.Send(message);
-        }
+            smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
+            smtpClient.EnableSsl = true;
+            smtpClient.UseDefaultCredentials = false;
+            smtpClient.Credentials = new NetworkCredential(_emailfrom, _password);
 
-        catch (Exception ex)
-        {
-            throw ex;
+            smtpClient.Send(_emailfrom, "ozgundgn0@gmail.com", "Subject of mail", "Content of mail");
         }
-        finally
-        {
-            ServicePointManager.ServerCertificateValidationCallback = null;
-        }
+        // NetworkCredential basicCredential1 = new
+        //     NetworkCredential("ozeniroto@yandex.com", "nicpgivuqvdjlfcd");
+        // client.EnableSsl = true;
+        // client.UseDefaultCredentials = false;
+        // client.Credentials = basicCredential1;
+        //
+        // try
+        // {
+        //     client.Send(message);
+        // }
+        //
+        // catch (Exception ex)
+        // {
+        //     throw ex;
+        // }
+        // finally
+        // {
+        //     ServicePointManager.ServerCertificateValidationCallback = null;
+        // }
     }
 }

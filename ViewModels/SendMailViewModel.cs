@@ -29,7 +29,6 @@ public partial class SendMailViewModel : ViewModelBase
         if (string.IsNullOrWhiteSpace(ToEmail) ||
             string.IsNullOrWhiteSpace(Message))
         {
-            // Kullanıcı eksik bilgi girmesi durumunda bir hata verebiliriz.
             await _dialogService.OkMessageBox("Lütfen tüm alanları doldurun.", MessageTitleType.WarningTitle);
             return;
         }
@@ -39,6 +38,8 @@ public partial class SendMailViewModel : ViewModelBase
             // SMTP istemcisi oluşturma
             var mailService = new NotificationFactory(new MailService(ToEmail,FilePath));
             mailService.SendMessage(Subject, Message);
+            // var mailSerivce = new MailKitSmptClient();
+            // mailSerivce.SendEmailAsync("",FilePath);
             await _dialogService.OkMessageBox("Mail başarıyla gönderildi.", MessageTitleType.SuccessTitle);
 
             ToEmail = string.Empty;
@@ -51,12 +52,12 @@ public partial class SendMailViewModel : ViewModelBase
         }
     }
 
-    public Func<TopLevel?>? GetTopLevel { get; set; }
+    public TopLevel View { get; set; }
 
     [RelayCommand]
     private async Task LoadFile()
     {
-        if (GetTopLevel?.Invoke() is not { } topLevel) return;
+        if (View is not { } topLevel) return;
 
         var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
