@@ -25,17 +25,22 @@ public class MailService(string toMail, string? filePath = null) : IMailService
         if (!string.IsNullOrWhiteSpace(FilePath))
             message.Attachments.Add(new Attachment(FilePath));
 
-
-        var _emailfrom = "ozeniroto@yandex.com"; //Your yandex email adress
-        var _password = "ykdkcklnfwpevlwz"; //Your yandex app password
-        using (var smtpClient = new SmtpClient("smtp.yandex.com", 587))
+        try
         {
+            const string emailfrom = "ozeniroto@yandex.com"; //Your yandex email adress
+            var password = "ykdkcklnfwpevlwz"; //Your yandex app password
+            using var smtpClient = new SmtpClient("smtp.yandex.com", 587);
             smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
             smtpClient.EnableSsl = true;
             smtpClient.UseDefaultCredentials = false;
-            smtpClient.Credentials = new NetworkCredential(_emailfrom, _password);
+            smtpClient.Credentials = new NetworkCredential(emailfrom, password);
 
-            smtpClient.Send(_emailfrom, "ozgundgn0@gmail.com", "Subject of mail", "Content of mail");
+            smtpClient.Send(emailfrom, ToMail, "Subject of mail", "Content of mail");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
         }
         // NetworkCredential basicCredential1 = new
         //     NetworkCredential("ozeniroto@yandex.com", "nicpgivuqvdjlfcd");

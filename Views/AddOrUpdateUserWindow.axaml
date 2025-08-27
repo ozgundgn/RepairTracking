@@ -7,22 +7,22 @@
         Width="500" Height="450"
         x:Class="RepairTracking.Views.AddOrUpdateUserWindow"
         x:DataType="viewModels:AddOrUpdateUserViewModel"
-        Title="AddOrUpdateUserWindow">
+        Title="Kullanıcı Ekle / Güncelle">
     <StackPanel Spacing="10" Margin="20">
         <Grid ColumnDefinitions="75,*">
-            <TextBlock Grid.Column="0" HorizontalAlignment="Right" Margin="0 10 0 0 ">Ad</TextBlock>
+            <TextBlock Grid.Column="0" HorizontalAlignment="Right" Margin="0 10 0 0 " VerticalAlignment="Center">Ad</TextBlock>
             <TextBox Grid.Column="1" Margin="10 " Text="{Binding Name}"></TextBox>
         </Grid>
         <Grid ColumnDefinitions="75,*">
-            <TextBlock Grid.Column="0" HorizontalAlignment="Right" Margin="0 10 0 0 ">Soyad</TextBlock>
+            <TextBlock Grid.Column="0" HorizontalAlignment="Right" Margin="0 10 0 0 " VerticalAlignment="Center">Soyad</TextBlock>
             <TextBox Grid.Column="1" Margin="10 " Text="{Binding Surname}"></TextBox>
         </Grid>
         <Grid ColumnDefinitions="75,*">
-            <TextBlock Grid.Column="0" Margin="0 10 0 0 " HorizontalAlignment="Right">Kullanıcı Adı</TextBlock>
+            <TextBlock Grid.Column="0" Margin="0 10 0 0 " HorizontalAlignment="Right" VerticalAlignment="Center">Kullanıcı Adı</TextBlock>
             <TextBox Grid.Column="1" Margin="10" Text="{Binding Username}"></TextBox>
         </Grid>
         <Grid ColumnDefinitions="75,*">
-            <TextBlock Grid.Column="0" Margin="0 10 0 0 " HorizontalAlignment="Right">Telefon</TextBlock>
+            <TextBlock Grid.Column="0" Margin="0 10 0 0 " HorizontalAlignment="Right" VerticalAlignment="Center">Telefon</TextBlock>
             <TextBox Grid.Column="1" Margin="10" Text="{Binding Phone}"></TextBox>
         </Grid>
         <Grid IsVisible="{Binding ShowPassword}" Margin="0 10 0 0">
@@ -31,8 +31,8 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="35" />
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" HorizontalAlignment="Right">Şifre</TextBlock>
-            <TextBox Grid.Column="1"  Margin="0 10 0 0 "
+            <TextBlock Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center">Şifre</TextBlock>
+            <TextBox Grid.Column="1" Margin="0 10 3 0 "
                      PasswordChar="{Binding IsPasswordVisible, Converter={StaticResource PasswordCharConverter}}"
                      Text="{Binding Password ,Mode=TwoWay}"
                      Watermark="Şifre" />

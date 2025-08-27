@@ -6,11 +6,12 @@
         mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
         x:Class="RepairTracking.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
+        x:Name="MainRepairWindow"
         Icon="/Assets/avalonia-logo.ico"
         WindowStartupLocation="CenterScreen"
         Width="1200"
         Height="900"
-        Title="RepairTracking">
+        Title="Tamir Takip Programı">
     <Window.Styles>
         <Style Selector="Button:pointerover">
             <Setter Property="Cursor" Value="Hand" />

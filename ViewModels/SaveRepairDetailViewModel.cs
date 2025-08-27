@@ -1,11 +1,10 @@
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using MsBox.Avalonia;
-using MsBox.Avalonia.Enums;
 using RepairTracking.Data.Models;
 using RepairTracking.Helpers;
 using RepairTracking.Repositories.Abstract;
@@ -17,10 +16,14 @@ public partial class SaveRepairDetailViewModel : ViewModelBase
 {
     [ObservableProperty] private DateOnly _repairDate;
     [ObservableProperty] private DateTime? _deliveryDate;
-    [ObservableProperty] private string? _complaint;
+
+    [ObservableProperty] [Required(ErrorMessage = "Şikayet gereklidir!")]
+    private string? _complaint;
+
     [ObservableProperty] private string? _note;
     [ObservableProperty] private VehicleViewModel? _vehicle;
     [ObservableProperty] private RenovationDetailViewModel? _selectedRenovationDetail;
+    [ObservableProperty] private Renovation? _renovation;
 
     private ObservableCollection<RenovationDetailViewModel> _renovationDetails;
 
@@ -44,9 +47,9 @@ public partial class SaveRepairDetailViewModel : ViewModelBase
     private readonly IRenovationRepository _renovationRepository;
     public int? VehicleId { get; set; }
     public int Id { get; set; }
-    private readonly int? _renovationId;
+    [ObservableProperty] private int? _renovationId;
     public VehicleViewModel? SelectedVehicle { get; set; }
-    public int? RenovationId => _renovationId;
+
 
     // THIS IS THE WRAPPER PROPERTY FOR THE VIEW TO BIND TO
     public DateTimeOffset? RepairDateForPicker
@@ -227,12 +230,28 @@ public partial class SaveRepairDetailViewModel : ViewModelBase
     [RelayCommand]
     private async void SaveRepairAsync()
     {
+        ValidateAllProperties();
+        if (HasErrors)
+            return;
+        if (RepairDate == default)
+        {
+            await _dialogService.OkMessageBox("Lütfen geçerli bir tamir tarihi girin!", MessageTitleType.WarningTitle);
+            return;
+        }
+
+        if (DeliveryDate != null && RepairDate > DateOnly.FromDateTime((DateTime)DeliveryDate))
+        {
+            await _dialogService.OkMessageBox("Teslimat tarihi, uygulama tarihinden eski olamalı!",
+                MessageTitleType.WarningTitle);
+            return;
+        }
+
         // You can access all the data here
         if (SelectedVehicle != null)
         {
             if (!RenovationId.HasValue)
             {
-                var finalRepair = new Renovation()
+                Renovation = new Renovation
                 {
                     Complaint = Complaint,
                     RepairDate = RepairDate,
@@ -250,28 +269,31 @@ public partial class SaveRepairDetailViewModel : ViewModelBase
                         Note = x.Note
                     }).ToList()
                 };
-                _renovationRepository.AddRenovation(finalRepair);
+                var id = _renovationRepository.AddRenovation(Renovation);
+                if (id > 0)
+                    RenovationId = id;
             }
             else
             {
                 // If we are updating an existing renovation, we need to ensure we set the ID
-                var existingRenovation = _renovationRepository.GetRenovationById(RenovationId.Value);
-                if (existingRenovation == null)
+                if (Renovation == null)
+                    Renovation = _renovationRepository.GetRenovationById(RenovationId.Value);
+                if (Renovation == null)
                 {
                     await _dialogService.OkMessageBox("Güncellenecek tamir kaydı bulunamadı.",
                         MessageTitleType.WarningTitle);
                     return;
                 }
 
-                _renovationRepository.DeleteRenovationDetails(existingRenovation.RenovationDetails.ToList());
+                _renovationRepository.DeleteRenovationDetails(Renovation.RenovationDetails.ToList());
 
-                existingRenovation.Complaint = Complaint;
-                existingRenovation.RepairDate = RepairDate;
-                existingRenovation.DeliveryDate = DeliveryDate;
-                existingRenovation.Note = Note;
-                existingRenovation.VehicleId = SelectedVehicle.Id;
-                existingRenovation.UpdatedDate = DateTime.Now;
-                existingRenovation.RenovationDetails = RenovationDetails.Select(x => new RenovationDetail()
+                Renovation.Complaint = Complaint;
+                Renovation.RepairDate = RepairDate;
+                Renovation.DeliveryDate = DeliveryDate;
+                Renovation.Note = Note;
+                Renovation.VehicleId = SelectedVehicle.Id;
+                Renovation.UpdatedDate = DateTime.Now;
+                Renovation.RenovationDetails = RenovationDetails.Select(x => new RenovationDetail()
                 {
                     Description = x.Description,
                     Name = x.Name,
@@ -280,7 +302,7 @@ public partial class SaveRepairDetailViewModel : ViewModelBase
                     Note = x.Note
                 }).ToList();
 
-                _renovationRepository.UpdateRenovation(existingRenovation);
+                _renovationRepository.UpdateRenovation(Renovation);
             }
 
             await _unitOfWork.SaveChangesAsync();

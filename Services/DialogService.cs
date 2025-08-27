@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Reactive;
 using System.Threading.Tasks;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
@@ -13,20 +14,15 @@ namespace RepairTracking.Services;
 
 public class DialogService : IDialogService
 {
-    public Window? CurrentWindow { get; set; }
-
     public async Task<CustomerViewModel?> OpenAddCustomerDialogAsync(AddCustomerViewModel viewModel)
     {
         var dialog = new AddCustomerWindow
         {
             DataContext = viewModel
         };
-        CurrentWindow = dialog;
-        var result = await dialog.ShowDialog<CustomerViewModel?>(
-            App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
-                ? desktop.MainWindow
-                : null);
 
+        Window? owner = WindowLocator.GetActiveWindow();
+        var result = await dialog.ShowDialog<CustomerViewModel?>(owner);
         return result;
     }
 
@@ -36,11 +32,8 @@ public class DialogService : IDialogService
         {
             DataContext = viewModel
         };
-        CurrentWindow = dialog;
-        var result = await dialog.ShowDialog<Unit>(
-            App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
-                ? desktop.Windows.FirstOrDefault(x => x.Name == "CustomerDetailWindow") ?? desktop.MainWindow
-                : null);
+        Window? owner = WindowLocator.GetActiveWindow();
+        var result = await dialog.ShowDialog<Unit>(owner);
         return result;
     }
 
@@ -50,11 +43,9 @@ public class DialogService : IDialogService
         {
             DataContext = viewModel
         };
-        CurrentWindow = dialog;
-        var result = await dialog.ShowDialog<CustomerViewModel>(
-            App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
-                ? desktop.Windows.FirstOrDefault(x => x.Name == "CustomerDetailWindow")
-                : null);
+        Window? owner = WindowLocator.GetActiveWindow();
+
+        var result = await dialog.ShowDialog<CustomerViewModel>(owner);
         return result;
     }
 
@@ -64,11 +55,9 @@ public class DialogService : IDialogService
         {
             DataContext = viewModel
         };
-        CurrentWindow = dialog;
-        var result = await dialog.ShowDialog<Unit>(
-            App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
-                ? desktop.MainWindow
-                : null);
+        Window? owner = WindowLocator.GetActiveWindow();
+
+        var result = await dialog.ShowDialog<Unit>(owner);
         return result;
     }
 
@@ -78,11 +67,8 @@ public class DialogService : IDialogService
         {
             DataContext = viewModel
         };
-        CurrentWindow = dialog;
-        var result = await dialog.ShowDialog<Unit>(
-            App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
-                ? desktop.MainWindow
-                : null);
+        Window? owner = WindowLocator.GetActiveWindow();
+        var result = await dialog.ShowDialog<Unit>(owner);
         return result;
     }
 
@@ -92,11 +78,8 @@ public class DialogService : IDialogService
         {
             DataContext = viewModel
         };
-        CurrentWindow = dialog;
-        var result = await dialog.ShowDialog<Unit>(
-            App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
-                ? desktop.Windows.FirstOrDefault(x => x.Name == "CustomerDetailWindow")
-                : null);
+        Window? owner = WindowLocator.GetActiveWindow();
+        var result = await dialog.ShowDialog<Unit>(owner);
         return result;
     }
 
@@ -106,25 +89,21 @@ public class DialogService : IDialogService
         {
             DataContext = viewModel
         };
-        CurrentWindow = dialog;
-        var result = await dialog.ShowDialog<Unit>(
-            App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
-                ? desktop.MainWindow
-                : null);
+        Window? owner = WindowLocator.GetActiveWindow();
+
+        var result = await dialog.ShowDialog<Unit>(owner);
         return result;
     }
 
     public async Task<Unit> OpenForgotPasswordDialogWindow(ForgotPasswordViewModel viewModel)
     {
-        var dialog = new ForgotPasswordWindow()
+        var dialog = new ForgotPasswordWindow
         {
             DataContext = viewModel
         };
-        CurrentWindow = dialog;
-        var result = await dialog.ShowDialog<Unit>(
-            App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
-                ? desktop.MainWindow
-                : null);
+        Window? owner = WindowLocator.GetActiveWindow();
+
+        var result = await dialog.ShowDialog<Unit>(owner);
         return result;
     }
 
@@ -134,11 +113,8 @@ public class DialogService : IDialogService
         {
             DataContext = viewModel
         };
-        CurrentWindow = dialog;
-        var result = await dialog.ShowDialog<Unit>(
-            App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
-                ? desktop.MainWindow
-                : null);
+        Window? owner = WindowLocator.GetActiveWindow();
+        var result = await dialog.ShowDialog<Unit>(owner);
         return result;
     }
 
@@ -148,11 +124,9 @@ public class DialogService : IDialogService
         {
             DataContext = viewModel
         };
-        CurrentWindow = dialog;
-        var result = await dialog.ShowDialog<Unit>(
-            App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
-                ? desktop.Windows.LastOrDefault(x => x.IsActive)
-                : null);
+        Window? owner = WindowLocator.GetActiveWindow();
+
+        var result = await dialog.ShowDialog<Unit>(owner);
         return result;
     }
 
@@ -162,11 +136,9 @@ public class DialogService : IDialogService
         {
             DataContext = viewModel
         };
-        CurrentWindow = dialog;
-        var result = await dialog.ShowDialog<Unit>(
-            App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
-                ? desktop.MainWindow
-                : null);
+        Window? owner = WindowLocator.GetActiveWindow();
+
+        var result = await dialog.ShowDialog<Unit>(owner);
         return result;
     }
 
@@ -176,11 +148,8 @@ public class DialogService : IDialogService
         {
             DataContext = viewModel
         };
-        CurrentWindow = dialog;
-        var result = await dialog.ShowDialog<Unit>(
-            App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
-                ? desktop.MainWindow
-                : null);
+        Window? owner = WindowLocator.GetActiveWindow();
+        var result = await dialog.ShowDialog<Unit>(owner);
         return result;
     }
 
@@ -190,11 +159,8 @@ public class DialogService : IDialogService
         {
             DataContext = viewModel
         };
-        CurrentWindow = dialog;
-        var result = await dialog.ShowDialog<Unit>(
-            App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
-                ? desktop.Windows.FirstOrDefault(x => x.Name == "CustomerDetailWindow")
-                : null);
+        Window? owner = WindowLocator.GetActiveWindow();
+        var result = await dialog.ShowDialog<Unit>(owner);
         return result;
     }
 
@@ -204,15 +170,23 @@ public class DialogService : IDialogService
             .GetMessageBoxStandard(title,
                 message,
                 ButtonEnum.YesNo);
+        Window? owner = WindowLocator.GetActiveWindow();
 
-        var deleteResult = await warning.ShowAsync();
+        var deleteResult = await warning.ShowWindowDialogAsync(owner);
         return deleteResult == ButtonResult.Yes;
     }
 
     public async Task OkMessageBox(string message, string title)
     {
-        var box = MessageBoxManager
-            .GetMessageBoxStandard(title, message);
+        var box = MessageBoxManager.GetMessageBoxStandard(title, message);
+        Window? owner = WindowLocator.GetActiveWindow();
+
+        if (owner != null)
+        {
+            await box.ShowWindowDialogAsync(owner);
+            return;
+        }
+
         await box.ShowAsync();
     }
 
@@ -225,8 +199,7 @@ public class DialogService : IDialogService
         var file = await storageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
         {
             Title = title,
-            SuggestedFileName =
-                $"Rapor-{fileName}",
+            SuggestedFileName = $"Rapor-{fileName}",
             DefaultExtension = "pdf",
             FileTypeChoices = [new FilePickerFileType("PDF Document") { Patterns = ["*.pdf"] }]
         });
@@ -235,10 +208,8 @@ public class DialogService : IDialogService
 
     public void CloseCurrentWindow()
     {
-        if (CurrentWindow is not null)
-        {
-            CurrentWindow.Close();
-            CurrentWindow = null;
-        }
+        Window? owner = WindowLocator.GetActiveWindow();
+        if (owner is not null)
+            owner.Close();
     }
 }

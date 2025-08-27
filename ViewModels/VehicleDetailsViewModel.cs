@@ -69,9 +69,10 @@ public partial class VehicleDetailsViewModel : ViewModelBase
         _customersVehiclesRepository = _unitOfWork.CustomersVehiclesRepository;
         _renovationRepository = _unitOfWork.RenovationsRepository;
 
+        Vehicle? registeredVehicle = null;
         if (vehicleId != null)
         {
-            var registeredVehicle = _repository.GetVehicleByCVehicleId(vehicleId.Value);
+             registeredVehicle = _repository.GetVehicleByCVehicleId(vehicleId.Value);
             if (registeredVehicle != null)
             {
                 VehicleId = registeredVehicle.Id;
@@ -85,14 +86,14 @@ public partial class VehicleDetailsViewModel : ViewModelBase
                 Passive = registeredVehicle.Passive;
                 CustomerId = registeredVehicle.CustomerId;
                 Type = registeredVehicle.Type;
-                FilePickerViewModel = new FilePickerViewModel(registeredVehicle.Image)
-                {
-                    PickingButtonText = "Araç Resmi Seç",
-                    FilePickerTypes = [FilePickerFileTypes.ImageAll],
-                    SelectedImageData = registeredVehicle.Image
-                };
             }
         }
+        FilePickerViewModel = new FilePickerViewModel(registeredVehicle?.Image)
+        {
+            PickingButtonText = "Araç Resmi Seç",
+            FilePickerTypes = [FilePickerFileTypes.ImageAll],
+            SelectedImageData = registeredVehicle?.Image
+        };
     }
 
     [RelayCommand]
@@ -102,6 +103,28 @@ public partial class VehicleDetailsViewModel : ViewModelBase
         if (HasErrors) return;
         bool result;
         string message;
+
+        var checkIfVehicleExists =
+            await _repository.GetVehicleByChassisNo(ChassisNo, VehicleId > 0 ? VehicleId.Value : 0);
+
+        if (checkIfVehicleExists != null && !checkIfVehicleExists.Passive)
+        {
+            await _dialogService.OkMessageBox(
+                "Bu şasi numarasına sahip bir araç zaten mevcut. Lütfen farklı bir şasi numarası girin.",
+                MessageTitleType.WarningTitle);
+            return;
+        }
+
+        var checkIfPlateNumberExists =
+            await _repository.GetVehicleByPlateNumber(PlateNumber.ToUpper(), VehicleId > 0 ? VehicleId.Value : 0);
+        if (checkIfPlateNumberExists != null)
+        {
+            await _dialogService.OkMessageBox(
+                "Bu plaka numarasına sahip bir araç zaten mevcut. Lütfen farklı bir plaka numarası girin.",
+                MessageTitleType.WarningTitle);
+            return;
+        }
+
         var vehicle = new Vehicle()
         {
             PlateNumber = PlateNumber,
@@ -114,11 +137,15 @@ public partial class VehicleDetailsViewModel : ViewModelBase
             Passive = Passive ?? false,
             CustomerId = CustomerId ?? 0,
             Type = Type,
-            Image = FilePickerViewModel.SelectedImageData
         };
+        
+        if (FilePickerViewModel != null)
+            vehicle.Image = FilePickerViewModel.SelectedImageData;
+
         if (VehicleId > 0)
         {
             vehicle.Id = VehicleId.Value;
+
             result = await _repository.UpdateVehicle(vehicle);
 
             if (Passive == true)
@@ -130,20 +157,9 @@ public partial class VehicleDetailsViewModel : ViewModelBase
         else
         {
             var pastChassisNoExist = string.Empty;
-            var existingVehicle = await _repository.GetVehicleByChassisNo(ChassisNo);
-            if (existingVehicle != null)
-            {
-                if (!existingVehicle.Passive)
-                {
-                    await _dialogService.OkMessageBox(
-                        "Bu şasi numarasına sahip bir araç zaten mevcut. Lütfen farklı bir şasi numarası girin.",
-                        MessageTitleType.WarningTitle);
-                    return;
-                }
-
+            if (checkIfVehicleExists != null && checkIfVehicleExists.Passive)
                 pastChassisNoExist = " Bu şasi numarasına sahip bir araç daha önce eklenmiş ancak pasif durumda!";
-            }
-
+            
             var addedVehicle = await _repository.AddVehicle(vehicle);
             await _unitOfWork.SaveChangesAsync();
             result = addedVehicle != null;

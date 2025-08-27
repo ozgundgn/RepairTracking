@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,6 +19,7 @@ public class UserRepository(AppDbContext context) : BaseContext(context), IUserR
         return user;
     }
 
+
     public async Task<bool?> UpdateUserPasswordAsync(int userId, string newPassword)
     {
         var user = await Context.Users.FindAsync(userId);
@@ -25,12 +27,24 @@ public class UserRepository(AppDbContext context) : BaseContext(context), IUserR
 
         user.Password = newPassword;
         var response = Context.Users.Update(user);
-        return response.State == EntityState.Modified;
+        var result = response.State == EntityState.Modified;
+        await SaveChangesAsync();
+        return result;
     }
 
     public async Task<User?> GetUserByUsernameAsync(string userName)
     {
         return await Context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.UserName == userName && !x.Passive);
+    }
+
+    public async Task<User?> GetUserByPhoneAndUsernameAsync(string phone, string username, int? userdId = null)
+    {
+        var queryable = Context.Users.AsNoTracking()
+            .Where(x => (x.Phone == phone || x.UserName == username) && !x.Passive);
+        if (userdId.HasValue)
+            queryable = queryable.Where(x => x.Id != userdId.Value);
+        var user = await queryable.FirstOrDefaultAsync();
+        return user;
     }
 
     public List<UserInfo> GetActiveUsers()
@@ -101,7 +115,7 @@ public class UserRepository(AppDbContext context) : BaseContext(context), IUserR
 
         return user != null && user.Confirmed == true;
     }
-    
+
     public async Task<User?> GetUserByIdAsync(int userId)
     {
         return await Context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == userId && !x.Passive);

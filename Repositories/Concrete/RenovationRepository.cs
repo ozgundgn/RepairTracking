@@ -10,10 +10,11 @@ namespace RepairTracking.Repositories.Concrete;
 
 public class RenovationRepository(AppDbContext context) : BaseContext(context), IRenovationRepository
 {
-    public bool AddRenovation(Renovation renovation)
+    public int? AddRenovation(Renovation renovation)
     {
-        var entity = Context.Renovations.Add(renovation);
-        return entity.State == Microsoft.EntityFrameworkCore.EntityState.Added;
+        Context.Renovations.Add(renovation);
+        SaveChanges();
+        return renovation.Id;
     }
 
     public bool UpdateRenovation(Renovation renovation)

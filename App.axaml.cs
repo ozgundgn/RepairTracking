@@ -7,28 +7,30 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
+using Avalonia.ReactiveUI;
+using Avalonia.Threading;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using QuestPDF;
+using QuestPDF.Infrastructure;
 using ReactiveUI;
 using RepairTracking.Data;
+using RepairTracking.Data.Models;
 using RepairTracking.Repositories.Abstract;
 using RepairTracking.Repositories.Concrete;
-using RepairTracking.ViewModels;
-using RepairTracking.Views;
-using Avalonia.ReactiveUI;
-using Avalonia.Threading;
-using QuestPDF.Infrastructure;
 using RepairTracking.Services;
+using RepairTracking.ViewModels;
 using RepairTracking.ViewModels.Factories;
+using RepairTracking.Views;
 
 namespace RepairTracking;
 
 public class App : Application
 {
     private InactivityService? _inactivityService;
-    private IServiceProvider? Services { get; set; } // Property to hold the service provider
-    private IConfiguration Configuration { get; set; } // Property to hold the configuration
+    private IServiceProvider? Services { get; set; }
+    private IConfiguration Configuration { get; set; }
     private INavigationService NavigationService { get; set; }
 
     public override void Initialize()
@@ -48,7 +50,24 @@ public class App : Application
         var services = new ServiceCollection();
         ConfigureServices(services);
         Services = services.BuildServiceProvider();
-
+        
+        using (var scope = Services.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            context.Database.Migrate(); // Creates & migrates
+            context.Users.RemoveRange(context.Users);
+            if (!context.Users.Any()) // Example table
+            {
+                context.Users.AddRange(
+                    new User
+                    {
+                        Name = "özgün", Email = "admin@example.com", Password = "11", UserName = "admin",
+                        Surname = "doğan", Passive = false,UserId = Guid.NewGuid()
+                    }
+                );
+                context.SaveChanges();
+            }
+        }
         // --- End of DI Configuration ---
 
 
@@ -57,6 +76,7 @@ public class App : Application
             // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
             // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
             DisableAvaloniaDataAnnotationValidation();
+
             var mainWindowViewModel = Services.GetRequiredService<MainWindowViewModel>();
             mainWindowViewModel.CurrentView = Services.GetRequiredService<LoginViewModel>();
             desktop.MainWindow = new MainWindow()
@@ -75,14 +95,8 @@ public class App : Application
             _inactivityService.Start(); // Start the timer
 
             // 2. Hook into the global input manager to detect activity
-            Avalonia.Input.InputElement.PointerPressedEvent.AddClassHandler<Control>((_, _) =>
-            {
-                _inactivityService?.ResetTimer();
-            });
-            Avalonia.Input.InputElement.KeyDownEvent.AddClassHandler<Control>((_, _) =>
-            {
-                _inactivityService?.ResetTimer();
-            });
+            InputElement.PointerPressedEvent.AddClassHandler<Control>((_, _) => { _inactivityService?.ResetTimer(); });
+            InputElement.KeyDownEvent.AddClassHandler<Control>((_, _) => { _inactivityService?.ResetTimer(); });
             // ========================================
         }
 
@@ -99,22 +113,8 @@ public class App : Application
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                // This is where you put your actual logout logic.
-                // For example, show the login window and close the main window.
-
-                // 1. Clear any session data (current user, tokens, etc.)
-                // e.g., SessionManager.ClearCurrentUser();
-
-                // 2. Navigate back to the LoginView
-                // How you do this depends on your navigation system.
-                // A simple approach is to close the main window and open a new login window.
-                // var currentMainWindow = desktop.MainWindow;
-
-                // var loginWindow = new LoginView(); // Assuming you have a LoginWindow
-                // loginWindow.Show();
                 AppServices.UserSessionService.Logout();
                 AppServices.NavigationService.NavigateToLogin();
-                // currentMainWindow?.Close();
             }
         });
     }
@@ -122,14 +122,18 @@ public class App : Application
     public void ConfigureServices(ServiceCollection services)
     {
         services.AddSingleton(Configuration);
+        string dbPath = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "RepairTracking",
+            "app.db"
+        );
+        if (!Directory.Exists(Path.GetDirectoryName(dbPath)))
+            Directory.CreateDirectory(Path.GetDirectoryName(dbPath));
 
-        // 2. Register DbContext
-        // Replace YourDbContextName with the actual name (e.g., AppDbContext)
-        // Replace "DefaultConnection" if you used a different name in appsettings.json
         services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            options.UseSqlite($"Data Source={dbPath}"));
+
         // 3. Register ViewModels and other services
-        // Example:
         services.AddTransient<LoginViewModel>();
         services.AddTransient<HomeViewModel>();
         services.AddTransient<MainWindowViewModel>();
@@ -149,18 +153,16 @@ public class App : Application
         //unitofwork
         services.AddSingleton<IUnitOfWork, UnitOfWork>();
         services.AddSingleton<IViewModelFactory, ViewModelFactory>();
-        services.AddSingleton<IDialogService, DialogService>();
-    
-        QuestPDF.Settings.License = LicenseType.Community;
+        services.AddTransient<IDialogService, DialogService>();
+
+        Settings.License = LicenseType.Community;
     }
 
     private void DisableAvaloniaDataAnnotationValidation()
     {
-        // Get an array of plugins to remove
         var dataValidationPluginsToRemove =
             BindingPlugins.DataValidators.OfType<DataAnnotationsValidationPlugin>().ToArray();
 
-        // remove each entry found
         foreach (var plugin in dataValidationPluginsToRemove)
         {
             BindingPlugins.DataValidators.Remove(plugin);

@@ -36,16 +36,14 @@ public partial class AddCustomerWindow : ReactiveWindow<AddCustomerViewModel>
                     return;
                 Close(dialogResult); // Return result to Interaction
                 var addedBox = MessageBoxManager
-                    .GetMessageBoxStandard("İşlem Başarılı", "Kullanıcı başarıyla eklendi.",
-                        ButtonEnum.Ok);
+                    .GetMessageBoxStandard("İşlem Başarılı", "Kullanıcı başarıyla eklendi.");
                 await addedBox.ShowAsync();
                 return;
             }
 
             var box = MessageBoxManager
                 .GetMessageBoxStandard("Uyarı",
-                    "Eklemek istediğiniz kullanıcı zaten mevcut. Lütfen farklı bir kullanıcı adı ile eklemeyi deneyin.",
-                    ButtonEnum.Ok);
+                    "Bu telefona ait kullanıcı ya da şaşi numarasına kayıtlı araç zaten mevcut.");
 
             await box.ShowAsync();
         }

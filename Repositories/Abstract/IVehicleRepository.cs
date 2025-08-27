@@ -16,7 +16,7 @@ public interface IVehicleRepository : IBaseContext
     List<VehicleCustomerModel> GetVehicleCustomerModel(int? vehicleId = null);
     Vehicle? GetVehicleByCVehicleId(int vehcileId);
     List<Vehicle>? GetAllVehicleByChassises(IEnumerable<string?> chassisNos);
-    Task<Vehicle?> GetVehicleByChassisNo(string chassisNo);
+    Task<Vehicle?> GetVehicleByChassisNo(string chassisNo,int vehicleId = 0);
     Task<List<int>> GetPassiveVehicleIdsByChassisNo(string chassisNo);
-    Task DeleteCustomerAsync(int customerId);
+    Task<Vehicle?> GetVehicleByPlateNumber(string plateNumber, int vehicleId = 0);
 }

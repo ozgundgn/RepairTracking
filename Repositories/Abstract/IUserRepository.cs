@@ -12,6 +12,7 @@ public interface IUserRepository : IBaseContext
 
     Task<bool?> UpdateUserPasswordAsync(int userId, string newPassword);
     Task<User?> GetUserByUsernameAsync(string username);
+    Task<User?> GetUserByPhoneAndUsernameAsync(string phone, string username, int? userdId = null);
     List<UserInfo> GetActiveUsers();
     bool DeleteUser(int userId);
     Task<bool> AddUserAsync(User user);

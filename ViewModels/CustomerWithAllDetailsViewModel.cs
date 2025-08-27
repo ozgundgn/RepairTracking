@@ -166,7 +166,7 @@ public partial class CustomerWithAllDetailsViewModel : ViewModelBase
                     }
                 }));
             Vehicles = new ObservableCollection<VehicleViewModel>(
-                customer.Vehicles.Select(v => new VehicleViewModel
+                customer.Vehicles.Where(v => !v.Passive).Select(v => new VehicleViewModel
                 {
                     PlateNumber = v.PlateNumber,
                     ChassisNo = v.ChassisNo,
@@ -226,8 +226,11 @@ public partial class CustomerWithAllDetailsViewModel : ViewModelBase
         }
 
         if (reloadSameSelectedVehicleAfterSavinRenovations != null)
-            CurrentRenovations = Vehicles.First(r => r.Id == reloadSameSelectedVehicleAfterSavinRenovations.Id)
-                .Renovations;
+        {
+            var vehicleViewModel = Vehicles.First(r => r.Id == reloadSameSelectedVehicleAfterSavinRenovations.Id);
+            CurrentRenovations = vehicleViewModel.Renovations;
+            SelectedVehicle = vehicleViewModel;
+        }
     }
 
     // ... your other ViewModel properties and commands ...
@@ -235,21 +238,36 @@ public partial class CustomerWithAllDetailsViewModel : ViewModelBase
     [RelayCommand]
     private async Task PrintRepairReport(RenovationViewModel renovationViewModel)
     {
-        // 2. Open the "Save File" dialog
+        var file = await _dialogService.SaveFilePickerAsync(View, "Araç Kabul Raporu",
+            $"{renovationViewModel.CustomerName}-{renovationViewModel.Complaint}-{renovationViewModel.UpdatedDate}"
+        );
 
-        var file = await _dialogService.SaveFilePickerAsync(View,
-            $"{renovationViewModel.CustomerName}-{renovationViewModel.Complaint}-{renovationViewModel.UpdatedDate}",
-            "Araç Kabul Raporu");
-        // 3. If the user selected a file, generate and save the PDF
         if (file is not null)
         {
-            // Using the path from the saved file, generate the PDF
             var report = new RepairReportDocument(renovationViewModel);
             report.GeneratePdf(file.Path.AbsolutePath);
         }
 
         if (!string.IsNullOrWhiteSpace(file?.Path.AbsolutePath))
+        {
             _renovationRepository.UpdateRenovationReportPath(renovationViewModel.Id, file.Path.AbsolutePath);
+
+            var pdfViewModel =
+                _viewModelFactory.CreatePdfViewerViewModel(file.Path.AbsolutePath);
+            await _dialogService.OpenPdfViewerWindow(pdfViewModel);
+
+            var sendMailToUser = await _dialogService.YesNoMessageBox(
+                $"{renovationViewModel.CustomerName} {renovationViewModel.CustomerSurname} müşterisine raporu mail ile göndermek ister misiniz?",
+                "Mail Gönder");
+
+            if (sendMailToUser)
+            {
+                var mailService = new NotificationFactory(new MailService(Email, file.Path.AbsolutePath));
+                mailService.SendMessage("Aracınız Hazır",
+                    "Merhaba " + renovationViewModel.CustomerName +
+                    ",\n\nAracınızın tamir işlemi tamamlanmıştır. Rapor ekte yer almaktadır.\n\nİyi günler dileriz.");
+            }
+        }
     }
 
     [RelayCommand]

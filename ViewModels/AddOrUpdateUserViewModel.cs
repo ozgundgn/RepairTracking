@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -42,18 +43,25 @@ public partial class AddOrUpdateUserViewModel : ViewModelBase
     [RelayCommand]
     private async Task SaveUser()
     {
+        if (string.IsNullOrWhiteSpace(Name) || string.IsNullOrWhiteSpace(Surname) ||
+            string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Phone) ||
+            string.IsNullOrWhiteSpace(Password))
+        {
+            await _dialogService.OkMessageBox("Lütfen tüm alanları doldurun.", MessageTitleType.WarningTitle);
+            return;
+        }
+
+        var checkUser = await _userRepository.GetUserByPhoneAndUsernameAsync(Phone, Username,UserId);
+        if (checkUser != null)
+        {
+            await _dialogService.OkMessageBox("Bu kullanıcı adı veya telefon ile kayıt zaten mevcut.", MessageTitleType.WarningTitle);
+            return;
+        }
         if (UserId == null)
         {
-            if (string.IsNullOrWhiteSpace(Name) || string.IsNullOrWhiteSpace(Surname) ||
-                string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Phone) ||
-                string.IsNullOrWhiteSpace(Password))
-            {
-                await _dialogService.OkMessageBox("Lütfen tüm alanları doldurun.", MessageTitleType.WarningTitle);
-                return;
-            }
-
             var createUserViewModel = new User()
             {
+                UserId = Guid.NewGuid(),
                 Name = Name,
                 Surname = Surname,
                 UserName = Username,
@@ -77,7 +85,7 @@ public partial class AddOrUpdateUserViewModel : ViewModelBase
                 return;
             }
 
-            var result = await _userRepository.UpdateUserAsync((int)UserId, Name, Surname, Username, Phone,Email);
+            var result = await _userRepository.UpdateUserAsync((int)UserId, Name, Surname, Username, Phone, Email);
             if (result)
                 await _dialogService.OkMessageBox("Kullanıcı başarıyla güncellendi.", MessageTitleType.SuccessTitle);
             else

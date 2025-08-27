@@ -9,7 +9,6 @@ namespace RepairTracking.Services;
 
 public interface IDialogService
 {
-    protected Window? CurrentWindow { get; set; }
     Task<CustomerViewModel?> OpenAddCustomerDialogAsync(AddCustomerViewModel viewModel);
     Task<Unit> OpenVehicleDetailsDialogWindow(VehicleDetailsViewModel viewModel);
     Task<CustomerViewModel?> OpenEditCustomerDialogWindow(EditCustomerViewModel viewModel);

@@ -10,7 +10,7 @@
     x:Class="RepairTracking.Views.CustomerDetailsDialogWindow"
     x:DataType="viewModels:CustomerWithAllDetailsViewModel"
     Width="1500" Height="1500"
-    Title="CustomerDetailsDialogWindow">
+    Title="Müşteri Bilgileri ve İşlemler">
     <Window.Styles>
         <Style Selector="Button:pointerover">
             <Setter Property="Cursor" Value="Hand" />
@@ -107,13 +107,15 @@
                             <TextBox Watermark="Telefon" Margin="2" Text="{Binding PhoneNumber}" />
                             <!-- Vehicle List Section -->
                             <Grid ColumnDefinitions="200,250">
-                                <Button Grid.Column="1" Command="{Binding OpenVehicleDetailsCommand}" Content="Araç Ekle"></Button>
+                                <Button Grid.Column="1" Command="{Binding OpenVehicleDetailsCommand}"
+                                        Content="Araç Ekle">
+                                </Button>
                             </Grid>
-                            <ListBox ItemsSource="{Binding Vehicles}" SelectedValue="{Binding SelectedVehicle}"
-                                     SelectedItem="{Binding SelectedVehicle}">
+                            <ListBox ItemsSource="{Binding Vehicles}"
+                                     SelectedValue="{Binding SelectedVehicle,Mode=TwoWay}">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
-                                        <Border Classes="Card" Margin="0,0,0,10" IsVisible="{Binding !Passive}">
+                                        <Border Classes="Card" Margin="0,0,0,10">
                                             <Grid RowDefinitions="Auto, Auto,Auto" ColumnDefinitions="*, Auto">
                                                 <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding PlateNumber}"
                                                            FontWeight="Bold" />
@@ -195,7 +197,7 @@
                 <!-- Repair Orders (Cards) -->
                 <ScrollViewer>
                     <!-- Use an ItemsControl to handle the data binding -->
-                    <ItemsControl ItemsSource="{Binding CurrentRenovations}">
+                    <ItemsControl ItemsSource="{Binding CurrentRenovations,Mode=TwoWay}">
 
                         <!-- 1. Define HOW the items should be arranged (the layout) -->
                         <ItemsControl.ItemsPanel>
@@ -226,7 +228,7 @@
                                                     </Button.CommandParameter>
                                                 </Button>
                                                 <Button Classes="SmallSquare" VerticalContentAlignment="Center"
-                                                        Content="YAZDIR" MinWidth="50"
+                                                        Content="RAPOR" MinWidth="50"
                                                         Padding="5,0">
                                                     <Button.Command>
                                                         <Binding Path="DataContext.PrintRepairReportCommand"

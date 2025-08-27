@@ -6,7 +6,7 @@ namespace RepairTracking.Repositories.Abstract;
 
 public interface IRenovationRepository : IBaseContext
 {
-    bool AddRenovation(Renovation renovation);
+    int? AddRenovation(Renovation renovation);
     bool UpdateRenovation(Renovation renovation);
     bool DeleteRenovation(int id);
     bool DeleteRenovationDeliveryDate(int id);

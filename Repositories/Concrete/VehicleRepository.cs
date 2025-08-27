@@ -19,14 +19,38 @@ public class VehicleRepository(AppDbContext context) : BaseContext(context), IVe
         return await Context.Vehicles.AsNoTracking().Where(x => x.Customer.Id == customerId).ToListAsync();
     }
 
-    public async Task<Vehicle?> GetVehicleByChassisNo(string chassisNo)
+    public async Task<Vehicle?> GetVehicleByChassisNo(string chassisNo, int vehicleId = 0)
     {
-        return await Context.Vehicles.AsNoTracking().FirstOrDefaultAsync(x => x.ChassisNo == chassisNo);
+        // If vehicleId is provided, we exclude it from the search
+        if (string.IsNullOrWhiteSpace(chassisNo))
+            return null;
+
+        Expression<Func<Vehicle, bool>> predicate = x => x.ChassisNo == chassisNo;
+
+        if (vehicleId > 0)
+        {
+            predicate = predicate.And(x => x.Id != vehicleId);
+        }
+
+        return await Context.Vehicles.AsNoTracking().Where(predicate)
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<Vehicle?> GetVehicleByPlateNumber(string plateNumber, int vehicleId = 0)
+    {
+        Expression<Func<Vehicle, bool>> predicate = x => x.PlateNumber == plateNumber && !x.Passive;
+
+        if (vehicleId > 0)
+            predicate = predicate.And(x => x.Id != vehicleId);
+
+        return await Context.Vehicles.AsNoTracking().Where(predicate)
+            .FirstOrDefaultAsync();
     }
 
     public async Task<List<int>> GetPassiveVehicleIdsByChassisNo(string chassisNo)
     {
-        var list = await Context.Vehicles.AsNoTracking().Where(x => x.ChassisNo == chassisNo && x.Passive).ToListAsync();
+        var list = await Context.Vehicles.AsNoTracking().Where(x => x.ChassisNo == chassisNo && x.Passive)
+            .ToListAsync();
         return list.Select(x => x.Id).ToList();
     }
 
@@ -49,7 +73,7 @@ public class VehicleRepository(AppDbContext context) : BaseContext(context), IVe
                 .SetProperty(v => v.EngineNo, vehicle.EngineNo)
                 .SetProperty(v => v.Model, vehicle.Model)
                 .SetProperty(v => v.Color, vehicle.Color)
-                .SetProperty(v=> v.Image, vehicle.Image)
+                .SetProperty(v => v.Image, vehicle.Image)
                 .SetProperty(v => v.CustomerId, vehicle.CustomerId)) > 0;
     }
 
@@ -73,11 +97,6 @@ public class VehicleRepository(AppDbContext context) : BaseContext(context), IVe
         var b = await Context.Renovations
             .Where(r => r.VehicleId == id)
             .ExecuteUpdateAsync(r => r.SetProperty(v => v.Passive, true));
-    }
-
-    public async Task DeleteCustomerAsync(int customerId)
-    {
-        await Context.Database.ExecuteSqlRawAsync("EXEC DeactivateCustomer @CustomerId = {0}", customerId);
     }
 
     public async Task<List<VehicleCustomerModel>> GetVehicleCustomerModelAsync(int? vehicleId)
@@ -141,7 +160,8 @@ public class VehicleRepository(AppDbContext context) : BaseContext(context), IVe
     public List<Vehicle>? GetAllVehicleByChassises(IEnumerable<string>? chassisNos)
     {
         if (chassisNos != null)
-            return Context.Vehicles.AsNoTracking().Where(x => chassisNos.Contains(x.ChassisNo))
+            return Context.Vehicles.Include(x => x.Renovations).AsNoTracking()
+                .Where(x => chassisNos.Contains(x.ChassisNo) && x.Renovations.Any())
                 .ToList();
         return null;
     }

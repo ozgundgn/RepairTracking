@@ -122,12 +122,12 @@ public partial class ChangePasswordViewModel(IUserRepository userRepository, IDi
         var result = await userRepository.UpdateUserPasswordAsync(user.Id, user.Password);
         if (result == true)
         {
-            ErrorMessage = "Şifre başarıyla değiştirildi.";
-            await dialogService.OkMessageBox(ErrorMessage, MessageTitleType.SuccessTitle);
-            // Optionally, you can clear the fields after successful change
             CurrentPassword = string.Empty;
             NewPassword = string.Empty;
             ConfirmPassword = string.Empty;
+
+            ErrorMessage = "Şifre başarıyla değiştirildi.";
+            await dialogService.OkMessageBox(ErrorMessage, MessageTitleType.SuccessTitle);
             return;
         }
 

@@ -24,7 +24,7 @@ public partial class AddCustomerViewModel : ViewModelBase
 
     [ObservableProperty] [Required(ErrorMessage = "Telefon alanı boş bırakılamaz.")]
     private string _phoneNumber;
-  
+
     #region Costumer Validation Properties
 
     [ObservableProperty] private bool _nameHasError;
@@ -75,7 +75,7 @@ public partial class AddCustomerViewModel : ViewModelBase
 
     [ObservableProperty] [Required(ErrorMessage = "Model alanı boş bırakılamaz.")]
     private int _model;
-    
+
     [ObservableProperty] [Required(ErrorMessage = "Şasino alanı boş bırakılamaz.")]
     private string _chassisNumber;
 
@@ -109,7 +109,7 @@ public partial class AddCustomerViewModel : ViewModelBase
         OnPropertyChanged(nameof(ModelError));
         IsInValid = ModelHasError = !string.IsNullOrEmpty(ModelError);
     }
-    
+
     partial void OnChassisNumberChanged(string value)
     {
         ValidateProperty(value, nameof(ChassisNumber));
@@ -124,15 +124,25 @@ public partial class AddCustomerViewModel : ViewModelBase
     public AddCustomerViewModel(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
+        IsInValid = true;
     }
 
     // The Save command will close the window and return the new customer
-    
+
     public async Task<bool> ValidateCustomerNotExist()
     {
-        return await _unitOfWork.CustomersRepository.CheckIfCustomerExistsAsync(Name, Surname);
+        ValidateAllProperties();
+        if (HasErrors) return false;
+        var customerExists = await _unitOfWork.CustomersRepository.CheckIfCustomerExistsAsync(PhoneNumber);
+        if (customerExists)
+            return true;
+
+        var vehicleExists = await _unitOfWork.VehiclesRepository.GetVehicleByChassisNo(ChassisNumber);
+        if (vehicleExists != null)
+            return true;
+        return false;
     }
-    
+
 
     public CustomerViewModel? ReturnCustomerViewModel()
     {
@@ -151,7 +161,8 @@ public partial class AddCustomerViewModel : ViewModelBase
                     PlateNumber = PlateNumber,
                     Type = Brand,
                     Model = Model,
-                    Passive = false
+                    Passive = false,
+                    ChassisNo = ChassisNumber
                 }
             }
         });

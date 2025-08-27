@@ -7,7 +7,7 @@
         Width="1000" Height="800"
         x:Class="RepairTracking.Views.SaveRepairDetailWindow"
         x:DataType="viewModels:SaveRepairDetailViewModel"
-        Title="SaveRepairDetailWindow">
+        Title="Tamir Detayları">
     <Design.DataContext>
         <viewModels:SaveRepairDetailViewModel />
     </Design.DataContext>

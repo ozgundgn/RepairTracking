@@ -48,7 +48,7 @@ public partial class SendMailViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            await _dialogService.OkMessageBox($"E-posta gönderilemedi: {ex.Message}", MessageTitleType.SuccessTitle);
+            await _dialogService.OkMessageBox($"E-posta gönderilemedi: {ex.Message}", MessageTitleType.ErrorTitle);
         }
     }
 

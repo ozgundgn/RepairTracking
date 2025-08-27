@@ -129,7 +129,7 @@ public partial class HomeViewModel : ViewModelBase
     {
         var vehicleId = selectedCustomerModel.VehicleId;
         var vehicleDetailsViewModel = _viewModelFactory.CreateVehicleDetailsViewModel(
-            selectedCustomerModel.Name + " " + selectedCustomerModel.Surname, vehicleId);
+            selectedCustomerModel.Name + " " + selectedCustomerModel.Surname, vehicleId,selectedCustomerModel.CustomerId);
         await _dialogService.OpenVehicleDetailsDialogWindow(vehicleDetailsViewModel);
         Initialize();
     }
@@ -197,7 +197,7 @@ public partial class HomeViewModel : ViewModelBase
                 $"{vehicle.Name + " " + vehicle.Surname} müşterisini silmek istediğinize emin misiniz?",
                 MessageTitleType.WarningTitle);
         if (deleteResult)
-            await _vehicleRepository.DeleteCustomerAsync(vehicle.CustomerId);
+            await _customerRepository.DeleteCustomerAsync(vehicle.CustomerId);
         Initialize(); // Refresh the list after deletion
     }
 

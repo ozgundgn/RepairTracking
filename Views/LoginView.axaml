@@ -7,37 +7,44 @@
              Width="550"
              Height="450"
              x:DataType="viewModels:LoginViewModel">
+    <UserControl.KeyBindings>
+
+        <KeyBinding Gesture="Enter" Command="{Binding LoginCommand}" />
+    </UserControl.KeyBindings>
     <Grid>
         <Image Source="/Assets/ozenir-png.png"
                Stretch="UniformToFill"
                Opacity="0.2"
                IsHitTestVisible="False" />
         <Border BorderBrush="Bisque" BorderThickness="1" CornerRadius="8" Padding="10">
-        
-        <StackPanel Margin="20" HorizontalAlignment="Center" Spacing="10" VerticalAlignment="Stretch">
-            <TextBlock FontWeight="600" FontSize="15" HorizontalAlignment="Center"  Text="ÖZENİR OTO BAKIM" />
-            <!-- This Border is only visible when IsErrorVisible is true -->
-            <Border Background="#44FF0000"
-                    BorderBrush="Red"
-                    BorderThickness="1"
-                    CornerRadius="4"
-                    Padding="10"
-                    IsVisible="{Binding IsErrorVisible}">
-                <TextBlock Text="{Binding ErrorMessage}" Foreground="DarkGray" TextWrapping="Wrap" />
-            </Border>
-            <TextBox Text="{Binding Username}" Margin="0 30 0 0" Width="200" Watermark="Kullanıcı Adı" />
-            <TextBox PasswordChar="*" Margin="0 10 0 0 " Width="200" Text="{Binding Password,Mode=TwoWay}"
-                     Watermark="Şifre" />
-            <Button Content="Giriş" Margin="0 20 0 0" VerticalAlignment="Stretch" VerticalContentAlignment="Center"
-                    HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Command="{Binding LoginCommand}"
-                    Classes="accent" />
-            <Button Content="Şifre Değiştir" Margin="0 20 0 0" VerticalAlignment="Stretch"
-                    VerticalContentAlignment="Center" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch"
-                    Command="{Binding OpenChangePasswordWindowCommand }" Classes="accent" />
-            <Button Content="Şifremi Unuttum" Margin="0 20 0 0" VerticalAlignment="Stretch"
-                    VerticalContentAlignment="Center" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch"
-                    Command="{Binding OpenForgotPasswordWindowCommand }" Classes="accent" />
-        </StackPanel>
-    </Border>
-        </Grid>
+
+            <StackPanel Margin="20" HorizontalAlignment="Center" Spacing="10" VerticalAlignment="Stretch">
+                <TextBlock FontWeight="600" FontSize="15" HorizontalAlignment="Center" Text="ÖZENİR OTO BAKIM" />
+                <!-- This Border is only visible when IsErrorVisible is true -->
+                <Border Background="#44FF0000"
+                        BorderBrush="Red"
+                        BorderThickness="1"
+                        CornerRadius="4"
+                        Padding="10"
+                        IsVisible="{Binding IsErrorVisible}">
+                    <TextBlock Text="{Binding ErrorMessage}" Foreground="DarkGray" TextWrapping="Wrap" />
+                </Border>
+                <TextBox Text="{Binding Username}" Margin="0 30 0 0" Width="200" Watermark="Kullanıcı Adı" />
+                <TextBox PasswordChar="*" Margin="0 10 0 0 " Width="200" Text="{Binding Password,Mode=TwoWay}"
+                         Watermark="Şifre" />
+                <Button Content="Giriş" Margin="0 20 0 0" VerticalAlignment="Stretch" VerticalContentAlignment="Center"
+                        HorizontalContentAlignment="Center" HorizontalAlignment="Stretch"
+                        Command="{Binding LoginCommand}"
+                        Classes="accent" />
+                <Button Content="Şifre Değiştir" Margin="0 20 0 0" VerticalAlignment="Stretch"
+                        VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                        HorizontalAlignment="Stretch"
+                        Command="{Binding OpenChangePasswordWindowCommand }" Classes="accent" />
+                <Button Content="Şifremi Unuttum" Margin="0 20 0 0" VerticalAlignment="Stretch"
+                        VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                        HorizontalAlignment="Stretch"
+                        Command="{Binding OpenForgotPasswordWindowCommand }" Classes="accent" />
+            </StackPanel>
+        </Border>
+    </Grid>
 </UserControl>

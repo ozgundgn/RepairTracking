@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using RepairTracking.Services;
@@ -12,6 +13,7 @@ public partial class UserProfileHeaderViewModel : ViewModelBase
     [ObservableProperty] private string _email;
     private readonly IDialogService _dialogService;
     private readonly IViewModelFactory _viewModelFactory;
+
     public UserProfileHeaderViewModel(IDialogService dialogService, IViewModelFactory viewModelFactory)
     {
         _dialogService = dialogService;
@@ -20,12 +22,15 @@ public partial class UserProfileHeaderViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    public void LogoutCommand()
+    private void Logout()
     {
+        Window? owner = WindowLocator.GetActiveWindow();
+        if (owner != null && owner.Name != "MainRepairWindow")
+            owner.Close();
         AppServices.UserSessionService.Logout();
         AppServices.NavigationService.NavigateToLogin();
     }
-    
+
     [RelayCommand]
     private async Task OpenUsersWindow()
     {

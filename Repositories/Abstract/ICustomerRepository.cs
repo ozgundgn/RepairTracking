@@ -8,5 +8,6 @@ public interface ICustomerRepository : IBaseContext
     Task<Customer> AddAsync(Customer email);
     Task<bool> UpdateAsync(int id,Customer customer);
     Customer? GetCustomerWithAllDetails(int customerId);
-    Task<bool> CheckIfCustomerExistsAsync(string name, string surname);
+    Task<bool> CheckIfCustomerExistsAsync(string phoneNumber, int customerId = 0);
+    Task DeleteCustomerAsync(int customerId);
 }

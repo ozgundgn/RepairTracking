@@ -23,7 +23,6 @@ public class NavigationService(MainWindowViewModel mainWindowViewModel, IService
 
     public void NavigateToLogin()
     {
-        var userRepository = serviceProvider.GetRequiredService<IUserRepository>();
         var loginVm = viewModelFactory.CreateLoginViewModel();
         mainWindowViewModel.CurrentView = loginVm;
     }
