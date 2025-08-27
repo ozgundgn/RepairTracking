@@ -6,9 +6,11 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="RepairTracking.Views.SendMailWindow"
         x:DataType="viewModels:SendMailViewModel"
-        Title="Email Gönderim Formu">
+        Title="Mail Gönderim Formu">
     <Grid Margin="20">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -23,37 +25,50 @@
         <!-- Başlık -->
         <TextBlock Text="Email Gönderim Formu" FontSize="18" FontWeight="Bold" Foreground="Black" Grid.Row="0"
                    HorizontalAlignment="Center" />
-
+        <Panel Grid.Row="1">
+            <Button Content="TESLIMAT ŞABLONU" Command="{Binding DeliveryMessageTemplateCommand}"></Button>
+            <Button Content="BOŞ ŞABLON" Command="{Binding EmptyMessageTemplateCommand}"></Button>
+        </Panel>
         <!-- Alıcı E-Posta Adresi -->
-        <StackPanel Grid.Row="1" Margin="0,10,0,10">
+        <StackPanel Grid.Row="2" Margin="0,10,0,10">
             <TextBlock Text="Kime:" />
             <TextBox Name="ToTextBox" Text="{Binding ToEmail}" Watermark="Alıcı Mail Adresini Girin" />
         </StackPanel>
 
         <!-- Konu -->
-        <StackPanel Grid.Row="2" Margin="0,10,0,10">
+        <StackPanel Grid.Row="3" Margin="0,10,0,10">
             <TextBlock Text="Konu:" />
             <TextBox Name="SubjectTextBox" Watermark="Mail Konusunu Girin" />
         </StackPanel>
 
         <!-- Mesaj İçeriği -->
-        <StackPanel Grid.Row="3" Margin="0,10,0,10">
+        <StackPanel Grid.Row="4" Margin="0,10,0,10">
             <TextBlock Text="Mesaj:" />
             <TextBox Name="MessageTextBox" AcceptsReturn="True" Height="200" TextWrapping="Wrap"
                      Watermark="Mesajınızı Girin" Text="{Binding Message}" />
         </StackPanel>
 
         <!-- Dosya Ekle -->
-        <StackPanel Grid.Row="4" Margin="0,10,0,10">
+        <StackPanel Grid.Row="5" Margin="0,10,0,10">
             <TextBlock Text="Dosya:" />
             <StackPanel Orientation="Horizontal" Margin="0,5,0,10">
-                <TextBox Name="FilePathTextBox" IsReadOnly="True" Text="{Binding FilePath}" Width="400" Watermark="Dosya seçin..." />
-                <Button Content="Seç" Margin="5,0,0,10" Command="{Binding LoadFileCommand}" />
+                <TextBox Name="FilePathTextBox" IsReadOnly="True" Text="{Binding FilePath}" Width="400"
+                         Watermark="Dosya seçin..." />
+                <Button Content="Seç" IsVisible="{Binding !ClearableFile}" Margin="5,0,0,10"
+                        Command="{Binding LoadFileCommand}" />
+                <Button Content="Kaldır" IsVisible="{Binding ClearableFile}" Margin="5,0,0,10"
+                        Command="{Binding LoadFileCommand}" />
             </StackPanel>
         </StackPanel>
 
         <!-- Gönder Butonu -->
-        <Button Content="Gönder" Grid.Row="5" Margin="0,20,0,10" VerticalAlignment="Center" HorizontalAlignment="Center" Width="150"
+        <Button Content="Gönder" Grid.Row="6" Margin="0,20,0,10" VerticalAlignment="Center"
+                HorizontalAlignment="Center" Width="150"
                 Command="{Binding SendEmailCommand}" />
+
+        <!-- Sablonu Kaydet Butonu -->
+        <Button Content="Şablonu Kaydet" Grid.Row="7" Margin="0,20,0,10" VerticalAlignment="Center"
+                HorizontalAlignment="Center" Width="150"
+                Command="{Binding SaveTemplateCommand}" />
     </Grid>
 </Window>

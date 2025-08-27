@@ -21,7 +21,8 @@ public partial class AppDbContext : DbContext
     public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<Vehicle> Vehicles { get; set; }
-    
+    public virtual DbSet<Mail> Mails { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Customer>(entity =>
@@ -245,6 +246,26 @@ public partial class AppDbContext : DbContext
                 .HasForeignKey(d => d.CustomerId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("vehicles_customers_id_fk");
+        });
+
+        modelBuilder.Entity<Mail>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("mails_pk");
+
+            entity.ToTable("mails");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Type)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("type");
+            entity.Property(e => e.Subject)
+                .HasMaxLength(200)
+                .IsUnicode(false)
+                .HasColumnName("subject");
+            entity.Property(e => e.Template)
+                .HasColumnType("text")
+                .HasColumnName("template");
         });
 
         OnModelCreatingPartial(modelBuilder);

@@ -13,6 +13,7 @@ using RepairTracking.Reporting;
 using RepairTracking.Repositories.Abstract;
 using RepairTracking.Services;
 using RepairTracking.ViewModels.Factories;
+using Serilog;
 
 namespace RepairTracking.ViewModels;
 
@@ -262,10 +263,15 @@ public partial class CustomerWithAllDetailsViewModel : ViewModelBase
 
             if (sendMailToUser)
             {
-                var mailService = new NotificationFactory(new MailService(Email, file.Path.AbsolutePath));
-                mailService.SendMessage("Aracınız Hazır",
-                    "Merhaba " + renovationViewModel.CustomerName +
-                    ",\n\nAracınızın tamir işlemi tamamlanmıştır. Rapor ekte yer almaktadır.\n\nİyi günler dileriz.");
+                var mailService =
+                    new NotificationFactory(new MailService("ozgundgn0@gmail.com", file.Path.AbsolutePath));
+                var mail = await _unitOfWork.MailRepository.GetMailTemplateAsync("TESLIMAT");
+                if (mail is not null)
+                    mailService.SendMessage(mail.Type, mail.Template,
+                        $"{renovationViewModel.CustomerName} {renovationViewModel.CustomerSurname}");
+
+                else
+                    await _dialogService.OkMessageBox("Teslimat şablonu bulunamadı.", MessageTitleType.ErrorTitle);
             }
         }
     }

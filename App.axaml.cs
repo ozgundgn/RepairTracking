@@ -50,7 +50,7 @@ public class App : Application
         var services = new ServiceCollection();
         ConfigureServices(services);
         Services = services.BuildServiceProvider();
-        
+
         using (var scope = Services.CreateScope())
         {
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -62,7 +62,21 @@ public class App : Application
                     new User
                     {
                         Name = "özgün", Email = "admin@example.com", Password = "11", UserName = "admin",
-                        Surname = "doğan", Passive = false,UserId = Guid.NewGuid()
+                        Surname = "doğan", Passive = false, UserId = Guid.NewGuid()
+                    }
+                );
+                context.SaveChanges();
+            }
+
+            if (!context.Mails.Any())
+            {
+                context.Mails.AddRange(
+                    new Mail
+                    {
+                        Subject = "Aracanız Hazır",
+                        Type = "TESLIMAT",
+                        Template =
+                            "Merhaba {MUSTERIADI} ,\\n\\n {PLAKALI} aracınızın tamir işlemi tamamlanmıştır. Rapor ekte yer almaktadır.\\n\\n İyi günler dileriz."
                     }
                 );
                 context.SaveChanges();
@@ -150,6 +164,7 @@ public class App : Application
         services.AddScoped<ICustomerRepository, CustomerRepository>();
         services.AddScoped<ICustomersVehiclesRepository, CustomersVehiclesRepository>();
         services.AddScoped<IRenovationRepository, RenovationRepository>();
+        services.AddScoped<IMailRepository, MailRepository>();
         //unitofwork
         services.AddSingleton<IUnitOfWork, UnitOfWork>();
         services.AddSingleton<IViewModelFactory, ViewModelFactory>();

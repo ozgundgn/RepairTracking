@@ -39,8 +39,15 @@ public partial class ForgotPasswordViewModel
         if (result)
         {
             var user = await _userRepository.GetUserByIdAsync(UserId);
+            if (user == null)
+            {
+                await _dialogService.OkMessageBox("Kullanıcı bulunamadı.", MessageTitleType.ErrorTitle);
+                return;
+            }
+
             _notificationFactory.SendMessage("",
-                $"Şifreniz: {user.Password}. Lütfen bu şifreyi kullanarak giriş yapınız.");
+                $"Şifreniz: {user.Password}. Lütfen bu şifreyi kullanarak giriş yapınız.",
+                user.Name + " " + user.Surname);
 
             await _dialogService.OkMessageBox("Kod onaylandı. Şifreniz mail adresinize gönderildi.",
                 MessageTitleType.SuccessTitle);
@@ -57,7 +64,7 @@ public partial class ForgotPasswordViewModel
         if (user != null && user.Email != null)
         {
             _notificationFactory.SendMessage("Şifre Hatırlatma Onay Kodu",
-                $"Kodunuz: {SendedCode}. Lütfen bu kodu doğrulama ekranına giriniz.");
+                $"Kodunuz: {SendedCode}. Lütfen bu kodu doğrulama ekranına giriniz.", user.Name + " " + user.Surname);
         }
     }
 }

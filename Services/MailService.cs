@@ -2,6 +2,7 @@ using System;
 using System.Net;
 using System.Net.Mail;
 using System.Text;
+using Serilog;
 
 namespace RepairTracking.Services;
 
@@ -11,55 +12,42 @@ public class MailService(string toMail, string? filePath = null) : IMailService
     public string FilePath { get; set; } = filePath;
 
 
-    public void SendMessage(string subject, string messageText)
+    public void SendMessage(string subject, string messageText, string customerName)
     {
         string to = toMail; //To address
-        string from = "ozenir@ozenir.com"; //From address
+        string from = "ozeniroto@yandex.com"; //Your yandex email adress
         MailMessage message = new MailMessage(from, to);
 
-        string mailbody = "In this article you will learn how to send a email using Asp.Net & C#";
-        message.Subject = "Sending Email Using Asp.Net & C#";
-        message.Body = mailbody;
+        var mailbody = new StringBuilder(messageText);
+        if (!string.IsNullOrWhiteSpace(messageText) && messageText.Contains("{MUSTERIADI}"))
+            mailbody.Append(messageText.Replace("{MUSTERIADI}", customerName));
+
+        message.Subject = subject;
+        message.Body = mailbody.ToString();
         message.BodyEncoding = Encoding.UTF8;
         message.IsBodyHtml = true;
         if (!string.IsNullOrWhiteSpace(FilePath))
+        {
             message.Attachments.Add(new Attachment(FilePath));
+        }
 
         try
         {
-            const string emailfrom = "ozeniroto@yandex.com"; //Your yandex email adress
             var password = "ykdkcklnfwpevlwz"; //Your yandex app password
             using var smtpClient = new SmtpClient("smtp.yandex.com", 587);
             smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
             smtpClient.EnableSsl = true;
             smtpClient.UseDefaultCredentials = false;
-            smtpClient.Credentials = new NetworkCredential(emailfrom, password);
+            smtpClient.Credentials = new NetworkCredential(from, password);
 
-            smtpClient.Send(emailfrom, ToMail, "Subject of mail", "Content of mail");
+            smtpClient.Send(message);
+            Log.Logger.Information(
+                $"Mail Gönderildi. {customerName} Mail template: {mailbody}");
+
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
-            throw;
+            Log.Logger.Error(e.Message);
         }
-        // NetworkCredential basicCredential1 = new
-        //     NetworkCredential("ozeniroto@yandex.com", "nicpgivuqvdjlfcd");
-        // client.EnableSsl = true;
-        // client.UseDefaultCredentials = false;
-        // client.Credentials = basicCredential1;
-        //
-        // try
-        // {
-        //     client.Send(message);
-        // }
-        //
-        // catch (Exception ex)
-        // {
-        //     throw ex;
-        // }
-        // finally
-        // {
-        //     ServicePointManager.ServerCertificateValidationCallback = null;
-        // }
     }
 }

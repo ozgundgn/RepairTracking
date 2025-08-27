@@ -89,7 +89,7 @@ public partial class LoginViewModel(
             // var mailService = new MailKitSmptClient();
             // mailService.SendEmailAsync("fsfsf");
             var smtp = new NotificationFactory(new MailService(user.Email));
-            smtp.SendMessage("Şifre Hatırlatma",code);
+            smtp.SendMessage("Şifre Hatırlatma",code,user.Name + " " + user.Surname);
 
             var forgotPassword = viewModelFactory.CreateForgotPasswordViewModel(user.Id,code,user.Email!);
             await dialogService.OpenForgotPasswordDialogWindow(forgotPassword);

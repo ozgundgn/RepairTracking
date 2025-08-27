@@ -11,7 +11,7 @@ public class UnitOfWork(
     ICustomerRepository customersRepository,
     IRenovationRepository renovationsRepository,
     ICustomersVehiclesRepository customersVehiclesRepository,
-    IUserRepository usersRepository)
+    IUserRepository usersRepository,IMailRepository mailRepository)
     :BaseContext(context), IUnitOfWork
 {
     public IVehicleRepository VehiclesRepository { get; } = vehiclesRepository;
@@ -21,6 +21,7 @@ public class UnitOfWork(
     
     public IUserRepository UsersRepository { get; } = usersRepository;
 
+    public IMailRepository MailRepository { get; } = mailRepository;
     public async Task SaveChangesAsync(CancellationToken? cancellationToken = null)
     {
         await Context.SaveChangesAsync();

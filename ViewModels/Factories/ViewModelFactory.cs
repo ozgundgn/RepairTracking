@@ -85,7 +85,7 @@ public class ViewModelFactory(IUnitOfWork unitOfWork, IDialogService dialogServi
 
     public SendMailViewModel CreateSendMailViewModel(string email = "")
     {
-        return new SendMailViewModel(dialogService)
+        return new SendMailViewModel(dialogService, unitOfWork.MailRepository)
         {
             ToEmail = email
         };

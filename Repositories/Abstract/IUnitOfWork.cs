@@ -10,6 +10,7 @@ public interface IUnitOfWork
     public IRenovationRepository RenovationsRepository { get; }
     public ICustomersVehiclesRepository CustomersVehiclesRepository { get; }
     public IUserRepository UsersRepository { get; }
+    public IMailRepository MailRepository { get; }
     
     Task SaveChangesAsync(CancellationToken? cancellationToken = null);
 }
