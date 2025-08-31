@@ -8,13 +8,14 @@
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
 
 
-<!--         Essential for self-contained executable -->
-        <PublishSingleFile>true</PublishSingleFile>
+        <!--         Essential for self-contained executable -->
+        <PublishSingleFile>false</PublishSingleFile>
         <SelfContained>true</SelfContained>
-        <PublishTrimmed>true</PublishTrimmed> <!-- Optional: Reduces size -->
+        <PublishTrimmed>false</PublishTrimmed> <!-- Optional: Reduces size -->
         <PublishReadyToRun>true</PublishReadyToRun> <!-- Optional: Improves startup time -->
+        <PreserveCompilationContext>true</PreserveCompilationContext>
     </PropertyGroup>
-    
+
     <ItemGroup>
         <RuntimeIdentifier Include="win-x64"/>
         <RuntimeIdentifier Include="osx-x64"/> <!-- Add this line for Intel Macs -->
