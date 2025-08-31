@@ -42,9 +42,7 @@ public class App : Application
     public override void OnFrameworkInitializationCompleted()
     {
         // 1. Configuration (if using appsettings.json)
-        var builder = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory()) // Or AppContext.BaseDirectory
-            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+        var builder = new ConfigurationBuilder();
         Configuration = builder.Build();
         // --- Start of DI Configuration ---
         var services = new ServiceCollection();
