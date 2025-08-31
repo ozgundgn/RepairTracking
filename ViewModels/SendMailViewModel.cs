@@ -10,29 +10,25 @@ using RepairTracking.Services;
 
 namespace RepairTracking.ViewModels;
 
-public partial class SendMailViewModel : ViewModelBase
+public partial class SendMailViewModel(
+    IDialogService dialogService,
+    IMailRepository mailRepository,
+    IUserRepository userRepository)
+    : ViewModelBase
 {
     [ObservableProperty] private string _toEmail;
     [ObservableProperty] private string _subject;
     [ObservableProperty] private string _message;
     [ObservableProperty] private string _filePath;
     [ObservableProperty] private bool _clearableFile;
-    [ObservableProperty] private string? _customerName;
     [ObservableProperty] private int? _id;
 
-    private readonly IDialogService _dialogService;
-    private readonly IMailRepository _mailRepository;
-
-    public SendMailViewModel(IDialogService dialogService, IMailRepository mailRepository)
-    {
-        _dialogService = dialogService;
-        _mailRepository = mailRepository;
-    }
+    public TopLevel View { get; set; }
 
     [RelayCommand]
     private async Task DeliveryMessageTemplate()
     {
-        var mail = await _mailRepository.GetMailTemplateAsync("TESLIMAT");
+        var mail = await mailRepository.GetMailTemplateAsync("TESLIMAT");
         if (mail != null)
         {
             Subject = mail.Subject;
@@ -41,12 +37,12 @@ public partial class SendMailViewModel : ViewModelBase
         }
         else
         {
-            await _dialogService.OkMessageBox("Teslimat şablonu bulunamadı.", MessageTitleType.ErrorTitle);
+            await dialogService.OkMessageBox("Teslimat şablonu bulunamadı.", MessageTitleType.ErrorTitle);
         }
     }
 
     [RelayCommand]
-    private async Task EmptyMessageTemplate()
+    private void EmptyMessageTemplate()
     {
         Subject = string.Empty;
         Message = string.Empty;
@@ -56,34 +52,29 @@ public partial class SendMailViewModel : ViewModelBase
     [RelayCommand]
     private async Task SendEmail()
     {
-        if (string.IsNullOrWhiteSpace(ToEmail) ||
-            string.IsNullOrWhiteSpace(Message))
+        if (string.IsNullOrWhiteSpace(ToEmail) || string.IsNullOrWhiteSpace(Message))
         {
-            await _dialogService.OkMessageBox("Lütfen tüm alanları doldurun.", MessageTitleType.WarningTitle);
+            await dialogService.OkMessageBox("Lütfen alıcı ve mesaj alanları doldurun.", MessageTitleType.WarningTitle);
             return;
         }
 
+        var user = await userRepository.GetUserAsync(x => x.Email == ToEmail);
         try
         {
             // SMTP istemcisi oluşturma
             var mailService = new NotificationFactory(new MailService(ToEmail, FilePath));
-            mailService.SendMessage(Subject, Message, CustomerName ?? "");
-            // var mailSerivce = new MailKitSmptClient();
-            // mailSerivce.SendEmailAsync("",FilePath);
-            await _dialogService.OkMessageBox("Mail başarıyla gönderildi.", MessageTitleType.SuccessTitle);
-
+            mailService.SendMessage(Subject, Message, user?.Name ?? "");
+            await dialogService.OkMessageBox("Mail başarıyla gönderildi.", MessageTitleType.SuccessTitle);
             ToEmail = string.Empty;
             Subject = string.Empty;
             Message = string.Empty;
-            
         }
         catch (Exception ex)
         {
-            await _dialogService.OkMessageBox($"E-posta gönderilemedi: {ex.Message}", MessageTitleType.ErrorTitle);
+            await dialogService.OkMessageBox($"E-posta gönderilemedi: {ex.Message}", MessageTitleType.ErrorTitle);
         }
     }
 
-    public TopLevel View { get; set; }
 
     [RelayCommand]
     private async Task LoadFile()
@@ -101,7 +92,7 @@ public partial class SendMailViewModel : ViewModelBase
         {
             var file = files[0];
             await using var stream = await file.OpenReadAsync();
-            FilePath = file.Path.AbsolutePath;
+            FilePath = Uri.UnescapeDataString(file.Path.AbsolutePath);
             ClearableFile = true;
         }
     }
@@ -113,12 +104,12 @@ public partial class SendMailViewModel : ViewModelBase
         {
             if (string.IsNullOrWhiteSpace(Subject) || string.IsNullOrWhiteSpace(Message))
             {
-                await _dialogService.OkMessageBox("Konu ve mesaj alanları boş olamaz.", MessageTitleType.WarningTitle);
+                await dialogService.OkMessageBox("Konu ve mesaj alanları boş olamaz.", MessageTitleType.WarningTitle);
                 return;
             }
 
-            await _mailRepository.SaveMailTemplateAsync((int)Id, Subject, Message);
-            await _dialogService.OkMessageBox("Şablon başarıyla kaydedildi.", MessageTitleType.SuccessTitle);
+            await mailRepository.SaveMailTemplateAsync((int)Id, Subject, Message);
+            await dialogService.OkMessageBox("Şablon başarıyla kaydedildi.", MessageTitleType.SuccessTitle);
         }
     }
 

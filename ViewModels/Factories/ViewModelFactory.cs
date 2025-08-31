@@ -78,6 +78,11 @@ public class ViewModelFactory(IUnitOfWork unitOfWork, IDialogService dialogServi
         return new LoginViewModel(unitOfWork.UsersRepository, dialogService, this);
     }
 
+    public HomeViewModel CreateHomeViewModel()
+    {
+        return new HomeViewModel(unitOfWork, this, dialogService);
+    }
+
     public UserViewModel CreateUserViewModel()
     {
         return new UserViewModel(unitOfWork.UsersRepository, dialogService, this);
@@ -85,7 +90,7 @@ public class ViewModelFactory(IUnitOfWork unitOfWork, IDialogService dialogServi
 
     public SendMailViewModel CreateSendMailViewModel(string email = "")
     {
-        return new SendMailViewModel(dialogService, unitOfWork.MailRepository)
+        return new SendMailViewModel(dialogService, unitOfWork.MailRepository, unitOfWork.UsersRepository)
         {
             ToEmail = email
         };

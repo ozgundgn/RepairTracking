@@ -140,6 +140,7 @@ public class VehicleRepository(AppDbContext context) : BaseContext(context), IVe
             {
                 Name = x.Customer.Name,
                 Surname = x.Customer.Surname,
+                Email = x.Customer.Email,
                 PlateNumber = x.PlateNumber,
                 CustomerId = x.Customer.Id,
                 PhoneNumber = x.Customer.PhoneNumber,

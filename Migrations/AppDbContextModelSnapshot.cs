@@ -139,6 +139,9 @@ namespace RepairTracking.Migrations
                     b.HasKey("Id")
                         .HasName("mails_pk");
 
+                    b.HasIndex(new[] { "Id" }, "mails_pk1")
+                        .IsUnique();
+
                     b.ToTable("mails", (string)null);
                 });
 

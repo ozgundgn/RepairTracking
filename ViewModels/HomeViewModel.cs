@@ -129,7 +129,8 @@ public partial class HomeViewModel : ViewModelBase
     {
         var vehicleId = selectedCustomerModel.VehicleId;
         var vehicleDetailsViewModel = _viewModelFactory.CreateVehicleDetailsViewModel(
-            selectedCustomerModel.Name + " " + selectedCustomerModel.Surname, vehicleId,selectedCustomerModel.CustomerId);
+            selectedCustomerModel.Name + " " + selectedCustomerModel.Surname, vehicleId,
+            selectedCustomerModel.CustomerId);
         await _dialogService.OpenVehicleDetailsDialogWindow(vehicleDetailsViewModel);
         Initialize();
     }
@@ -232,8 +233,8 @@ public partial class HomeViewModel : ViewModelBase
 
             // Using the path from the saved file, generate the PDF
             var report = new RepairReportDocument(renovationViewModel);
-            report.GeneratePdf(file.Path.AbsolutePath);
-            reportPath = file.Path.AbsolutePath;
+            reportPath = Uri.UnescapeDataString(file.Path.AbsolutePath);
+            report.GeneratePdf(reportPath);
 
             _unitOfWork.RenovationsRepository.UpdateRenovationReportPath(renovation.Id, reportPath);
         }

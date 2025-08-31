@@ -1,4 +1,6 @@
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using RepairTracking.Data;
 using RepairTracking.Data.Models;
 using RepairTracking.Repositories.Abstract;
@@ -9,7 +11,7 @@ public class MailRepository(AppDbContext context) : BaseContext(context), IMailR
 {
     public async Task<Mail?> GetMailTemplateAsync(string templateName)
     {
-        var mail = await Context.Mails.FindAsync(templateName);
+        var mail = await Context.Mails.FirstOrDefaultAsync(x=>x.Type == templateName);
         return mail;
     }
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -242,19 +243,20 @@ public partial class CustomerWithAllDetailsViewModel : ViewModelBase
         var file = await _dialogService.SaveFilePickerAsync(View, "Araç Kabul Raporu",
             $"{renovationViewModel.CustomerName}-{renovationViewModel.Complaint}-{renovationViewModel.UpdatedDate}"
         );
-
+        string absolutePath = string.Empty;
         if (file is not null)
         {
+            absolutePath = Uri.UnescapeDataString(file.Path.AbsolutePath);
             var report = new RepairReportDocument(renovationViewModel);
-            report.GeneratePdf(file.Path.AbsolutePath);
+            report.GeneratePdf(absolutePath);
         }
 
-        if (!string.IsNullOrWhiteSpace(file?.Path.AbsolutePath))
+        if (!string.IsNullOrWhiteSpace(absolutePath))
         {
-            _renovationRepository.UpdateRenovationReportPath(renovationViewModel.Id, file.Path.AbsolutePath);
+            _renovationRepository.UpdateRenovationReportPath(renovationViewModel.Id, absolutePath);
 
             var pdfViewModel =
-                _viewModelFactory.CreatePdfViewerViewModel(file.Path.AbsolutePath);
+                _viewModelFactory.CreatePdfViewerViewModel(absolutePath);
             await _dialogService.OpenPdfViewerWindow(pdfViewModel);
 
             var sendMailToUser = await _dialogService.YesNoMessageBox(
@@ -264,12 +266,11 @@ public partial class CustomerWithAllDetailsViewModel : ViewModelBase
             if (sendMailToUser)
             {
                 var mailService =
-                    new NotificationFactory(new MailService("ozgundgn0@gmail.com", file.Path.AbsolutePath));
+                    new NotificationFactory(new MailService("ozgundgn0@gmail.com", absolutePath));
                 var mail = await _unitOfWork.MailRepository.GetMailTemplateAsync("TESLIMAT");
                 if (mail is not null)
-                    mailService.SendMessage(mail.Type, mail.Template,
+                    mailService.SendMessage(mail.Subject, mail.Template,
                         $"{renovationViewModel.CustomerName} {renovationViewModel.CustomerSurname}");
-
                 else
                     await _dialogService.OkMessageBox("Teslimat şablonu bulunamadı.", MessageTitleType.ErrorTitle);
             }

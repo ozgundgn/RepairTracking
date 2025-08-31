@@ -7,18 +7,15 @@ using RepairTracking.ViewModels.Factories;
 
 namespace RepairTracking.Services;
 
-public class NavigationService(MainWindowViewModel mainWindowViewModel, IServiceProvider serviceProvider,IViewModelFactory viewModelFactory)
+public class NavigationService(
+    MainWindowViewModel mainWindowViewModel,
+    IViewModelFactory viewModelFactory)
     : INavigationService
 {
     public void NavigateTo<TWindow>() where TWindow : Window, new()
     {
         var window = new TWindow();
         window.Show();
-    }
-
-    public void CloseCurrent(Window window)
-    {
-        window.Close();
     }
 
     public void NavigateToLogin()
@@ -29,7 +26,7 @@ public class NavigationService(MainWindowViewModel mainWindowViewModel, IService
 
     public void NavigateToHome()
     {
-        var homeVm = serviceProvider.GetRequiredService<HomeViewModel>();
+        var homeVm = viewModelFactory.CreateHomeViewModel();
         mainWindowViewModel.CurrentView = homeVm;
     }
 }

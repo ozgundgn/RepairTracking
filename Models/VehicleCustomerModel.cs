@@ -15,5 +15,6 @@ public partial class VehicleCustomerModel : ViewModelBase
     public string PlateNumber { get; set; }
     public string PhoneNumber { get; set; }
     public string CreatedUser { get; set; }
+    public string? Email { get; set; }
     [ObservableProperty] private bool _isSelected;
 }

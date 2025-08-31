@@ -19,9 +19,6 @@ public partial class ForgotPasswordViewModel
 
     [ObservableProperty] string _sendedCode = string.Empty;
 
-
-    private NotificationFactory _notificationFactory;
-
     private readonly IUserRepository _userRepository;
     private readonly IDialogService _dialogService;
 
@@ -29,7 +26,6 @@ public partial class ForgotPasswordViewModel
     {
         _userRepository = userRepository;
         _dialogService = dialogService;
-        _notificationFactory = new NotificationFactory(new MailService(Email));
     }
 
     [RelayCommand]
@@ -39,15 +35,10 @@ public partial class ForgotPasswordViewModel
         if (result)
         {
             var user = await _userRepository.GetUserByIdAsync(UserId);
-            if (user == null)
-            {
-                await _dialogService.OkMessageBox("Kullanıcı bulunamadı.", MessageTitleType.ErrorTitle);
-                return;
-            }
-
-            _notificationFactory.SendMessage("",
-                $"Şifreniz: {user.Password}. Lütfen bu şifreyi kullanarak giriş yapınız.",
-                user.Name + " " + user.Surname);
+            var notificationFactory = new NotificationFactory(new MailService(Email));
+            notificationFactory.SendMessage("",
+                $"Kullanıcı: {user?.UserName}<br>Şifreniz: {user?.Password} <br> Lütfen bu şifreyi kullanarak giriş yapınız.",
+                user?.Name + " " + user?.Surname);
 
             await _dialogService.OkMessageBox("Kod onaylandı. Şifreniz mail adresinize gönderildi.",
                 MessageTitleType.SuccessTitle);
@@ -63,7 +54,8 @@ public partial class ForgotPasswordViewModel
         var user = await _userRepository.GetUserByIdAsync(UserId);
         if (user != null && user.Email != null)
         {
-            _notificationFactory.SendMessage("Şifre Hatırlatma Onay Kodu",
+            var notificationFactory = new NotificationFactory(new MailService(Email));
+            notificationFactory.SendMessage("Şifre Hatırlatma Onay Kodu",
                 $"Kodunuz: {SendedCode}. Lütfen bu kodu doğrulama ekranına giriniz.", user.Name + " " + user.Surname);
         }
     }

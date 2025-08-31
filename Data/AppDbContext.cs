@@ -251,9 +251,8 @@ public partial class AppDbContext : DbContext
         modelBuilder.Entity<Mail>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("mails_pk");
-
             entity.ToTable("mails");
-
+            entity.HasIndex(e => e.Id, "mails_pk1").IsUnique();
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Type)
                 .HasMaxLength(100)

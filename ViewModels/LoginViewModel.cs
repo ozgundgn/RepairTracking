@@ -69,11 +69,11 @@ public partial class LoginViewModel(
     {
         if (string.IsNullOrWhiteSpace(Username))
         {
-            await dialogService.OkMessageBox("Kullanıcı adını boş bırakmayınız.", MessageTitleType.WarningTitle);
+            await dialogService.OkMessageBox("Kullanıcı adı ya da mail adresi giriniz.", MessageTitleType.WarningTitle);
             return;
         }
 
-        var user = await userRepository.GetUserByUsernameAsync(Username);
+        var user = await userRepository.GetUserByUsernameOrEmailAsync(Username);
         if (user == null)
         {
             await dialogService.OkMessageBox("Aktif kullanıcı bulunamadı.", MessageTitleType.WarningTitle);
@@ -89,9 +89,9 @@ public partial class LoginViewModel(
             // var mailService = new MailKitSmptClient();
             // mailService.SendEmailAsync("fsfsf");
             var smtp = new NotificationFactory(new MailService(user.Email));
-            smtp.SendMessage("Şifre Hatırlatma",code,user.Name + " " + user.Surname);
+            smtp.SendMessage("Şifre Hatırlatma", "Hatırlatma Kodu: " + code, user.Name + " " + user.Surname);
 
-            var forgotPassword = viewModelFactory.CreateForgotPasswordViewModel(user.Id,code,user.Email!);
+            var forgotPassword = viewModelFactory.CreateForgotPasswordViewModel(user.Id, code, user.Email);
             await dialogService.OpenForgotPasswordDialogWindow(forgotPassword);
         }
         else

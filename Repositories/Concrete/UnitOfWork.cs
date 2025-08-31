@@ -18,9 +18,7 @@ public class UnitOfWork(
     public ICustomerRepository CustomersRepository { get; } = customersRepository;
     public IRenovationRepository RenovationsRepository { get; } = renovationsRepository;
     public ICustomersVehiclesRepository CustomersVehiclesRepository { get; } = customersVehiclesRepository;
-    
     public IUserRepository UsersRepository { get; } = usersRepository;
-
     public IMailRepository MailRepository { get; } = mailRepository;
     public async Task SaveChangesAsync(CancellationToken? cancellationToken = null)
     {

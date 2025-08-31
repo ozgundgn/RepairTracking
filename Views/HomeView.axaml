@@ -57,12 +57,12 @@
                           CanUserSortColumns="True"
                           GridLinesVisibility="All"
                           BorderThickness="1" BorderBrush="Gray"
-                          SelectedItem="{Binding SelectedCustomerModel,Mode=TwoWay}"
-                          CellEditEnded="DataGrid_OnCellEditEnded">
+                          SelectedItem="{Binding SelectedCustomerModel,Mode=TwoWay}">
                     <DataGrid.Columns>
                         <!-- <DataGridCheckBoxColumn Binding="{Binding IsSelected}"></DataGridCheckBoxColumn> -->
                         <DataGridTextColumn Header="Ad" Binding="{Binding Name}" />
                         <DataGridTextColumn Header="Soyad" Binding="{Binding Surname}" />
+                        <DataGridTextColumn Header="E-posta" Binding="{Binding Email}" />
                         <DataGridTextColumn Header="Plaka" Binding="{Binding PlateNumber}" />
                         <DataGridTextColumn Header="Telefon" Binding="{Binding PhoneNumber}" />
                         <DataGridTextColumn Header="Model" Binding="{Binding Model}" />
@@ -156,8 +156,8 @@
                                             </Button.CommandParameter>
                                         </Button>
                                     </StackPanel>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                     </DataGrid.Columns>
                 </DataGrid>

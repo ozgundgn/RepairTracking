@@ -24,6 +24,9 @@ public partial class AddCustomerViewModel : ViewModelBase
 
     [ObservableProperty] [Required(ErrorMessage = "Telefon alanı boş bırakılamaz.")]
     private string _phoneNumber;
+    
+    [ObservableProperty] [Required(ErrorMessage = "Email alanı boş bırakılamaz.")]
+    private string _email;
 
     #region Costumer Validation Properties
 
@@ -33,9 +36,12 @@ public partial class AddCustomerViewModel : ViewModelBase
 
     [ObservableProperty] private bool _phoneNumberHasError;
 
+    [ObservableProperty] private bool _emailHasError;
+
     public string NameError => GetPropertyErrors(nameof(Name));
     public string SurnameError => GetPropertyErrors(nameof(Surname));
     public string PhoneNumberError => GetPropertyErrors(nameof(PhoneNumber));
+    public string EmailError => GetPropertyErrors(nameof(Email));
 
     private string GetPropertyErrors(string propertyName)
     {
@@ -64,7 +70,12 @@ public partial class AddCustomerViewModel : ViewModelBase
         OnPropertyChanged(nameof(PhoneNumberError));
         IsInValid = PhoneNumberHasError = !string.IsNullOrEmpty(PhoneNumberError);
     }
-
+    partial void OnEmailChanged(string value)
+    {
+        ValidateProperty(value, nameof(Email));
+        OnPropertyChanged(nameof(EmailError));
+        IsInValid = EmailHasError = !string.IsNullOrEmpty(EmailError);
+    }
     #endregion
 
     [ObservableProperty] [Required(ErrorMessage = "Plaka alanı boş bırakılamaz.")]
@@ -153,8 +164,9 @@ public partial class AddCustomerViewModel : ViewModelBase
             Surname = Surname,
             PhoneNumber = PhoneNumber,
             Name = Name,
+            Email = Email,
             CreatedUser = AppServices.UserSessionService.CurrentUser?.Id ?? 0,
-            Vehicles = new List<Vehicle>()
+            Vehicles = new List<Vehicle>
             {
                 new()
                 {

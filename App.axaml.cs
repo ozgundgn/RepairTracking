@@ -55,17 +55,15 @@ public class App : Application
         {
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             context.Database.Migrate(); // Creates & migrates
-            context.Users.RemoveRange(context.Users);
             if (!context.Users.Any()) // Example table
             {
                 context.Users.AddRange(
                     new User
                     {
-                        Name = "özgün", Email = "admin@example.com", Password = "11", UserName = "admin",
-                        Surname = "doğan", Passive = false, UserId = Guid.NewGuid()
+                        Name = "admin", Email = "admin@example.com", Password = "1234", UserName = "admin",
+                        Surname = "admin", Passive = false, UserId = Guid.NewGuid()
                     }
                 );
-                context.SaveChanges();
             }
 
             if (!context.Mails.Any())
@@ -76,14 +74,14 @@ public class App : Application
                         Subject = "Aracanız Hazır",
                         Type = "TESLIMAT",
                         Template =
-                            "Merhaba {MUSTERIADI} ,\\n\\n {PLAKALI} aracınızın tamir işlemi tamamlanmıştır. Rapor ekte yer almaktadır.\\n\\n İyi günler dileriz."
+                            "<p>&nbsp;&nbsp;Merhaba {MUSTERIADI},</p><br><p>&nbsp;Aracınızın tamir işlemi tamamlanmıştır. Rapor ekte yer almaktadır.</p><br><br><p> İyi günler dileriz.</p></p>",
                     }
                 );
-                context.SaveChanges();
             }
+
+            context.SaveChanges();
         }
         // --- End of DI Configuration ---
-
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
@@ -97,7 +95,7 @@ public class App : Application
             {
                 DataContext = mainWindowViewModel
             };
-            NavigationService = new NavigationService(mainWindowViewModel, Services,
+            NavigationService = new NavigationService(mainWindowViewModel,
                 Services.GetRequiredService<IViewModelFactory>());
             AppServices.NavigationService = NavigationService;
 
@@ -133,7 +131,7 @@ public class App : Application
         });
     }
 
-    public void ConfigureServices(ServiceCollection services)
+    private void ConfigureServices(ServiceCollection services)
     {
         services.AddSingleton(Configuration);
         string dbPath = Path.Combine(

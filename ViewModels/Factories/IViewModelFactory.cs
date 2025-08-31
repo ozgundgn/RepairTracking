@@ -23,6 +23,8 @@ public interface IViewModelFactory
     ForgotPasswordViewModel CreateForgotPasswordViewModel(int userId, string sendedCode, string email);
 
     LoginViewModel CreateLoginViewModel();
+    
+    HomeViewModel CreateHomeViewModel();
 
     UserViewModel CreateUserViewModel();
 
