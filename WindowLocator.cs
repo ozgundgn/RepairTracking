@@ -11,7 +11,7 @@ public static class WindowLocator
     {
         if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            return desktop.Windows.FirstOrDefault(w => w.IsActive);
+            return desktop.Windows.FirstOrDefault(w => w.IsActive && w.IsVisible && w.WindowState != WindowState.Minimized);
         }
 
         return null;

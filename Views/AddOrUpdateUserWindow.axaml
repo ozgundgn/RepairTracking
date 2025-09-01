@@ -19,10 +19,6 @@
             <TextBox Grid.Column="1" Margin="10 " Text="{Binding Surname}"></TextBox>
         </Grid>
         <Grid ColumnDefinitions="75,*">
-            <TextBlock Grid.Column="0" Margin="0 10 0 0 " HorizontalAlignment="Right" VerticalAlignment="Center">Kullanıcı Adı</TextBlock>
-            <TextBox Grid.Column="1" Margin="10" Text="{Binding Username}"></TextBox>
-        </Grid>
-        <Grid ColumnDefinitions="75,*">
             <TextBlock Grid.Column="0" Margin="0 10 0 0 " HorizontalAlignment="Right" VerticalAlignment="Center">Telefon</TextBlock>
             <TextBox Grid.Column="1" Margin="10" Text="{Binding Phone}"></TextBox>
         </Grid>

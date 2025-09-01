@@ -16,5 +16,8 @@ public partial class VehicleCustomerModel : ViewModelBase
     public string PhoneNumber { get; set; }
     public string CreatedUser { get; set; }
     public string? Email { get; set; }
+
+    public bool Passive { get; set; }
+    public string Active => Passive ? "Hayır" : "Evet";
     [ObservableProperty] private bool _isSelected;
 }

@@ -29,7 +29,7 @@ public partial class SaveRepairDetailViewModel : ViewModelBase
 
     public ObservableCollection<RenovationDetailViewModel> RenovationDetails
     {
-        get => _renovationDetails ??= new ObservableCollection<RenovationDetailViewModel>();
+        get => _renovationDetails;
         set => SetProperty(ref _renovationDetails, value);
     }
 
@@ -63,6 +63,13 @@ public partial class SaveRepairDetailViewModel : ViewModelBase
         }
         set
         {
+            if (value == null)
+            {
+                RepairDate = default;
+                OnPropertyChanged(nameof(RepairDate));
+                return;
+            }
+
             DateOnly newDate = DateOnly.FromDateTime(value?.DateTime ?? DateTime.Now);
             RepairDate = newDate;
             OnPropertyChanged(nameof(RepairDate));
@@ -260,14 +267,14 @@ public partial class SaveRepairDetailViewModel : ViewModelBase
                     VehicleId = SelectedVehicle.Id,
                     CreatedDate = DateTime.Now,
                     UpdatedDate = DateTime.Now,
-                    RenovationDetails = RenovationDetails.Select(x => new RenovationDetail()
+                    RenovationDetails = RenovationDetails?.Select(x => new RenovationDetail
                     {
                         Description = x.Description,
                         Name = x.Name,
                         Price = x.Price,
                         TCode = x.TCode,
                         Note = x.Note
-                    }).ToList()
+                    })?.ToList()
                 };
                 var id = _renovationRepository.AddRenovation(Renovation);
                 if (id > 0)

@@ -46,12 +46,6 @@
                 <TextBox Text="{Binding Km}" MinWidth="250"></TextBox>
             </StackPanel>
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5">
-                <TextBlock Text="PASİF" FontSize="16" HorizontalAlignment="Left" Width="100"
-                           VerticalAlignment="Center">
-                </TextBlock>
-                <CheckBox IsChecked="{Binding Passive}" MinWidth="250"></CheckBox>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5">
                 <TextBlock Text="MODEL" FontSize="16" HorizontalAlignment="Left" Width="100"
                            VerticalAlignment="Center">
                 </TextBlock>

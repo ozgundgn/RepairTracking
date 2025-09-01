@@ -15,7 +15,9 @@ public interface IUserRepository : IBaseContext
     Task<User?> GetUserByIdAsync(int userId);
     Task<bool?> UpdateUserPasswordAsync(int userId, string newPassword);
     Task<User?> GetUserByUsernameOrEmailAsync(string usernameOrEmail);
-    Task<User?> GetUserByEmailAndUsernameAsync(string email, string username, int? userdId = null);
+
+    Task<User?> GetUserByEmailAndUsernameAndSurnameAsync(string email, string name, string surname,
+        int? userdId = null);
     Task<User?> GetUserByPhoneAndUsernameAsync(string phone, string username, int? userdId = null);
     List<UserInfo> GetActiveUsers();
     bool DeleteUser(int userId);

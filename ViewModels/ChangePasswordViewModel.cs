@@ -108,7 +108,10 @@ public partial class ChangePasswordViewModel(IUserRepository userRepository, IDi
             return;
         }
 
-        var user = await userRepository.GetUserAsync(Username, CurrentPassword);
+        var name = Username.Split(" ").Length > 0 ? Username.Split(" ")[0] : "";
+        var surname = Username.Split(" ").Length > 1 ? Username.Split(" ")[1] : "";
+        var user = await userRepository.GetUserAsync(x =>
+            x.Name == name && x.Surname == surname && x.Password == CurrentPassword && !x.Passive);
 
         if (user == null)
         {
@@ -125,7 +128,7 @@ public partial class ChangePasswordViewModel(IUserRepository userRepository, IDi
             CurrentPassword = string.Empty;
             NewPassword = string.Empty;
             ConfirmPassword = string.Empty;
-
+            dialogService.CloseCurrentWindow();
             ErrorMessage = "Şifre başarıyla değiştirildi.";
             await dialogService.OkMessageBox(ErrorMessage, MessageTitleType.SuccessTitle);
             return;

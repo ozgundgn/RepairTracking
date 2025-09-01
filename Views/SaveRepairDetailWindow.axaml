@@ -9,6 +9,12 @@
         WindowStartupLocation="CenterScreen"
         x:DataType="viewModels:SaveRepairDetailViewModel"
         Title="Tamir Detayları">
+    <Window.Styles>
+        <Style Selector="Button.coral">
+            <Setter Property="Background" Value="Coral" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+    </Window.Styles>
     <Design.DataContext>
         <viewModels:SaveRepairDetailViewModel />
     </Design.DataContext>
@@ -19,9 +25,16 @@
             <TextBlock Text="Plaka:" />
             <TextBlock Text="{Binding SelectedVehicle.PlateNumber}" IsEnabled="False" />
             <TextBlock Text="Uygulama Tarihi:" />
-            <DatePicker SelectedDate="{Binding RepairDateForPicker}"/>
+            <StackPanel Orientation="Horizontal">
+                <DatePicker Name="RepairDatePicker" SelectedDate="{Binding RepairDateForPicker}" />
+                 <Button Margin="5" Click="RepairDateClear_Button_OnClick">X</Button>
+            </StackPanel>
             <TextBlock Text="Teslim Tarihi:" />
-            <DatePicker SelectedDate="{Binding DeliveryDateForPicker }" />
+            <StackPanel Orientation="Horizontal">
+                <DatePicker Name="DeliveryDatePicker" SelectedDate="{Binding DeliveryDateForPicker }" />
+                <Button Margin="5" Click="DeliveryDateClear_Button_OnClick">X</Button>
+            </StackPanel>
+            
             <TextBlock Text="Şikayet:" />
             <TextBox Text="{Binding Complaint}" />
             <TextBlock Text="Not:" />
@@ -52,10 +65,10 @@
 
         <!-- Add/Remove Details Panel (Right side) -->
         <Border Grid.Row="0" Grid.RowSpan="3" Grid.Column="1" Padding="15" BorderThickness="1" BorderBrush="Gray">
-            <StackPanel>
-                <StackPanel Spacing="8">
+            <DockPanel>
+                <StackPanel Spacing="8" DockPanel.Dock="Top">
                     <TextBlock Text="İşlemler" FontSize="16" FontWeight="Bold" />
-                    <TextBlock Text="Adı:" />
+                    <TextBlock Text="İşlem:" />
                     <TextBox Text="{Binding DetailName}" Watermark="{Binding SelectedRenovationDetail.Name}" />
                     <TextBlock Text="Fiyat:" />
                     <NumericUpDown Value="{Binding DetailPrice}" Minimum="0" Increment="0.01"
@@ -88,15 +101,19 @@
                         </Button>
                     </StackPanel>
                 </StackPanel>
-                <StackPanel>
-                    <Button Content="Tamirat Kaydet"
+                
+
+
+                    <Button DockPanel.Dock="Bottom" Content="TAMİRAT KAYDET"
                             IsEnabled="{Binding !SelectedVehicle.Passive}"
                             Command="{Binding SaveRepairAsyncCommand}"
                             HorizontalAlignment="Stretch"
-                            Margin="0,40,0,0"
-                            Classes="accent" />
-                </StackPanel>
-            </StackPanel>
+                            HorizontalContentAlignment="Center"
+                            VerticalAlignment="Bottom"
+                            Classes="coral" />
+          
+            </DockPanel>
+
         </Border>
     </Grid>
 </Window>

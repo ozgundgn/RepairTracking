@@ -15,9 +15,14 @@ public partial class AddOrUpdateUserViewModel : ViewModelBase
     [ObservableProperty] private string? _name;
     [ObservableProperty] private string? _surname;
     [ObservableProperty] private string? _username;
-    [ObservableProperty] [Phone(ErrorMessage = "Telefon formatı geçersiz.")] private string? _phone;
+
+    [ObservableProperty] [Phone(ErrorMessage = "Telefon formatı geçersiz.")]
+    private string? _phone;
+
     [ObservableProperty] private string? _password;
-    [ObservableProperty] [EmailAddress(ErrorMessage = "E-posta formatı geçersiz. ")] private string? _email;
+
+    [ObservableProperty] [EmailAddress(ErrorMessage = "E-posta formatı geçersiz. ")]
+    private string? _email;
 
     private readonly IUserRepository _userRepository;
     private readonly IDialogService _dialogService;
@@ -44,19 +49,18 @@ public partial class AddOrUpdateUserViewModel : ViewModelBase
     [RelayCommand]
     private async Task SaveUser()
     {
-        if (string.IsNullOrWhiteSpace(Name) || string.IsNullOrWhiteSpace(Surname) ||
-            string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Phone) ||
-            string.IsNullOrWhiteSpace(Email) && UserId>0 && string.IsNullOrWhiteSpace(Password))
+        if (string.IsNullOrWhiteSpace(Name) || string.IsNullOrWhiteSpace(Surname) || string.IsNullOrWhiteSpace(Phone) ||
+            string.IsNullOrWhiteSpace(Email) && UserId > 0 && string.IsNullOrWhiteSpace(Password))
         {
             await _dialogService.OkMessageBox("Lütfen tüm alanları doldurun.", MessageTitleType.WarningTitle);
             return;
         }
-
+        
         ValidateAllProperties();
         if (HasErrors)
             return;
-        
-        var checkUser = await _userRepository.GetUserByEmailAndUsernameAsync(Phone, Username, UserId);
+
+        var checkUser = await _userRepository.GetUserByEmailAndUsernameAndSurnameAsync(Phone, Name, Surname,UserId);
         if (checkUser != null)
         {
             await _dialogService.OkMessageBox("Bu kullanıcı adı veya email ile kayıt zaten mevcut.",

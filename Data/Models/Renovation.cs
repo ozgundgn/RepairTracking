@@ -25,7 +25,7 @@ public partial class Renovation
 
     public DateTime? UpdatedDate { get; set; }
 
-    public virtual ICollection<RenovationDetail> RenovationDetails { get; set; } = new List<RenovationDetail>();
+    public virtual ICollection<RenovationDetail>? RenovationDetails { get; set; } = new List<RenovationDetail>();
 
     public virtual Vehicle Vehicle { get; set; } = null!;
 }

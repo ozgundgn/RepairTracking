@@ -90,7 +90,7 @@ public partial class AddCustomerViewModel : ViewModelBase
     [ObservableProperty] [Required(ErrorMessage = "Model alanı boş bırakılamaz.")]
     private int _model;
 
-    [ObservableProperty] [Required(ErrorMessage = "Şasino alanı boş bırakılamaz.")]
+    [ObservableProperty]
     private string _chassisNumber;
 
     [ObservableProperty] private bool _plateNumberHasError;
@@ -124,12 +124,12 @@ public partial class AddCustomerViewModel : ViewModelBase
         IsInValid = ModelHasError = !string.IsNullOrEmpty(ModelError);
     }
 
-    partial void OnChassisNumberChanged(string value)
-    {
-        ValidateProperty(value, nameof(ChassisNumber));
-        OnPropertyChanged(nameof(ChassisError));
-        IsInValid = ChassisNumberHasError = !string.IsNullOrEmpty(ChassisError);
-    }
+    // partial void OnChassisNumberChanged(string value)
+    // {
+    //     ValidateProperty(value, nameof(ChassisNumber));
+    //     OnPropertyChanged(nameof(ChassisError));
+    //     IsInValid = ChassisNumberHasError = !string.IsNullOrEmpty(ChassisError);
+    // }
 
     // public ReactiveCommand<Unit, CustomerViewModel?> SaveCustomerCommand { get; }
     public List<VehicleCustomerModel> ExistingCustomers { get; set; }
@@ -151,9 +151,13 @@ public partial class AddCustomerViewModel : ViewModelBase
         if (customerExists)
             return true;
 
-        var vehicleExists = await _unitOfWork.VehiclesRepository.GetVehicleByChassisNo(ChassisNumber);
-        if (vehicleExists != null)
-            return true;
+        if (!string.IsNullOrWhiteSpace(ChassisNumber))
+        {
+            var vehicleExists = await _unitOfWork.VehiclesRepository.GetVehicleByChassisNo(ChassisNumber);
+            if (vehicleExists != null)
+                return true;
+        }
+
         return false;
     }
 

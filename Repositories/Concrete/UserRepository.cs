@@ -23,11 +23,9 @@ public class UserRepository(AppDbContext context) : BaseContext(context), IUserR
     public async Task<User?> GetUserAsync(Expression<Func<User, bool>> predicate)
     {
         var user = await Context.Users.AsNoTracking()
-            .FirstOrDefaultAsync(u => u.UserName == "admin" && u.Password == "admin" && !u.Passive);
+            .FirstOrDefaultAsync(predicate);
         return user;
     }
-
-
     public async Task<bool?> UpdateUserPasswordAsync(int userId, string newPassword)
     {
         var user = await Context.Users.FindAsync(userId);
@@ -55,11 +53,12 @@ public class UserRepository(AppDbContext context) : BaseContext(context), IUserR
         var user = await queryable.FirstOrDefaultAsync();
         return user;
     }
-    
-    public async Task<User?> GetUserByEmailAndUsernameAsync(string email, string username, int? userdId = null)
+
+    public async Task<User?> GetUserByEmailAndUsernameAndSurnameAsync(string email, string name, string surname,
+        int? userdId = null)
     {
         var queryable = Context.Users.AsNoTracking()
-            .Where(x => (x.Email == email || x.UserName == username) && !x.Passive);
+            .Where(x => (x.Email == email || (x.Name == name && x.Surname == surname)) && !x.Passive);
         if (userdId.HasValue)
             queryable = queryable.Where(x => x.Id != userdId.Value);
         var user = await queryable.FirstOrDefaultAsync();
@@ -115,7 +114,7 @@ public class UserRepository(AppDbContext context) : BaseContext(context), IUserR
     public async Task UpdateUserCodeAsync(int userId, string code)
     {
         await Context.Users
-            .Where(x => x.Id == userId)
+            .Where(x => x.Id == userId).AsNoTracking()
             .ExecuteUpdateAsync(x => x.SetProperty(y => y.Code, code)
                 .SetProperty(y => y.Confirmed, false));
     }
@@ -123,7 +122,6 @@ public class UserRepository(AppDbContext context) : BaseContext(context), IUserR
     public async Task<bool> ConfirmUserCodeAsync(int userId, string code)
     {
         var user = await Context.Users
-            .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == userId && x.Code == code);
 
         if (user != null)

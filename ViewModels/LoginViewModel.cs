@@ -37,7 +37,10 @@ public partial class LoginViewModel(
         IsErrorVisible = false;
         ValidateAllProperties();
         if (HasErrors) return;
-        var user = await userRepository.GetUserAsync(Username!, Password!);
+        var name = Username.Split(" ").Length > 0 ? Username.Split(" ")[0] : "";
+        var surname = Username.Split(" ").Length > 1 ? Username.Split(" ")[1] : "";
+        var user = await userRepository.GetUserAsync(u =>
+            (u.Name == name && u.Surname == surname) && u.Password == Password && !u.Passive);
         if (user == null)
         {
             IsErrorVisible = true;
@@ -69,11 +72,15 @@ public partial class LoginViewModel(
     {
         if (string.IsNullOrWhiteSpace(Username))
         {
-            await dialogService.OkMessageBox("Kullanıcı adı ya da mail adresi giriniz.", MessageTitleType.WarningTitle);
+            await dialogService.OkMessageBox("Kullanıcı ad, soyad ya da mail adresi giriniz.",
+                MessageTitleType.WarningTitle);
             return;
         }
 
-        var user = await userRepository.GetUserByUsernameOrEmailAsync(Username);
+        var name = Username.Split(" ").Length > 0 ? Username.Split(" ")[0] : "";
+        var surname = Username.Split(" ").Length > 1 ? Username.Split(" ")[1] : "";
+        var user = await userRepository.GetUserAsync(x =>
+            (x.Name == name && x.Surname == surname) || x.Email == Username && !x.Passive);
         if (user == null)
         {
             await dialogService.OkMessageBox("Aktif kullanıcı bulunamadı.", MessageTitleType.WarningTitle);

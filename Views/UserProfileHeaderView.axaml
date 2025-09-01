@@ -19,9 +19,9 @@
                             <PathIcon Data="{StaticResource  sign_out_regular}" />
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Header="Kullanıcılar" Command="{Binding OpenUsersWindowCommand}">
+                    <MenuItem Header="Kullanıcı İşlemleri" Command="{Binding OpenUsersWindowCommand}">
                     </MenuItem>
-                    <MenuItem Header="Mail Gönder" Command="{Binding OpenSendMailWindowCommand}">
+                    <MenuItem Header="Mail İşlemleri" Command="{Binding OpenSendMailWindowCommand}">
                     </MenuItem>
                 </MenuItem>
             </Menu>

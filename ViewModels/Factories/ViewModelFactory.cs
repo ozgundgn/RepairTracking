@@ -98,7 +98,6 @@ public class ViewModelFactory(IUnitOfWork unitOfWork, IDialogService dialogServi
 
     public AddOrUpdateUserViewModel CreateAddOrUpdateUserViewModel(int? userId, string? name, string? surname,
         string? phone,
-        string? username,
         string? email)
     {
         return new AddOrUpdateUserViewModel(unitOfWork.UsersRepository, dialogService)
@@ -106,7 +105,6 @@ public class ViewModelFactory(IUnitOfWork unitOfWork, IDialogService dialogServi
             Name = name,
             Surname = surname,
             Phone = phone,
-            Username = username,
             Email = email,
             UserId = userId
         };

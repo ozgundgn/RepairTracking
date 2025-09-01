@@ -117,6 +117,7 @@ public class VehicleRepository(AppDbContext context) : BaseContext(context), IVe
                 PlateNumber = x.PlateNumber,
                 CustomerId = x.Customer.Id,
                 PhoneNumber = x.Customer.PhoneNumber,
+                Passive = x.Passive,
                 VehicleId = x.Id,
                 Type = x.Type,
                 ChassisNo = x.ChassisNo,
@@ -127,29 +128,32 @@ public class VehicleRepository(AppDbContext context) : BaseContext(context), IVe
 
     public List<VehicleCustomerModel> GetVehicleCustomerModel(int? vehicleId = null)
     {
-        Expression<Func<Vehicle, bool>> predicate = x => !x.Passive && !x.Customer.Passive;
+        Expression<Func<Customer, bool>> predicate = x => !x.Passive;
 
         if (vehicleId != null)
             predicate.And(x => x.Id == vehicleId);
 
-        return Context.Vehicles
+        var customersWithVehicles = Context.Customers
             .AsNoTracking()
-            .Include(c => c.Customer)
-            .Where(predicate)
-            .Select(x => new VehicleCustomerModel
-            {
-                Name = x.Customer.Name,
-                Surname = x.Customer.Surname,
-                Email = x.Customer.Email,
-                PlateNumber = x.PlateNumber,
-                CustomerId = x.Customer.Id,
-                PhoneNumber = x.Customer.PhoneNumber,
-                VehicleId = x.Id,
-                Type = x.Type,
-                ChassisNo = x.ChassisNo,
-                Model = x.Model,
-                CreatedUser = x.Customer.CreatedUserNavigation.Name + " " + x.Customer.CreatedUserNavigation.Surname,
-            }).ToList();
+            .Include(c => c.Vehicles)
+            .Where(predicate);
+        
+        var returnList = customersWithVehicles.SelectMany(x => x.Vehicles).Select(x => new VehicleCustomerModel()
+        {
+            Name = x.Customer.Name,
+            Surname = x.Customer.Surname,
+            Email = x.Customer.Email,
+            PlateNumber = x.PlateNumber,
+            CustomerId = x.Customer.Id,
+            PhoneNumber = x.Customer.PhoneNumber,
+            VehicleId = x.Id,
+            Type = x.Type,
+            ChassisNo = x.ChassisNo,
+            Passive = x.Passive,
+            Model = x.Model,
+            CreatedUser = x.Customer.CreatedUserNavigation.Name + " " + x.Customer.CreatedUserNavigation.Surname,
+        }).ToList();
+        return returnList;
     }
 
     public Vehicle? GetVehicleByCVehicleId(int vehcileId)

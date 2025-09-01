@@ -50,7 +50,6 @@
                         <!-- <DataGridCheckBoxColumn Binding="{Binding IsSelected}"></DataGridCheckBoxColumn> -->
                         <DataGridTextColumn Header="Ad" Binding="{Binding Name}" />
                         <DataGridTextColumn Header="Soyad" Binding="{Binding Surname}" />
-                        <DataGridTextColumn Header="Kullanıcı Adı" Binding="{Binding Username}" />
                         <DataGridTextColumn Header="Telefon" Binding="{Binding PhoneNumber}" />
                         <DataGridTextColumn Header="E-posta" Binding="{Binding Email }" />
 

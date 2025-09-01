@@ -47,7 +47,7 @@
                 <Grid ColumnDefinitions="*,*,*" RowDefinitions="*" Margin="0 20 0 10">
                     <TextBox Text="{Binding SearchText}" Grid.Column="0"
                              Watermark="Ad, Soyad, Telefon, Plaka ile arama yapın" />
-                    <Button Grid.Column="1" Margin="5 0" Content="Ara" Command="{Binding LoadPagedCustomersCommand}" />
+                    <CheckBox Grid.Column="1" Margin="5 0" Content="Tüm Araçlar" IsChecked="{Binding PassiveVehiclesChecked}" />
                 </Grid>
                 <DataGrid x:Name="VehicleGrid" ItemsSource="{Binding ShowedCustomersModels}"
                           IsReadOnly="False"
@@ -59,13 +59,14 @@
                           SelectedItem="{Binding SelectedCustomerModel,Mode=TwoWay}">
                     <DataGrid.Columns>
                         <!-- <DataGridCheckBoxColumn Binding="{Binding IsSelected}"></DataGridCheckBoxColumn> -->
+                        <DataGridTextColumn Header="Plaka" Binding="{Binding PlateNumber}" />
+                        <DataGridTextColumn Header="Model" Binding="{Binding Model}" />
+                        <DataGridTextColumn Header="Şasi No" Binding="{Binding ChassisNo}" />
+                        <DataGridTextColumn Header="Aktif" Binding="{Binding Active }" />
                         <DataGridTextColumn Header="Ad" Binding="{Binding Name}" />
                         <DataGridTextColumn Header="Soyad" Binding="{Binding Surname}" />
                         <DataGridTextColumn Header="E-posta" Binding="{Binding Email}" />
-                        <DataGridTextColumn Header="Plaka" Binding="{Binding PlateNumber}" />
                         <DataGridTextColumn Header="Telefon" Binding="{Binding PhoneNumber}" />
-                        <DataGridTextColumn Header="Model" Binding="{Binding Model}" />
-                        <DataGridTextColumn Header="Şasi No" Binding="{Binding ChassisNo}" />
                         <DataGridTextColumn Header="Tip" Binding="{Binding Type}" />
                         <DataGridTextColumn Header="Yetkili" Binding="{Binding CreatedUser}" />
                         <DataGridTemplateColumn Header="Detay">

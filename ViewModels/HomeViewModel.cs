@@ -25,7 +25,32 @@ public partial class HomeViewModel : ViewModelBase
     [ObservableProperty] private ObservableCollection<VehicleCustomerModel> _allCustomersModels;
     private ObservableCollection<VehicleCustomerModel> _showedCustomersModels;
     [ObservableProperty] private VehicleCustomerModel _selectedCustomerModel;
-    [ObservableProperty] private string _searchText;
+
+    private bool _passiveVehiclesChecked;
+
+    public bool PassiveVehiclesChecked
+    {
+        get => _passiveVehiclesChecked;
+        set
+        {
+            SetProperty(ref _passiveVehiclesChecked, value);
+            OnPropertyChanged();
+            LoadPagedCustomers();
+        }
+    }
+
+    private string _searchText;
+
+    public string SearchText
+    {
+        get => _searchText;
+        set
+        {
+            SetProperty(ref _searchText, value);
+            OnPropertyChanged();
+            LoadPagedCustomers();
+        }
+    }
 
     private readonly ICustomerRepository _customerRepository;
     private readonly IVehicleRepository _vehicleRepository;
@@ -151,9 +176,15 @@ public partial class HomeViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private async Task GetActiveAndPassiveVehicles()
+    {
+    }
+
+    [RelayCommand]
     private Task LoadPagedCustomers()
     {
-        IEnumerable<VehicleCustomerModel> vehicles = AllCustomersModels;
+        IEnumerable<VehicleCustomerModel> vehicles =
+            PassiveVehiclesChecked ? AllCustomersModels : AllCustomersModels.Where(x => !x.Passive);
 
         if (!string.IsNullOrWhiteSpace(SearchText))
         {

@@ -39,13 +39,15 @@ public partial class ForgotPasswordViewModel
             notificationFactory.SendMessage("",
                 $"Kullanıcı: {user?.UserName}<br>Şifreniz: {user?.Password} <br> Lütfen bu şifreyi kullanarak giriş yapınız.",
                 user?.Name + " " + user?.Surname);
-
-            await _dialogService.OkMessageBox("Kod onaylandı. Şifreniz mail adresinize gönderildi.",
-                MessageTitleType.SuccessTitle);
             _dialogService.CloseCurrentWindow();
+          await _dialogService.OkMessageBox("Kod onaylandı. Şifreniz mail adresinize gönderildi.",
+                MessageTitleType.SuccessTitle);
+            
+          
         }
         else
             await _dialogService.OkMessageBox("Kod onaylanamadı. Lütfen tekrar deneyin.", MessageTitleType.ErrorTitle);
+        
     }
 
     [RelayCommand]

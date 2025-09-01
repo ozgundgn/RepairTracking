@@ -310,7 +310,6 @@ namespace RepairTracking.Migrations
                         .HasColumnName("user_id");
 
                     b.Property<string>("UserName")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .IsUnicode(false)
                         .HasColumnType("TEXT")

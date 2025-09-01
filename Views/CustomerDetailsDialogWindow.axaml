@@ -13,6 +13,10 @@
     WindowStartupLocation="CenterScreen"
     Title="Müşteri Bilgileri ve İşlemler">
     <Window.Styles>
+        <Style Selector="Button.coral">
+            <Setter Property="Background" Value="Coral"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
         <Style Selector="Button:pointerover">
             <Setter Property="Cursor" Value="Hand" />
         </Style>
@@ -102,9 +106,13 @@
                             <TextBox Watermark="İsim" Margin="2" Text="{Binding Name}" />
                             <TextBox Watermark="Soyisim" Margin="2" Text="{Binding Surname}" />
                             <TextBox Watermark="Telefon" Margin="2" Text="{Binding PhoneNumber}" />
-                            <Button HorizontalAlignment="Right" Command="{Binding OpenVehicleDetailsCommand}"
-                                    Content="Araç Ekle">
-                            </Button>
+                            <StackPanel Spacing="10" Orientation="Horizontal">
+                                <Button Content="TAMİRAT OLUŞTUR" Classes="coral" HorizontalAlignment="Left" Margin="10 10 20 10"
+                                        Command="{Binding OpenRepairDetailWindowCommand}" />
+                                <Button HorizontalAlignment="Right" Margin="30 10 0 10 " Command="{Binding OpenVehicleDetailsCommand}"
+                                        Content="Araç Ekle">
+                                </Button>
+                            </StackPanel>
                             <ListBox ItemsSource="{Binding Vehicles}"
                                      SelectedValue="{Binding SelectedVehicle,Mode=TwoWay}">
                                 <ListBox.ItemTemplate>
@@ -118,7 +126,7 @@
 
                                                 <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal"
                                                             Spacing="5" VerticalAlignment="Center">
-                                                    <Button Classes="SmallSquare" Content="D"
+                                                    <Button Classes="SmallSquare" Content="D"  Margin="5"
                                                             VerticalAlignment="Center"
                                                             HorizontalContentAlignment="Center">
                                                         <Button.Command>
@@ -180,12 +188,9 @@
                 <Border DockPanel.Dock="Top" Padding="10" Margin="0,0,0,20"
                         Background="{StaticResource SidebarBackgroundBrush}" CornerRadius="8">
                     <StackPanel>
-                        <TextBox Watermark="Şikayet, Tamir Detayı,Tamir Detayı Açıklama İle Arama"
+                        <TextBox Watermark="Şikayet, Tamir Detayı, Açıklama İle Arama"
                                  VerticalAlignment="Center" Margin="0,0,10,0"
                                  Text="{Binding  SearchText}" />
-                        <Button Content="OLUŞTUR" HorizontalAlignment="Right" Background="{StaticResource AccentBrush}"
-                                Command="{Binding OpenRepairDetailWindowCommand}"
-                                Foreground="Black" Margin="0 20 0 0" />
                     </StackPanel>
                 </Border>
                 <!-- Repair Orders (Cards) -->
@@ -330,6 +335,7 @@
                                             <TextBlock Grid.Column="1"
                                                        Text="{Binding TotalPrice,StringFormat='{}{0:C} TL'}"
                                                        Margin="5,0,0,0"
+                                                       VerticalAlignment="Center"
                                                        HorizontalAlignment="Stretch" />
                                         </Grid>
                                     </Grid>
