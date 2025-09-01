@@ -6,7 +6,10 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using MsBox.Avalonia;
+using MsBox.Avalonia.Dto;
 using MsBox.Avalonia.Enums;
+using MsBox.Avalonia.Models;
+using RepairTracking.Models;
 using RepairTracking.ViewModels;
 using RepairTracking.Views;
 
@@ -167,18 +170,38 @@ public class DialogService : IDialogService
     public async Task<bool> YesNoMessageBox(string message, string title = "Uyarı")
     {
         var warning = MessageBoxManager
-            .GetMessageBoxStandard(title,
-                message,
-                ButtonEnum.YesNo);
+            .GetMessageBoxCustom(new MessageBoxCustomParams
+            {
+                ContentTitle = title,
+                ContentMessage = message,
+                ButtonDefinitions = new[]
+                {
+                    new ButtonDefinition { Name = CustomButtonEnum.EVET.ToString(), IsDefault = true },
+                    new ButtonDefinition { Name = CustomButtonEnum.HAYIR.ToString(), IsCancel = true }
+                },
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Icon = Icon.Question
+            });
         Window? owner = WindowLocator.GetActiveWindow();
 
         var deleteResult = await warning.ShowWindowDialogAsync(owner);
-        return deleteResult == ButtonResult.Yes;
+        return deleteResult == CustomButtonEnum.EVET.ToString();
     }
 
     public async Task OkMessageBox(string message, string title)
     {
-        var box = MessageBoxManager.GetMessageBoxStandard(title, message);
+        var box = MessageBoxManager
+            .GetMessageBoxCustom(new MessageBoxCustomParams
+            {
+                ContentTitle = title,
+                ContentMessage = message,
+                ButtonDefinitions = new[]
+                {
+                    new ButtonDefinition { Name = CustomButtonEnum.TAMAM.ToString(), IsDefault = true }
+                },
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Icon = Icon.Info
+            });
         Window? owner = WindowLocator.GetActiveWindow();
 
         if (owner != null)

@@ -10,7 +10,7 @@ namespace RepairTracking.Reporting;
 
 public class RepairReportDocument(RenovationViewModel repairData) : IDocument
 {
-    private readonly Byte[] image = File.ReadAllBytes("Assets/ozenir-png.png");
+    private readonly Byte[] image = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"Assets", "ozenir-png.png"));
 
     public void Compose(IDocumentContainer container)
     {

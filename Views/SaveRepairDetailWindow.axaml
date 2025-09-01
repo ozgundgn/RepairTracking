@@ -18,7 +18,7 @@
             <TextBlock Text="Plaka:" />
             <TextBlock Text="{Binding SelectedVehicle.PlateNumber}" IsEnabled="False" />
             <TextBlock Text="Uygulama Tarihi:" />
-            <DatePicker SelectedDate="{Binding RepairDateForPicker}" />
+            <DatePicker SelectedDate="{Binding RepairDateForPicker}"/>
             <TextBlock Text="Teslim Tarihi:" />
             <DatePicker SelectedDate="{Binding DeliveryDateForPicker }" />
             <TextBlock Text="Şikayet:" />

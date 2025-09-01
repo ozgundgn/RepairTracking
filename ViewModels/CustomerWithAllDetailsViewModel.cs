@@ -377,9 +377,12 @@ public partial class CustomerWithAllDetailsViewModel : ViewModelBase
             var vehicleDetailsViewModel =
                 _viewModelFactory.CreateSaveRepairDetailViewModel(SelectedVehicle, renovationId);
             await _dialogService.OpenRepairDetailsDialogWindow(vehicleDetailsViewModel);
+            GetCustomerDetails(Id);
         }
-
-        GetCustomerDetails(Id);
+        else
+        {
+            await _dialogService.OkMessageBox("Lütfen önce araç seçiniz.", MessageTitleType.WarningTitle);
+        }
     }
 
     [RelayCommand]
