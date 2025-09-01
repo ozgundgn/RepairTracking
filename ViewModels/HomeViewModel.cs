@@ -248,8 +248,7 @@ public partial class HomeViewModel : ViewModelBase
         // var firstPdfFile = Directory.EnumerateFiles(downloadsPath, "*.pdf", SearchOption.TopDirectoryOnly)
         //     .FirstOrDefault();
 
-        var pdfViewModel =
-            _viewModelFactory.CreatePdfViewerViewModel(reportPath);
+        var pdfViewModel = _viewModelFactory.CreatePdfViewerViewModel(reportPath);
         await _dialogService.OpenPdfViewerWindow(pdfViewModel);
     }
 

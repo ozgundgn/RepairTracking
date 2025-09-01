@@ -55,6 +55,16 @@ public class UserRepository(AppDbContext context) : BaseContext(context), IUserR
         var user = await queryable.FirstOrDefaultAsync();
         return user;
     }
+    
+    public async Task<User?> GetUserByEmailAndUsernameAsync(string email, string username, int? userdId = null)
+    {
+        var queryable = Context.Users.AsNoTracking()
+            .Where(x => (x.Email == email || x.UserName == username) && !x.Passive);
+        if (userdId.HasValue)
+            queryable = queryable.Where(x => x.Id != userdId.Value);
+        var user = await queryable.FirstOrDefaultAsync();
+        return user;
+    }
 
     public List<UserInfo> GetActiveUsers()
     {
@@ -67,7 +77,8 @@ public class UserRepository(AppDbContext context) : BaseContext(context), IUserR
             Name = user.Name,
             Surname = user.Surname,
             Username = user.UserName,
-            PhoneNumber = user.Phone
+            PhoneNumber = user.Phone,
+            Email = user.Email,
         }).ToList();
     }
 

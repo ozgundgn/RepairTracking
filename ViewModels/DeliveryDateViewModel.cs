@@ -39,10 +39,17 @@ public partial class DeliveryDateViewModel(
             return;
         }
 
-        var result = renovationRepository.UpdateRenovationDeliveryDate(_renovationViewModel.Id, DeliveryDate.Value);
+        if (RenovationViewModel.RepairDate > DateOnly.FromDateTime((DateTime)DeliveryDate))
+        {
+            await dialogService.OkMessageBox("Teslimat tarihi, uygulama tarihinden eski olamalı!",
+                MessageTitleType.WarningTitle);
+            return;
+        }
+
+        var result = renovationRepository.UpdateRenovationDeliveryDate(RenovationViewModel.Id, DeliveryDate.Value);
         if (result)
         {
-            _renovationViewModel.DeliveryDate = DeliveryDate.Value;
+            RenovationViewModel.DeliveryDate = DeliveryDate.Value;
             renovationRepository.SaveChanges();
             await dialogService.OkMessageBox("Teslim tarihi başarıyla kaydedildi.", MessageTitleType.SuccessTitle);
         }

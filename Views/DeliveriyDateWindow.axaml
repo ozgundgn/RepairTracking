@@ -5,9 +5,10 @@
         xmlns:viewModels="clr-namespace:RepairTracking.ViewModels"
         mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="200"
         Width="400" Height="150"
+        WindowStartupLocation="CenterOwner"
         x:Class="RepairTracking.Views.DeliveriyDateWindow"
         x:DataType="viewModels:DeliveryDateViewModel"
-        Title="DeliveriyDateWindow">
+        Title="Teslim Tarihi Ata">
     <StackPanel Spacing="10" Margin="15">
         <TextBlock Text="Teslim Tarihi:" HorizontalAlignment="Center" VerticalAlignment="Top"></TextBlock>
         <DatePicker HorizontalAlignment="Center" VerticalAlignment="Center"  SelectedDate="{Binding DeliveryDateForPicker}"></DatePicker>

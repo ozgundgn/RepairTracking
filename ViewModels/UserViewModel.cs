@@ -33,7 +33,7 @@ public partial class UserViewModel
     private async Task OpenAddOrUpdateUserWindow(UserInfo? userInfo)
     {
         var viewModel = _viewModelFactory.CreateAddOrUpdateUserViewModel(userInfo?.Id,
-            userInfo?.Name, userInfo?.Surname, userInfo?.PhoneNumber, userInfo?.Username);
+            userInfo?.Name, userInfo?.Surname, userInfo?.PhoneNumber, userInfo?.Username,userInfo?.Email);
         await _dialogService.OpenAddOrUpdateUserDialogWindow(viewModel);
         LoadUsers();
     }

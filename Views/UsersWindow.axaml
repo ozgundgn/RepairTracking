@@ -5,6 +5,7 @@
         xmlns:viewModels="clr-namespace:RepairTracking.ViewModels"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="RepairTracking.Views.UsersWindow"
+        WindowStartupLocation="CenterScreen"
         x:DataType="viewModels:UserViewModel"
         Title="Kullanıcılar">
     <Design.DataContext>
@@ -51,6 +52,8 @@
                         <DataGridTextColumn Header="Soyad" Binding="{Binding Surname}" />
                         <DataGridTextColumn Header="Kullanıcı Adı" Binding="{Binding Username}" />
                         <DataGridTextColumn Header="Telefon" Binding="{Binding PhoneNumber}" />
+                        <DataGridTextColumn Header="E-posta" Binding="{Binding Email }" />
+
                         <DataGridTemplateColumn Header="Detay" Width="Auto">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>

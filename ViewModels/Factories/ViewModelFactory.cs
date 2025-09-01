@@ -98,7 +98,8 @@ public class ViewModelFactory(IUnitOfWork unitOfWork, IDialogService dialogServi
 
     public AddOrUpdateUserViewModel CreateAddOrUpdateUserViewModel(int? userId, string? name, string? surname,
         string? phone,
-        string? username)
+        string? username,
+        string? email)
     {
         return new AddOrUpdateUserViewModel(unitOfWork.UsersRepository, dialogService)
         {
@@ -106,6 +107,7 @@ public class ViewModelFactory(IUnitOfWork unitOfWork, IDialogService dialogServi
             Surname = surname,
             Phone = phone,
             Username = username,
+            Email = email,
             UserId = userId
         };
     }
@@ -156,7 +158,7 @@ public class ViewModelFactory(IUnitOfWork unitOfWork, IDialogService dialogServi
         };
     }
 
-    public PdfViewerViewModel CreatePdfViewerViewModel(string reportPath) => new(reportPath);
+    public PdfViewerViewModel CreatePdfViewerViewModel(string reportPath) => new(reportPath,dialogService);
 
     public DeliveryDateViewModel CreateDeliveryDateViewModel(RenovationViewModel renovationViewModel)
     {

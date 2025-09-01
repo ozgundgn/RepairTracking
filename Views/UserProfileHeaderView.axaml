@@ -8,7 +8,7 @@
              x:Class="RepairTracking.Views.UserProfileHeaderView">
 
     <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
-        <Border Grid.Column="1" BorderBrush="RoyalBlue"
+        <Border BorderBrush="RoyalBlue"
                 BorderThickness="1"
                 CornerRadius="4"
                 Padding="0">

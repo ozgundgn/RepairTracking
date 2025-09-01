@@ -5,6 +5,7 @@
         <Nullable>enable</Nullable>
         <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
         <ApplicationManifest>app.manifest</ApplicationManifest>
+        <ApplicationIcon>Assets/ozenir-ico.ico</ApplicationIcon>
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
 
 
@@ -22,7 +23,8 @@
         <RuntimeIdentifier Include="osx-arm64"/> <!-- Add this line for Apple Silicon Macs -->
     </ItemGroup>
     <ItemGroup>
-        <AvaloniaResource Include="Assets\**"/>
+<!--        <AvaloniaResource Include="Assets\**"/>-->
+      <AvaloniaResource Include="Assets/ozenir-png.png" /> 
     </ItemGroup>
 
     <ItemGroup>

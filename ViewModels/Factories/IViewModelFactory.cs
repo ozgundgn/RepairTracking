@@ -31,7 +31,7 @@ public interface IViewModelFactory
     SendMailViewModel CreateSendMailViewModel(string email = "");
 
     AddOrUpdateUserViewModel CreateAddOrUpdateUserViewModel(int? userId, string? name, string? surname, string? phone,
-        string? username);
+        string? username,string? email);
 
     RenovationViewModel CreateRenovationViewModel(Renovation renovation);
     PdfViewerViewModel CreatePdfViewerViewModel(string reportPath);

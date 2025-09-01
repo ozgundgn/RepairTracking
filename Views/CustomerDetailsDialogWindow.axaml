@@ -10,6 +10,7 @@
     x:Class="RepairTracking.Views.CustomerDetailsDialogWindow"
     x:DataType="viewModels:CustomerWithAllDetailsViewModel"
     Width="1500" Height="1500"
+    WindowStartupLocation="CenterScreen"
     Title="Müşteri Bilgileri ve İşlemler">
     <Window.Styles>
         <Style Selector="Button:pointerover">
@@ -93,24 +94,17 @@
                     <Border BorderBrush="Azure" BorderThickness="1" CornerRadius="2" Padding="5">
                         <StackPanel Spacing="5">
                             <!-- Customer Name Section -->
-                            <Grid ColumnDefinitions="250,200" ColumnSpan="5">
-                                <TextBlock Grid.Column="0" Text="Müşteri" Margin="2" FontSize="18"
-                                           FontWeight="SemiBold" />
-                                <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0 20 0 0 ">
-                                    <Button
-                                        Classes="SmallSquare" Margin="0 0 10 0" VerticalAlignment="Center" Padding="2"
-                                        Content="Düzenle" Command="{Binding OpenEditCustomerDialog}" />
-                                </StackPanel>
-                            </Grid>
+                            <TextBlock Text="Müşteri" Margin="2" FontSize="18"
+                                       FontWeight="SemiBold" />
+                            <Button HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Content="Düzenle" Command="{Binding OpenEditCustomerDialog}" />
                             <TextBox Watermark="İsim" Margin="2" Text="{Binding Name}" />
                             <TextBox Watermark="Soyisim" Margin="2" Text="{Binding Surname}" />
                             <TextBox Watermark="Telefon" Margin="2" Text="{Binding PhoneNumber}" />
-                            <!-- Vehicle List Section -->
-                            <Grid ColumnDefinitions="200,250">
-                                <Button Grid.Column="1" Command="{Binding OpenVehicleDetailsCommand}"
-                                        Content="Araç Ekle">
-                                </Button>
-                            </Grid>
+                            <Button HorizontalAlignment="Right" Command="{Binding OpenVehicleDetailsCommand}"
+                                    Content="Araç Ekle">
+                            </Button>
                             <ListBox ItemsSource="{Binding Vehicles}"
                                      SelectedValue="{Binding SelectedVehicle,Mode=TwoWay}">
                                 <ListBox.ItemTemplate>

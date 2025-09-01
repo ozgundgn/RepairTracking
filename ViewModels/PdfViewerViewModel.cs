@@ -1,10 +1,14 @@
 using System;
+using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PDFtoImage;
 using RepairTracking.Data.Models;
+using RepairTracking.Helpers;
+using RepairTracking.Services;
 using SkiaSharp;
 
 namespace RepairTracking.ViewModels;
@@ -14,6 +18,8 @@ public partial class PdfViewerViewModel : ViewModelBase
     [ObservableProperty] private string _reportPath;
     [ObservableProperty] private string _filePath = string.Empty;
     [ObservableProperty] private Renovation? _renovation;
+
+    private readonly IDialogService _dialogService;
 
     // Store the loaded PDF as a byte array in memory
     private byte[]? _pdfBytes;
@@ -87,9 +93,10 @@ public partial class PdfViewerViewModel : ViewModelBase
         ZoomFactor = 1.0;
     }
 
-    public PdfViewerViewModel(string reportPath)
+    public PdfViewerViewModel(string reportPath, IDialogService dialogService)
     {
         _reportPath = reportPath;
+        _dialogService = dialogService;
         LoadPdfFromPath();
     }
 
@@ -178,5 +185,69 @@ public partial class PdfViewerViewModel : ViewModelBase
         CurrentPage++;
         CheckCanGoForBothSide();
         RenderPage();
+    }
+
+    [RelayCommand]
+    private async Task Print()
+    {
+        var success = await PlatformPrintService.PrintFile(ReportPath);
+        if (success)
+            await _dialogService.OkMessageBox("Rapor yazıcıya gönderildi.", MessageTitleType.SuccessTitle);
+        else
+            await _dialogService.OkMessageBox("Rapor yazıcıya gönderilirken bir sorun oluştu.",
+                MessageTitleType.ErrorTitle);
+    }
+
+    private void PrintOnWindows(string filePath)
+    {
+        var printProcess = new Process
+        {
+            StartInfo = new ProcessStartInfo
+            {
+                FileName = filePath,
+                Verb = "print",
+                CreateNoWindow = true,
+                WindowStyle = ProcessWindowStyle.Hidden,
+                UseShellExecute = true
+            }
+        };
+
+        printProcess.Start();
+    }
+
+    private void PrintOnLinux(string filePath)
+    {
+        var printProcess = new Process
+        {
+            StartInfo = new ProcessStartInfo
+            {
+                FileName = "lpr",
+                Arguments = $"\"{filePath}\"",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            }
+        };
+
+        printProcess.Start();
+    }
+
+    private void PrintOnMac(string filePath)
+    {
+        var printProcess = new Process
+        {
+            StartInfo = new ProcessStartInfo
+            {
+                FileName = "lpr",
+                Arguments = $"\"{filePath}\"",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            }
+        };
+
+        printProcess.Start();
     }
 }

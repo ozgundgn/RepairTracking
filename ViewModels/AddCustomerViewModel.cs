@@ -22,10 +22,11 @@ public partial class AddCustomerViewModel : ViewModelBase
     [ObservableProperty] [Required(ErrorMessage = "Soyad alanı boş bırakılamaz.")]
     private string _surname;
 
-    [ObservableProperty] [Required(ErrorMessage = "Telefon alanı boş bırakılamaz.")]
+    [ObservableProperty] [Required(ErrorMessage = "Telefon alanı boş bırakılamaz."),Phone(ErrorMessage = "Telefon formatı geçersiz.")]
     private string _phoneNumber;
-    
-    [ObservableProperty] [Required(ErrorMessage = "Email alanı boş bırakılamaz.")]
+
+    [ObservableProperty]
+    [Required(ErrorMessage = "E-posta alanı boş bırakılamaz."), EmailAddress(ErrorMessage = "E-posta formatı geçersiz.")]
     private string _email;
 
     #region Costumer Validation Properties
@@ -70,12 +71,14 @@ public partial class AddCustomerViewModel : ViewModelBase
         OnPropertyChanged(nameof(PhoneNumberError));
         IsInValid = PhoneNumberHasError = !string.IsNullOrEmpty(PhoneNumberError);
     }
+
     partial void OnEmailChanged(string value)
     {
         ValidateProperty(value, nameof(Email));
         OnPropertyChanged(nameof(EmailError));
         IsInValid = EmailHasError = !string.IsNullOrEmpty(EmailError);
     }
+
     #endregion
 
     [ObservableProperty] [Required(ErrorMessage = "Plaka alanı boş bırakılamaz.")]

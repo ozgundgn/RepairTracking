@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -14,9 +15,9 @@ public partial class AddOrUpdateUserViewModel : ViewModelBase
     [ObservableProperty] private string? _name;
     [ObservableProperty] private string? _surname;
     [ObservableProperty] private string? _username;
-    [ObservableProperty] private string? _phone;
+    [ObservableProperty] [Phone(ErrorMessage = "Telefon formatı geçersiz.")] private string? _phone;
     [ObservableProperty] private string? _password;
-    [ObservableProperty] private string? _email;
+    [ObservableProperty] [EmailAddress(ErrorMessage = "E-posta formatı geçersiz. ")] private string? _email;
 
     private readonly IUserRepository _userRepository;
     private readonly IDialogService _dialogService;
@@ -45,28 +46,35 @@ public partial class AddOrUpdateUserViewModel : ViewModelBase
     {
         if (string.IsNullOrWhiteSpace(Name) || string.IsNullOrWhiteSpace(Surname) ||
             string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Phone) ||
-            string.IsNullOrWhiteSpace(Password))
+            string.IsNullOrWhiteSpace(Email) && UserId>0 && string.IsNullOrWhiteSpace(Password))
         {
             await _dialogService.OkMessageBox("Lütfen tüm alanları doldurun.", MessageTitleType.WarningTitle);
             return;
         }
 
-        var checkUser = await _userRepository.GetUserByPhoneAndUsernameAsync(Phone, Username,UserId);
+        ValidateAllProperties();
+        if (HasErrors)
+            return;
+        
+        var checkUser = await _userRepository.GetUserByEmailAndUsernameAsync(Phone, Username, UserId);
         if (checkUser != null)
         {
-            await _dialogService.OkMessageBox("Bu kullanıcı adı veya telefon ile kayıt zaten mevcut.", MessageTitleType.WarningTitle);
+            await _dialogService.OkMessageBox("Bu kullanıcı adı veya email ile kayıt zaten mevcut.",
+                MessageTitleType.WarningTitle);
             return;
         }
+
         if (UserId == null)
         {
-            var createUserViewModel = new User()
+            var createUserViewModel = new User
             {
                 UserId = Guid.NewGuid(),
                 Name = Name,
                 Surname = Surname,
                 UserName = Username,
                 Phone = Phone,
-                Password = Password
+                Password = Password,
+                Email = Email
             };
 
             var result = await _userRepository.AddUserAsync(createUserViewModel);

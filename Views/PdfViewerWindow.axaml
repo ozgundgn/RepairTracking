@@ -7,14 +7,18 @@
         Width="1000" Height="1000"
         x:Class="RepairTracking.Views.PdfViewerWindow"
         x:DataType="viewModels:PdfViewerViewModel"
-        Title="PdfViewerWindow">
+        Title="Pdf Görüntüleyici">
 
     <DockPanel>
         <!-- Pagination Controls -->
-        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center" Margin="10">
-            <Button Command="{Binding PreviousPageCommand}" IsEnabled="{Binding CanGoToPreviousPage}">Previous</Button>
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right" Margin="10">
+            <Button Width="70" HorizontalAlignment="Right" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="40" Command="{Binding PrintCommand}">Yazdır</Button>
+        </StackPanel>
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center"
+                    Margin="10">
+            <Button Command="{Binding PreviousPageCommand}" IsEnabled="{Binding CanGoToPreviousPage}">Önceki</Button>
             <TextBlock Text="{Binding PageInfo}" VerticalAlignment="Center" />
-            <Button Command="{Binding NextPageCommand}" IsEnabled="{Binding CanGoToNextPage}">Next</Button>
+            <Button Command="{Binding NextPageCommand}" IsEnabled="{Binding CanGoToNextPage}">Sonraki</Button>
             <!-- -->
             <!-- <Separator Margin="10,0" /> -->
             <!-- ~1~ NEW Zoom Controls @1@ -->

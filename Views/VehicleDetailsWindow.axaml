@@ -7,6 +7,7 @@
         mc:Ignorable="d" d:DesignWidth="750" d:DesignHeight="820"
         x:Class="RepairTracking.Views.VehicleDetailsWindow"
         Width="750" Height="720"
+        WindowStartupLocation="CenterScreen"
         x:DataType="viewModels:VehicleDetailsViewModel"
         Title="Araç Detayları">
     <Window.Styles>

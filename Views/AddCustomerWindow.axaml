@@ -5,7 +5,7 @@
         xmlns:viewModels="clr-namespace:RepairTracking.ViewModels"
         x:Class="RepairTracking.Views.AddCustomerWindow"
         x:DataType="vm:AddCustomerViewModel"
-        Icon="/Assets/avalonia-logo.ico"
+        Icon="/Assets/ozenir-png.png"
         Title="Yeni Müşteri Ekle"
         Width="900" Height="480"
         WindowStartupLocation="CenterOwner"> <!-- This is important for dialogs -->
