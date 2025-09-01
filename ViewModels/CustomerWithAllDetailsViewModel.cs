@@ -266,7 +266,7 @@ public partial class CustomerWithAllDetailsViewModel : ViewModelBase
             if (sendMailToUser)
             {
                 var mailService =
-                    new NotificationFactory(new MailService("ozgundgn0@gmail.com", absolutePath));
+                    new NotificationFactory(new MailService(renovationViewModel.Email, absolutePath));
                 var mail = await _unitOfWork.MailRepository.GetMailTemplateAsync("TESLIMAT");
                 if (mail is not null)
                     mailService.SendMessage(mail.Subject, mail.Template,
