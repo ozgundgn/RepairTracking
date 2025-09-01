@@ -29,7 +29,7 @@ jobs:
         run: dotnet restore
 
       - name: Publish Windows x64 Executable
-        run: dotnet publish -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true -o publish_output_win
+        run: dotnet publish -c Release -r win-x64 --self-contained true /p:PublishSingleFile=false -o publish_output_win
 
       - name: Upload Windows Artifact
         uses: actions/upload-artifact@v4
@@ -52,7 +52,7 @@ jobs:
         run: dotnet restore
 
       - name: Publish macOS x64 Executable (Intel)
-        run: dotnet publish -c Release -r osx-x64 --self-contained true /p:PublishSingleFile=true -o publish_output_osx_x64
+        run: dotnet publish -c Release -r osx-x64 --self-contained true /p:PublishSingleFile=false -o publish_output_osx_x64
 
       - name: Upload macOS x64 Artifact
         uses: actions/upload-artifact@v4
