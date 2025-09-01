@@ -71,6 +71,8 @@ jobs:
 
   create-release:
     needs: [build-windows, build-macos] # This job depends on both build jobs
+    permissions:
+      contents: write   
     runs-on: ubuntu-latest # A lightweight runner for creating the release
     if: github.ref == 'refs/heads/master' && startsWith(github.event.head_commit.message, 'release:')
     steps:
