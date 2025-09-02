@@ -5,8 +5,12 @@ name: CI
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the "master" branch
+  #push:
+  #  branches: [ "master" ]
+  #Trigger workflow when a tag is pushed.
   push:
-    branches: [ "master" ]
+    tags:
+      - 'v*' 
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -32,13 +36,13 @@ jobs:
         run: dotnet publish -c Release -r win-x64 --self-contained true /p:PublishSingleFile=false -o publish_output_win
    
       - name: Zip Windows build
-        run: powershell Compress-Archive -Path publish_output_win\* -DestinationPath windows-x64-v${{ github.run_number }}.zip
+        run: powershell Compress-Archive -Path publish_output_win\* -DestinationPath windows-x64-${{ github.ref_name }}.zip
 
       - name: Upload Windows Artifact
         uses: actions/upload-artifact@v4
         with:
           name: windows-x64-exe
-          path: windows-x64-v${{ github.run_number }}.zip
+          path: windows-x64-${{ github.ref_name }}.zip
 
   build-macos:
     runs-on: macos-latest # Use a macOS runner for macOS build
@@ -58,25 +62,25 @@ jobs:
         run: dotnet publish -c Release -r osx-x64 --self-contained true /p:PublishSingleFile=false -o publish_output_osx_x64
 
       - name: Zip macOS x64 build
-        run: zip -r macos-x64-v${{ github.run_number }}.zip publish_output_osx_x64
+        run: zip -r macos-x64-${{ github.ref_name }}.zip publish_output_osx_x64
 
       - name: Upload macOS x64 Artifact
         uses: actions/upload-artifact@v4
         with:
           name: macos-x64-app
-          path: macos-x64-v${{ github.run_number }}.zip
+          path: macos-x64-${{ github.ref_name }}.zip
 
       - name: Publish macOS arm64 Executable (Apple Silicon)
         run: dotnet publish -c Release -r osx-arm64 --self-contained true /p:PublishSingleFile=true -o publish_output_osx_arm64
 
       - name: Zip macOS arm64 build
-        run: zip -r macos-arm64-v${{ github.run_number }}.zip publish_output_osx_arm64
+        run: zip -r macos-arm64-${{ github.ref_name }}.zip publish_output_osx_arm64
 
       - name: Upload macOS arm64 Artifact
         uses: actions/upload-artifact@v4
         with:
           name: macos-arm64-app
-          path: macos-arm64-v${{ github.run_number }}.zip
+          path: macos-arm64-${{ github.ref_name }}.zip
 
   create-release:
     needs: [build-windows, build-macos] # This job depends on both build jobs
@@ -96,8 +100,8 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: v${{ github.run_number }}
-          name: Release v${{ github.run_number }}
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
           body: |
             Automated release for build ${{ github.run_number }}.
             Changes: ${{ github.event.head_commit.message }}
