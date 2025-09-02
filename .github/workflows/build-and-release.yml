@@ -83,7 +83,15 @@ jobs:
 
       - name: List downloaded artifacts (for debugging)
         run: ls -R artifacts
+        
+      - name: Rename asset with commit SHA
+        run: mv ozenir-png.png ozenir-png-${{ github.sha }}.png
 
+      - name: Upload Release Asset
+        uses: softprops/action-gh-release@v1
+        with:
+         files: ozenir-png-${{ github.sha }}.png
+        
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
