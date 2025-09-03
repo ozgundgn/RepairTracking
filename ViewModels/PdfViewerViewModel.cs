@@ -18,7 +18,6 @@ public partial class PdfViewerViewModel : ViewModelBase
     [ObservableProperty] private string _reportPath;
     [ObservableProperty] private string _filePath = string.Empty;
     [ObservableProperty] private Renovation? _renovation;
-
     private readonly IDialogService _dialogService;
 
     // Store the loaded PDF as a byte array in memory

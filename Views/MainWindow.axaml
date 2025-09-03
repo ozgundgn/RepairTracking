@@ -3,13 +3,14 @@
         xmlns:vm="using:RepairTracking.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="1300" d:DesignHeight="800"
+        mc:Ignorable="d" d:DesignWidth="1350" d:DesignHeight="800"
         x:Class="RepairTracking.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
+        Classes="MainBackgroundColor"
         x:Name="MainRepairWindow"
         Icon="/Assets/ozenir-png.png"
         WindowStartupLocation="CenterScreen"
-        Width="1300"
+        Width="1350"
         Height="900"
         Title="Tamir Takip Programı">
     <Window.Styles>

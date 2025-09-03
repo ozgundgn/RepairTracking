@@ -8,20 +8,26 @@
              x:Class="RepairTracking.Views.UserProfileHeaderView">
 
     <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
-        <Border BorderBrush="RoyalBlue"
+        <Border BorderBrush="#0D336D"
                 BorderThickness="1"
                 CornerRadius="4"
                 Padding="0">
-            <Menu>
-                <MenuItem Header="{Binding Username}" x:Name="UserMenu">
+            <Menu Background="#0D336D">
+                <MenuItem Header="{Binding Username}" Foreground="#D9D9D9" x:Name="UserMenu">
                     <MenuItem Header="Çıkış Yap" Command="{Binding LogoutCommand}">
                         <MenuItem.Icon>
                             <PathIcon Data="{StaticResource  sign_out_regular}" />
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem Header="Kullanıcı İşlemleri" Command="{Binding OpenUsersWindowCommand}">
+                        <MenuItem.Icon>
+                            <PathIcon Data="{StaticResource person_board_regular}"></PathIcon>
+                        </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem Header="Mail İşlemleri" Command="{Binding OpenSendMailWindowCommand}">
+                        <MenuItem.Icon>
+                            <PathIcon Data="{StaticResource  mail_all_read_regular}" />
+                        </MenuItem.Icon>
                     </MenuItem>
                 </MenuItem>
             </Menu>

@@ -48,7 +48,7 @@
         </StackPanel>
         <DockPanel Grid.Row="5" HorizontalAlignment="Right"
                    Margin="15">
-            <Button DockPanel.Dock="Bottom" Content="Kaydet" Margin="10" Classes="accent" Click="Button_OnClick"
+            <Button DockPanel.Dock="Bottom" Content="Kaydet" Margin="10" Classes="MainButtonColor" Click="Button_OnClick"
                     IsEnabled="{Binding !IsInValid}" />
         </DockPanel>
     </Grid>

@@ -24,6 +24,7 @@ public partial class HomeViewModel : ViewModelBase
 {
     [ObservableProperty] private ObservableCollection<VehicleCustomerModel> _allCustomersModels;
     private ObservableCollection<VehicleCustomerModel> _showedCustomersModels;
+    [ObservableProperty] private string _previous="<< Önceki";
     [ObservableProperty] private VehicleCustomerModel _selectedCustomerModel;
 
     private bool _passiveVehiclesChecked;

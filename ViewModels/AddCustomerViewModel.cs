@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using RepairTracking.Data.Models;
 using RepairTracking.Models;
 using RepairTracking.Repositories.Abstract;
@@ -134,10 +135,12 @@ public partial class AddCustomerViewModel : ViewModelBase
     // public ReactiveCommand<Unit, CustomerViewModel?> SaveCustomerCommand { get; }
     public List<VehicleCustomerModel> ExistingCustomers { get; set; }
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IDialogService _dialogService;
 
-    public AddCustomerViewModel(IUnitOfWork unitOfWork)
+    public AddCustomerViewModel(IUnitOfWork unitOfWork,IDialogService dialogService)
     {
         _unitOfWork = unitOfWork;
+        _dialogService = dialogService;
         IsInValid = true;
     }
 
@@ -161,7 +164,11 @@ public partial class AddCustomerViewModel : ViewModelBase
         return false;
     }
 
-
+    [RelayCommand]
+    private void CloseWindow()
+    {
+        _dialogService.CloseCurrentWindow();
+    }
     public CustomerViewModel? ReturnCustomerViewModel()
     {
         ValidateAllProperties();

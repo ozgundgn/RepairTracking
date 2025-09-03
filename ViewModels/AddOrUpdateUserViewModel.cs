@@ -84,13 +84,17 @@ public partial class AddOrUpdateUserViewModel : ViewModelBase
             var result = await _userRepository.AddUserAsync(createUserViewModel);
             await _userRepository.SaveChangesAsync();
             if (result)
+            {
+                _dialogService.CloseCurrentWindow();
                 await _dialogService.OkMessageBox("Kullanıcı başarıyla eklendi.", MessageTitleType.SuccessTitle);
+            }
             else
                 await _dialogService.OkMessageBox("Kullanıcı eklenirken bir hata oluştu.", MessageTitleType.ErrorTitle);
         }
         else
         {
-            if (string.IsNullOrWhiteSpace(Name) || string.IsNullOrWhiteSpace(Surname) || string.IsNullOrWhiteSpace(Phone))
+            if (string.IsNullOrWhiteSpace(Name) || string.IsNullOrWhiteSpace(Surname) ||
+                string.IsNullOrWhiteSpace(Phone))
             {
                 await _dialogService.OkMessageBox("Lütfen tüm alanları doldurun.", MessageTitleType.WarningTitle);
                 return;
@@ -98,7 +102,10 @@ public partial class AddOrUpdateUserViewModel : ViewModelBase
 
             var result = await _userRepository.UpdateUserAsync((int)UserId, Name, Surname, Username, Phone, Email);
             if (result)
+            {
+                _dialogService.CloseCurrentWindow();
                 await _dialogService.OkMessageBox("Kullanıcı başarıyla güncellendi.", MessageTitleType.SuccessTitle);
+            }
             else
                 await _dialogService.OkMessageBox("Kullanıcı güncellenirken bir hata oluştu.",
                     MessageTitleType.ErrorTitle);

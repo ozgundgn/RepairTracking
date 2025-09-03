@@ -17,6 +17,10 @@
             <Setter Property="Background" Value="Coral"/>
             <Setter Property="Foreground" Value="White"/>
         </Style>
+        <Style Selector="Button.RepairTemplateCrud">
+            <Setter Property="Background" Value="{StaticResource OzenirFontColor}"/>
+            <Setter Property="Foreground" Value="{StaticResource OzenirBackgroundColor}"/>
+        </Style>
         <Style Selector="Button:pointerover">
             <Setter Property="Cursor" Value="Hand" />
         </Style>
@@ -44,6 +48,7 @@
         <!-- A Style for all card-like borders -->
         <Style Selector="Border.Card">
             <!-- <Setter Property="Background" Value="{StaticResource CardBackgroundBrush}" /> -->
+            
             <Setter Property="CornerRadius" Value="8" />
             <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
             <Setter Property="BorderThickness" Value="1" />
@@ -53,12 +58,13 @@
 
         <!-- Style for the small square buttons (D, E, S) -->
         <Style Selector="Button.SmallSquare">
+            <Setter Property="Foreground" Value="{StaticResource OzenirButtonColor}"></Setter>
             <Setter Property="MinWidth" Value="24" />
             <Setter Property="Height" Value="24" />
-            <Setter Property="Padding" Value="0" />
+            <Setter Property="Padding" Value="2" />
             <Setter Property="CornerRadius" Value="4" />
             <Setter Property="FontWeight" Value="Bold" />
-            <Setter Property="Background" Value="Black" />
+            <Setter Property="Background" Value="{StaticResource OzenirFontColor}" />
             <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
             <Setter Property="BorderThickness" Value="1" />
         </Style>
@@ -95,25 +101,25 @@
             <!-- ===== 2A. LEFT SIDEBAR ===== -->
             <Border Grid.Column="0" Background="{StaticResource SidebarBackgroundBrush}" Padding="15">
                 <ScrollViewer>
-                    <Border BorderBrush="Azure" BorderThickness="1" CornerRadius="2" Padding="5">
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="2" Padding="5">
                         <StackPanel Spacing="5">
                             <!-- Customer Name Section -->
                             <TextBlock Text="Müşteri" Margin="2" FontSize="18"
                                        FontWeight="SemiBold" />
                             <Button HorizontalAlignment="Right"
                                     VerticalAlignment="Center"
-                                    Content="Düzenle" Command="{Binding OpenEditCustomerDialog}" />
+                                    Content="Düzenle" Classes="MainButtonColor" Command="{Binding OpenEditCustomerDialog}" />
                             <TextBox Watermark="İsim" Margin="2" Text="{Binding Name}" />
                             <TextBox Watermark="Soyisim" Margin="2" Text="{Binding Surname}" />
                             <TextBox Watermark="Telefon" Margin="2" Text="{Binding PhoneNumber}" />
                             <StackPanel Spacing="10" Orientation="Horizontal">
                                 <Button Content="TAMİRAT OLUŞTUR" Classes="coral" HorizontalAlignment="Left" Margin="10 10 20 10"
                                         Command="{Binding OpenRepairDetailWindowCommand}" />
-                                <Button HorizontalAlignment="Right" Margin="30 10 0 10 " Command="{Binding OpenVehicleDetailsCommand}"
+                                <Button HorizontalAlignment="Right" Margin="30 10 0 10 " Classes="MainButtonColor" Command="{Binding OpenVehicleDetailsCommand}"
                                         Content="Araç Ekle">
                                 </Button>
                             </StackPanel>
-                            <ListBox ItemsSource="{Binding Vehicles}"
+                            <ListBox Classes="Card" ItemsSource="{Binding Vehicles}"
                                      SelectedValue="{Binding SelectedVehicle,Mode=TwoWay}">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
@@ -213,11 +219,10 @@
                                         <!-- Card Header -->
                                         <Grid Grid.Row="0" ColumnDefinitions="*, 200">
                                             <StackPanel Grid.Column="1" Orientation="Horizontal"
-                                                        VerticalAlignment="Center" HorizontalAlignment="Right"
+                                                        VerticalAlignment="Center" HorizontalAlignment="Center"
                                                         Spacing="5">
-                                                <Button Classes="SmallSquare" Content="DÜZENLE" MinWidth="50"
-                                                        VerticalContentAlignment="Center"
-                                                        Padding="5,0">
+                                                <Button Classes="RepairTemplateCrud" Content="DÜZENLE" Padding="5" MinWidth="80"
+                                                        VerticalContentAlignment="Center" HorizontalAlignment="Center">
                                                     <Button.Command>
                                                         <Binding Path="DataContext.OpenRepairDetailWindowCommand"
                                                                  ElementName="CustomerDetailWindow" />
@@ -226,9 +231,7 @@
                                                         <Binding />
                                                     </Button.CommandParameter>
                                                 </Button>
-                                                <Button Classes="SmallSquare" VerticalContentAlignment="Center"
-                                                        Content="RAPOR" MinWidth="50"
-                                                        Padding="5,0">
+                                                <Button Classes="RepairTemplateCrud" Content="RAPOR" Padding="5" MinWidth="70" VerticalAlignment="Center" HorizontalAlignment="Center">
                                                     <Button.Command>
                                                         <Binding Path="DataContext.PrintRepairReportCommand"
                                                                  ElementName="CustomerDetailWindow" />
@@ -237,9 +240,8 @@
                                                         <Binding></Binding>
                                                     </Button.CommandParameter>
                                                 </Button>
-                                                <Button Classes="SmallSquare" VerticalContentAlignment="Center"
-                                                        Content="SİL" MinWidth="50"
-                                                        Padding="5,0">
+                                                <Button Classes="RepairTemplateCrud"
+                                                        Content="SİL" Padding="5" MinWidth="40" VerticalAlignment="Center" HorizontalAlignment="Center">
                                                     <Button.Command>
                                                         <Binding Path="DataContext.DeleteRenovationCommand"
                                                                  ElementName="CustomerDetailWindow" />
@@ -309,8 +311,8 @@
                                         </ScrollViewer>
                                         <!-- Card Footer -->
                                         <Grid Grid.Row="3" ColumnDefinitions="*,*">
-                                            <Menu Grid.Column="0">
-                                                <MenuItem Header="{Binding Status}" x:Name="StatusMenu">
+                                            <Menu Grid.Column="0" Padding="5">
+                                                <MenuItem MinWidth="90" Foreground="PaleVioletRed" Background="Beige" BorderBrush="Brown" Padding="3" CornerRadius="4" Header="{Binding Status}" x:Name="StatusMenu">
                                                     <MenuItem Header="İşleme Al">
                                                         <MenuItem.Command>
                                                             <Binding Path="DataContext.MakeInProgressCommand"
@@ -332,11 +334,12 @@
                                                     </MenuItem>
                                                 </MenuItem>
                                             </Menu>
-                                            <TextBlock Grid.Column="1"
+                                            <TextBlock MinWidth="100" Padding="10" Foreground="Bisque" Background="Black" Grid.Column="1"
                                                        Text="{Binding TotalPrice,StringFormat='{}{0:C} TL'}"
                                                        Margin="5,0,0,0"
                                                        VerticalAlignment="Center"
-                                                       HorizontalAlignment="Stretch" />
+                                                       TextAlignment="Center"
+                                                       HorizontalAlignment="Right" />
                                         </Grid>
                                     </Grid>
                                 </Border>

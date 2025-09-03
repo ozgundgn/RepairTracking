@@ -7,7 +7,7 @@
         x:DataType="vm:AddCustomerViewModel"
         Icon="/Assets/ozenir-png.png"
         Title="Yeni Müşteri Ekle"
-        Width="900" Height="480"
+        Width="900" Height="380"
         WindowStartupLocation="CenterOwner"> <!-- This is important for dialogs -->
     <Window.Styles>
         <Style Selector="Button:pointerover">
@@ -18,81 +18,81 @@
         <!-- This provides sample data for the designer -->
         <viewModels:AddCustomerViewModel />
     </Design.DataContext>
-    <Grid ColumnDefinitions="*,*,*,*" RowDefinitions="*,*,*,*,*,*" Margin="2">
-        <TextBlock Grid.Column="0" Grid.Row="0" Margin="10 0 0 0 " Text="Araç Sahibi" FontSize="18" Height="20"
-                   FontWeight="Bold" />
-        <StackPanel Grid.Column="0" Grid.Row="1">
-            <TextBlock Text="Adı" Margin="10 0 0 0 "></TextBlock>
-            <TextBox Margin="10"
-                     Text="{Binding Name, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
-            <TextBlock Text="{Binding NameError}"
-                       IsVisible="{Binding NameHasError}" Foreground="Red" FontSize="12" />
+    <Grid ColumnDefinitions="*,*,*,*" RowDefinitions="Auto,Auto,Auto,*,Auto,Auto" Margin="16">
+        <StackPanel Grid.Row="0" Grid.ColumnSpan="4" Margin="0 0 0 12">
+            <Grid ColumnDefinitions="*,*,*,*">
+                <StackPanel Grid.Column="0" Spacing="4" Margin="8">
+                    <TextBlock Text="Adı" FontWeight="SemiBold" />
+                    <TextBox Watermark="Adı girin"
+                             Text="{Binding Name, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBlock Text="{Binding NameError}" IsVisible="{Binding NameHasError}" Foreground="Red"
+                               FontSize="12" />
+                </StackPanel>
+                <StackPanel Grid.Column="1" Spacing="4" Margin="8">
+                    <TextBlock Text="Soyadı" FontWeight="SemiBold" />
+                    <TextBox Watermark="Soyadı girin" Text="{Binding Surname, Mode=TwoWay}" />
+                    <TextBlock Text="{Binding SurnameError}" IsVisible="{Binding SurnameHasError}" Foreground="Red"
+                               FontSize="12" />
+                </StackPanel>
+                <StackPanel Grid.Column="2" Spacing="4" Margin="8">
+                    <TextBlock Text="Telefon" FontWeight="SemiBold" />
+                    <TextBox Watermark="Telefon numarası" Text="{Binding PhoneNumber, Mode=TwoWay}" />
+                    <TextBlock Text="{Binding PhoneNumberError}" IsVisible="{Binding PhoneNumberHasError}"
+                               Foreground="Red" FontSize="12" />
+                </StackPanel>
+                <StackPanel Grid.Column="3" Spacing="4" Margin="8">
+                    <TextBlock Text="E-posta" FontWeight="SemiBold" />
+                    <TextBox Watermark="ornek@mail.com" Text="{Binding Email, Mode=TwoWay}" />
+                    <TextBlock Text="{Binding EmailError}" IsVisible="{Binding EmailHasError}" Foreground="Red"
+                               FontSize="12" />
+                </StackPanel>
+            </Grid>
         </StackPanel>
-        <StackPanel Grid.Row="1" Grid.Column="1">
-            <TextBlock Text="Soyad" Margin="10 0 0 0 "></TextBlock>
-            <TextBox Margin="10" Text="{Binding Surname, Mode=TwoWay}" />
-            <TextBlock Text="{Binding SurnameError}"
-                       IsVisible="{Binding SurnameHasError}" Foreground="Red"
-                       FontSize="12" />
-        </StackPanel>
-        <StackPanel Grid.Column="2" Grid.Row="1">
-            <TextBlock Text="Telefon" Margin="10 0 0 0 "></TextBlock>
-            <TextBox Margin="10" Text="{Binding PhoneNumber, Mode=TwoWay}" />
-            <TextBlock Text="{Binding PhoneNumberError}"
-                       IsVisible="{Binding PhoneNumberHasError}" Foreground="Red"
-                       FontSize="12" />
-        </StackPanel>
-        <StackPanel Grid.Column="3" Grid.Row="1">
-            <TextBlock Text="E-posta" Margin="10 0 0 0 "></TextBlock>
-            <TextBox Margin="10" Text="{Binding Email, Mode=TwoWay}" />
-            <TextBlock Text="{Binding EmailError}"
-                       IsVisible="{Binding EmailHasError}" Foreground="Red"
-                       FontSize="12" />
-        </StackPanel>
-        <TextBlock Grid.Column="0" Grid.Row="2" Margin="10 0 0 0 " Text="Araç" FontSize="18" Height="20"
-                   FontWeight="Bold" />
 
-        <StackPanel Grid.Column="0" Grid.Row="3">
-            <TextBlock Text="Plaka" Margin="10 0 0 0 "></TextBlock>
-            <TextBox Text="{Binding PlateNumber, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Margin="10" />
-            <TextBlock Text="{Binding PlateNumberError}" IsVisible="{Binding PlateNumberHasError}" Foreground="Red"
-                       FontSize="12" />
+        <StackPanel Grid.Row="1" Grid.ColumnSpan="4" Grid.Column="0" Margin="0 0 0 12">
+            <Grid ColumnDefinitions="*,*,*,*">
+                <StackPanel Grid.Column="0" Spacing="4" Margin="8">
+                    <TextBlock Text="Plaka" FontWeight="SemiBold" />
+                    <TextBox Watermark="Plaka"
+                             Text="{Binding PlateNumber, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBlock Text="{Binding PlateNumberError}" IsVisible="{Binding PlateNumberHasError}"
+                               Foreground="Red" FontSize="12" />
+                </StackPanel>
+                <StackPanel Grid.Column="1" Spacing="4" Margin="8">
+                    <TextBlock Text="Marka" FontWeight="SemiBold" />
+                    <TextBox Watermark="Marka" Text="{Binding Brand, Mode=TwoWay}" />
+                    <TextBlock Text="{Binding BrandError}" IsVisible="{Binding BrandHasError}" Foreground="Red"
+                               FontSize="12" />
+                </StackPanel>
+                <StackPanel Grid.Column="2" Spacing="4" Margin="8">
+                    <TextBlock Text="Şasi No" FontWeight="SemiBold" />
+                    <TextBox Watermark="Şasi numarası" Text="{Binding ChassisNumber, Mode=TwoWay}" />
+                    <TextBlock Text="{Binding ChassisError}" IsVisible="{Binding ChassisNumberHasError}"
+                               Foreground="Red" FontSize="12" />
+                </StackPanel>
+                <StackPanel Grid.Column="3" Spacing="4" Margin="8">
+                    <TextBlock Text="Model" FontWeight="SemiBold" />
+                    <AutoCompleteBox x:Name="years" FilterMode="StartsWith" Text="{Binding Model}"
+                                     Watermark="Model yılı" />
+                    <TextBlock Text="{Binding ModelError}" IsVisible="{Binding ModelHasError}" Foreground="Red"
+                               FontSize="12" />
+                </StackPanel>
+            </Grid>
         </StackPanel>
-        <StackPanel Grid.Column="1" Grid.Row="3">
-            <TextBlock Text="Marka" Margin="10 0 0 0 "></TextBlock>
-            <TextBox Text="{Binding Brand, Mode=TwoWay}" Margin="10" />
-            <TextBlock Text="{Binding BrandError}"
-                       IsVisible="{Binding BrandHasError}" Foreground="Red" FontSize="12" />
-        </StackPanel>
-        <StackPanel Grid.Column="2" Grid.Row="3">
-            <TextBlock Text="Şasi No" Margin="10 0 0 0 "></TextBlock>
-            <TextBox Text="{Binding ChassisNumber, Mode=TwoWay}" Margin="10" />
-            <TextBlock Text="{Binding ChassisError}"
-                       IsVisible="{Binding ChassisNumberHasError}" Foreground="Red" FontSize="12" />
-        </StackPanel>
-        <StackPanel Grid.Column="3" Grid.Row="3">
-            <TextBlock Margin="10 0 0 0 ">Model</TextBlock>
-            <AutoCompleteBox x:Name="years" FilterMode="StartsWith" Text="{Binding Model}" Margin="10" />
-            <!-- <TextBlock Text="Model" Margin="10 0 0 0 "></TextBlock> -->
-            <!-- <TextBox Text="{Binding Model, Mode=TwoWay}" Margin="10"/> -->
-            <TextBlock Text="{Binding ModelError}"
-                       IsVisible="{Binding ModelHasError}" Foreground="Red" FontSize="12" />
-
-        </StackPanel>
-        <StackPanel Grid.Column="0" Grid.Row="4">
-            <TextBlock Margin="10 10 0 0 " Text="Yetkili Bilgileri"></TextBlock>
-            <TextBlock Margin="10 10 0 0 " Text="Adı Soyadı"></TextBlock>
-            <Border Margin="10 10 0 0 "
-                    BorderBrush="Gray" BorderThickness="2">
-                <TextBlock Margin="10 10 0 0 " x:Name="AuthorizedTextBlock"></TextBlock>
-
-            </Border>
-        </StackPanel>
-        <DockPanel Grid.Column="3" Grid.Row="5" HorizontalAlignment="Right"
-                   Margin="15">
-            <Button DockPanel.Dock="Bottom" HorizontalAlignment="Right" Content="Kaydet" Margin="10" Classes="accent"
-                    IsEnabled="{Binding !IsInValid}"
-                    Click="Button_OnClick" />
+        <Border Grid.Row="2" CornerRadius="4" Grid.Column="0" Padding="12" BorderBrush="Gray" BorderThickness="1">
+            <StackPanel Margin="0 0 0 12">
+                <TextBlock Text="Yetkili Kişi:"></TextBlock>
+                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" x:Name="AuthorizedTextBlock" />
+            </StackPanel>
+        </Border>
+        <DockPanel Grid.Row="5" Grid.Column="3" LastChildFill="False" Margin="0 8 0 0">
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                <Button Content="Vazgeç" HorizontalAlignment="Right" Classes="MainButtonColor"
+                        Command="{Binding CloseWindowCommand}" />
+                <Button Content="Kaydet" HorizontalAlignment="Right" Classes="MainButtonColor"
+                        IsEnabled="{Binding !IsInValid}"
+                        Click="Button_OnClick" />
+            </StackPanel>
         </DockPanel>
     </Grid>
 </Window>

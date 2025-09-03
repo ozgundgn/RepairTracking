@@ -48,7 +48,7 @@
                       Data="{StaticResource  eye_hide_regular}" />
             </Button>
         </Grid>
-        <Button HorizontalAlignment="Right" VerticalAlignment="Center" Content="Kaydet" Margin="10"
+        <Button Classes="MainButtonColor" HorizontalAlignment="Right" VerticalAlignment="Center" Content="Kaydet" Margin="10"
                 Command="{Binding SaveUserCommand}">
         </Button>
     </StackPanel>

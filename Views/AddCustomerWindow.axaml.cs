@@ -4,8 +4,6 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.ReactiveUI;
 using MsBox.Avalonia;
-using MsBox.Avalonia.Enums;
-using ReactiveUI;
 using RepairTracking.Services;
 using RepairTracking.ViewModels;
 
@@ -38,6 +36,7 @@ public partial class AddCustomerWindow : ReactiveWindow<AddCustomerViewModel>
                 var addedBox = MessageBoxManager
                     .GetMessageBoxStandard("İşlem Başarılı", "Kullanıcı başarıyla eklendi.");
                 await addedBox.ShowAsync();
+                Close();
                 return;
             }
 

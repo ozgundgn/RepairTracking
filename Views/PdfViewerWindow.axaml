@@ -12,7 +12,7 @@
     <DockPanel>
         <!-- Pagination Controls -->
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right" Margin="10">
-            <Button Width="70" HorizontalAlignment="Right" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="40" Command="{Binding PrintCommand}">Yazdır</Button>
+            <Button Classes="MainButtonColor" Width="70" HorizontalAlignment="Right" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="40" Command="{Binding PrintCommand}">Yazdır</Button>
         </StackPanel>
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center"
                     Margin="10">

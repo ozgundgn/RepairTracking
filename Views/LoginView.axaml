@@ -8,7 +8,6 @@
              Height="450"
              x:DataType="viewModels:LoginViewModel">
     <UserControl.KeyBindings>
-
         <KeyBinding Gesture="Enter" Command="{Binding LoginCommand}" />
     </UserControl.KeyBindings>
     <Grid>
@@ -32,18 +31,18 @@
                 <TextBox Text="{Binding Username}" Margin="0 30 0 0" Width="200" Watermark="Ad Soyad" />
                 <TextBox PasswordChar="*" Margin="0 10 0 0 " Width="200" Text="{Binding Password,Mode=TwoWay}"
                          Watermark="Şifre" />
-                <Button Content="Giriş" Margin="0 20 0 0" VerticalAlignment="Stretch" VerticalContentAlignment="Center"
+                <Button Content="Giriş" Margin="0 7 0 0" VerticalAlignment="Stretch" VerticalContentAlignment="Center"
                         HorizontalContentAlignment="Center" HorizontalAlignment="Stretch"
                         Command="{Binding LoginCommand}"
                         Classes="accent" />
-                <Button Content="Şifre Değiştir" Margin="0 20 0 0" VerticalAlignment="Stretch"
+                <Button Content="Şifre Değiştir" Margin="0 7 0 0" VerticalAlignment="Stretch"
                         VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
                         HorizontalAlignment="Stretch"
-                        Command="{Binding OpenChangePasswordWindowCommand }" Classes="accent" />
-                <Button Content="Şifremi Unuttum" Margin="0 20 0 0" VerticalAlignment="Stretch"
+                        Command="{Binding OpenChangePasswordWindowCommand }" Classes="MainButtonColor" />
+                <Button Content="Şifremi Unuttum" Margin="0 7 0 0" VerticalAlignment="Stretch"
                         VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
                         HorizontalAlignment="Stretch"
-                        Command="{Binding OpenForgotPasswordWindowCommand }" Classes="accent" />
+                        Command="{Binding OpenForgotPasswordWindowCommand }" Classes="MainButtonColor" />
             </StackPanel>
         </Border>
     </Grid>

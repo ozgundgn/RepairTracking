@@ -49,7 +49,8 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <!-- This defines how each item in the list looks -->
-                        <Border BorderBrush="Beige" BorderThickness="1" Padding="5" Margin="0,0,0,5">
+                        <Border BorderBrush="Gray" CornerRadius="4"
+                         BorderThickness="1" Padding="5" Margin="0,0,0,5">
                             <StackPanel Spacing="10">
                                 <TextBlock Text="{Binding Name}" FontWeight="Bold" />
                                 <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />

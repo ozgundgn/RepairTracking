@@ -3,7 +3,7 @@
              xmlns:local="using:RepairTracking"
              xmlns:helpers="clr-namespace:RepairTracking.Helpers"
              x:Class="RepairTracking.App"
-             RequestedThemeVariant="Dark">
+             RequestedThemeVariant="Default">
     
     <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
     <Application.DataTemplates>

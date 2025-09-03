@@ -164,11 +164,11 @@
             </StackPanel>
             <Border Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Padding="10" BorderThickness="0,1,0,0"
                     BorderBrush="LightGray">
-                <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
-                    <Button Content="Önceki" Command="{Binding PreviousPageCommand}" />
-                    <TextBlock Text="{Binding CurrentPage}" Margin="10,0" />
-                    <TextBlock Text=" / " />
-                    <TextBlock Text="{Binding TotalPages}" />
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
+                    <Button Content="{Binding Previous}" Command="{Binding PreviousPageCommand}" />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding CurrentPage}"/>
+                    <TextBlock VerticalAlignment="Center" Text=" / " />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding TotalPages}" />
                     <Button Content="Sonraki >>" Command="{Binding NextPageCommand}" />
                 </StackPanel>
             </Border>

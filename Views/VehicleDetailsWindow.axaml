@@ -4,9 +4,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:RepairTracking.ViewModels"
         xmlns:views="clr-namespace:RepairTracking.Views"
-        mc:Ignorable="d" d:DesignWidth="750" d:DesignHeight="820"
+        mc:Ignorable="d" d:DesignWidth="750" d:DesignHeight="620"
         x:Class="RepairTracking.Views.VehicleDetailsWindow"
-        Width="750" Height="720"
+        Width="750" Height="620"
         WindowStartupLocation="CenterScreen"
         x:DataType="viewModels:VehicleDetailsViewModel"
         Title="Araç Detayları">
@@ -33,7 +33,7 @@
                 </TextBlock>
                 <TextBox Text="{Binding Type }" MinWidth="250"></TextBox>
             </StackPanel>
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5">
+            <StackPanel Orientation="Horizontal" Margin="5">
                 <TextBlock Text="ŞASİ NO" FontSize="16" HorizontalAlignment="Left" Width="100"
                            VerticalAlignment="Center">
                 </TextBlock>
@@ -63,19 +63,22 @@
                 </TextBlock>
                 <TextBox Text="{Binding Fuel}" MinWidth="250"></TextBox>
             </StackPanel>
-            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5 20 5 5">
-                <TextBlock Text="KAYITLI OLDUĞU KİŞİ" FontSize="16" HorizontalAlignment="Left" Width="200"
-                           VerticalAlignment="Center">
+            <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="5">
+                
+            
+            <StackPanel Margin="5 20 5 5">
+                <TextBlock Text="KAYITLI OLDUĞU KİŞİ" FontSize="16" HorizontalAlignment="Center"
+                         VerticalAlignment="Top" >
                 </TextBlock>
-                <TextBlock Text="{Binding CustormerFullname}" MinWidth="300" Margin="25 0 0 0"></TextBlock>
+                <TextBlock VerticalAlignment="Bottom" FontSize="16" HorizontalAlignment="Center" Text="{Binding CustormerFullname}"></TextBlock>
             </StackPanel>
-
+            </Border>
         </StackPanel>
         <StackPanel Grid.Row="0" Grid.Column="1" Margin="10" Spacing="10">
             <views:FilePickerView DataContext="{Binding  FilePickerViewModel}" />
         </StackPanel>
         <DockPanel Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Margin="10" HorizontalAlignment="Right">
-            <Button DockPanel.Dock="Right" Content="Kaydet" HorizontalAlignment="Right"
+            <Button Classes="MainButtonColor" DockPanel.Dock="Right" Padding="10" Content="Kaydet" HorizontalAlignment="Right"
                     Command="{Binding AddOrUpdateVehicleCommand }"
                     IsEnabled="{Binding !IsInValid}">
             </Button>
