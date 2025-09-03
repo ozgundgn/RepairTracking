@@ -50,17 +50,17 @@ public partial class AddOrUpdateUserViewModel : ViewModelBase
     private async Task SaveUser()
     {
         if (string.IsNullOrWhiteSpace(Name) || string.IsNullOrWhiteSpace(Surname) || string.IsNullOrWhiteSpace(Phone) ||
-            string.IsNullOrWhiteSpace(Email) && UserId > 0 && string.IsNullOrWhiteSpace(Password))
+            string.IsNullOrWhiteSpace(Email) && (UserId == null || UserId <= 0 && string.IsNullOrWhiteSpace(Password)))
         {
             await _dialogService.OkMessageBox("Lütfen tüm alanları doldurun.", MessageTitleType.WarningTitle);
             return;
         }
-        
+
         ValidateAllProperties();
         if (HasErrors)
             return;
 
-        var checkUser = await _userRepository.GetUserByEmailAndUsernameAndSurnameAsync(Phone, Name, Surname,UserId);
+        var checkUser = await _userRepository.GetUserByEmailAndUsernameAndSurnameAsync(Phone, Name, Surname, UserId);
         if (checkUser != null)
         {
             await _dialogService.OkMessageBox("Bu kullanıcı adı veya email ile kayıt zaten mevcut.",
@@ -90,8 +90,7 @@ public partial class AddOrUpdateUserViewModel : ViewModelBase
         }
         else
         {
-            if (string.IsNullOrWhiteSpace(Name) || string.IsNullOrWhiteSpace(Surname) ||
-                string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Phone))
+            if (string.IsNullOrWhiteSpace(Name) || string.IsNullOrWhiteSpace(Surname) || string.IsNullOrWhiteSpace(Phone))
             {
                 await _dialogService.OkMessageBox("Lütfen tüm alanları doldurun.", MessageTitleType.WarningTitle);
                 return;

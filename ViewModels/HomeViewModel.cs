@@ -188,7 +188,7 @@ public partial class HomeViewModel : ViewModelBase
 
         if (!string.IsNullOrWhiteSpace(SearchText))
         {
-            vehicles = AllCustomersModels
+            vehicles = vehicles
                 .Where(c => c.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
                             c.Surname.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
                             c.PlateNumber.Contains(SearchText, StringComparison.OrdinalIgnoreCase));
