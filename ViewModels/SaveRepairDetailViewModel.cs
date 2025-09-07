@@ -173,6 +173,8 @@ public partial class SaveRepairDetailViewModel : ViewModelBase
             TCode = DetailTCode,
             RenovationId = RenovationId,
         };
+        if (RenovationDetails == null || RenovationDetails.Count == 0)
+            RenovationDetails = new ObservableCollection<RenovationDetailViewModel>();
 
         RenovationDetails.Add(newDetail);
 
