@@ -300,7 +300,7 @@ public partial class SaveRepairDetailViewModel : ViewModelBase
                     Price = x.Price,
                     TCode = x.TCode,
                     Note = x.Note
-                }).ToList();
+                 }).ToList();
 
                 _renovationRepository.UpdateRenovation(Renovation);
             }
