@@ -10,16 +10,20 @@ namespace RepairTracking.Repositories.Concrete;
 
 public class RenovationRepository(AppDbContext context) : BaseContext(context), IRenovationRepository
 {
-    public int? AddRenovation(Renovation renovation)
+    public void AddRenovation(Renovation renovation)
     {
         Context.Renovations.Add(renovation);
         SaveChanges();
-        return renovation.Id;
     }
 
     public bool UpdateRenovation(Renovation renovation)
     {
-        var entity = Context.Renovations.Update(renovation);
+        if (Context.Entry(renovation).State == EntityState.Detached)
+        {
+            Context.Attach(renovation); // Attach it if it's not tracked
+        }
+
+        var entity = Context.Update(renovation);
         return entity.State == EntityState.Modified;
     }
 
@@ -81,7 +85,6 @@ public class RenovationRepository(AppDbContext context) : BaseContext(context), 
     public Renovation? GetRenovationById(int id)
     {
         var entity = Context.Renovations
-            .AsNoTracking()
             .Include(r => r.Vehicle)
             .ThenInclude(v => v.Customer)
             .Include(r => r.RenovationDetails)
@@ -99,11 +102,19 @@ public class RenovationRepository(AppDbContext context) : BaseContext(context), 
         return renovationList;
     }
 
-    public bool DeleteRenovationDetails(List<RenovationDetail> renovations)
+    public bool DeleteRenovationDetails(List<RenovationDetail> renovationId)
     {
-        Context.RenovationDetails
-            .RemoveRange(renovations);
-        return Context.SaveChanges() > 0;
+        // foreach (var rn in renovations)
+        // {
+        //     var trackedEntity = Context.RenovationDetails.Local.FindEntry(rn.Id);
+        //     if (trackedEntity == null)
+        //     {
+        //         Context.RenovationDetails.Attach(rn);
+        //     }
+        // }
+
+        Context.RenovationDetails.RemoveRange(renovationId);
+        return true;
     }
 
     public bool AddRenovationDetail(RenovationDetail renovationDetail)

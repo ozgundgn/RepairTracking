@@ -27,14 +27,14 @@
             <TextBlock Text="Uygulama Tarihi:" />
             <StackPanel Orientation="Horizontal">
                 <DatePicker Name="RepairDatePicker" SelectedDate="{Binding RepairDateForPicker}" />
-                 <Button Margin="5" Click="RepairDateClear_Button_OnClick">X</Button>
+                <Button Margin="5" Click="RepairDateClear_Button_OnClick">X</Button>
             </StackPanel>
             <TextBlock Text="Teslim Tarihi:" />
             <StackPanel Orientation="Horizontal">
                 <DatePicker Name="DeliveryDatePicker" SelectedDate="{Binding DeliveryDateForPicker }" />
                 <Button Margin="5" Click="DeliveryDateClear_Button_OnClick">X</Button>
             </StackPanel>
-            
+
             <TextBlock Text="Şikayet:" />
             <TextBox Text="{Binding Complaint}" />
             <TextBlock Text="Not:" />
@@ -50,7 +50,7 @@
                     <DataTemplate>
                         <!-- This defines how each item in the list looks -->
                         <Border BorderBrush="Gray" CornerRadius="4"
-                         BorderThickness="1" Padding="5" Margin="0,0,0,5">
+                                BorderThickness="1" Padding="5" Margin="0,0,0,5">
                             <StackPanel Spacing="10">
                                 <TextBlock Text="{Binding Name}" FontWeight="Bold" />
                                 <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
@@ -102,17 +102,14 @@
                         </Button>
                     </StackPanel>
                 </StackPanel>
-                
+                <Button DockPanel.Dock="Bottom" Content="TAMİRAT KAYDET"
+                        IsEnabled="{Binding !SelectedVehicle.Passive}"
+                        Command="{Binding SaveRepairAsyncCommand}"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Center"
+                        VerticalAlignment="Bottom"
+                        Classes="coral" />
 
-
-                    <Button DockPanel.Dock="Bottom" Content="TAMİRAT KAYDET"
-                            IsEnabled="{Binding !SelectedVehicle.Passive}"
-                            Command="{Binding SaveRepairAsyncCommand}"
-                            HorizontalAlignment="Stretch"
-                            HorizontalContentAlignment="Center"
-                            VerticalAlignment="Bottom"
-                            Classes="coral" />
-          
             </DockPanel>
 
         </Border>

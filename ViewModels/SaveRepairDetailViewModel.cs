@@ -25,9 +25,9 @@ public partial class SaveRepairDetailViewModel : ViewModelBase
     [ObservableProperty] private RenovationDetailViewModel? _selectedRenovationDetail;
     [ObservableProperty] private Renovation? _renovation;
 
-    private ObservableCollection<RenovationDetailViewModel> _renovationDetails;
+    private ObservableCollection<RenovationDetailViewModel?> _renovationDetails;
 
-    public ObservableCollection<RenovationDetailViewModel> RenovationDetails
+    public ObservableCollection<RenovationDetailViewModel?> RenovationDetails
     {
         get => _renovationDetails;
         set => SetProperty(ref _renovationDetails, value);
@@ -48,6 +48,7 @@ public partial class SaveRepairDetailViewModel : ViewModelBase
     public int? VehicleId { get; set; }
     public int Id { get; set; }
     [ObservableProperty] private int? _renovationId;
+    [ObservableProperty] private RenovationViewModel? _renovationViewModel;
     public VehicleViewModel? SelectedVehicle { get; set; }
 
 
@@ -96,12 +97,12 @@ public partial class SaveRepairDetailViewModel : ViewModelBase
 
     public SaveRepairDetailViewModel(IUnitOfWork unitOfWork, VehicleViewModel selectedVehicle,
         IDialogService dialogService,
-        int? renovationId)
+        RenovationViewModel? renovationViewModel)
     {
         _unitOfWork = unitOfWork;
         _dialogService = dialogService;
         _renovationRepository = unitOfWork.RenovationsRepository;
-        _renovationId = renovationId;
+        RenovationViewModel = renovationViewModel;
         SelectedVehicle = selectedVehicle;
 
         GetRenovationDetails();
@@ -109,37 +110,34 @@ public partial class SaveRepairDetailViewModel : ViewModelBase
 
     private void GetRenovationDetails()
     {
-        if (_renovationId.HasValue)
+        // Renovation = _renovationRepository.GetRenovationById(RenovationId.Value);k
+        if (RenovationViewModel != null)
         {
-            var renovation = _renovationRepository.GetRenovationById(_renovationId.Value);
-            if (renovation != null)
+            Id = RenovationViewModel.Id;
+            VehicleId = RenovationViewModel.VehicleId;
+            Vehicle = new VehicleViewModel
             {
-                Id = renovation.Id;
-                VehicleId = renovation.VehicleId;
-                Vehicle = new VehicleViewModel()
+                Id = RenovationViewModel.VehicleId,
+                PlateNumber = RenovationViewModel.Vehicle?.PlateNumber,
+                Type = RenovationViewModel.Vehicle?.Type,
+                Model = RenovationViewModel.Vehicle?.Model,
+                Color = RenovationViewModel.Vehicle?.Color
+            };
+            Complaint = RenovationViewModel.Complaint;
+            RepairDate = RenovationViewModel.RepairDate;
+            DeliveryDate = RenovationViewModel.DeliveryDate;
+            Note = RenovationViewModel.Note;
+            RenovationDetails = new ObservableCollection<RenovationDetailViewModel>(
+                RenovationViewModel.RenovationDetails.Select(x => new RenovationDetailViewModel
                 {
-                    Id = (int)renovation.VehicleId,
-                    PlateNumber = renovation.Vehicle?.PlateNumber,
-                    Type = renovation.Vehicle?.Type,
-                    Model = renovation.Vehicle?.Model,
-                    Color = renovation.Vehicle?.Color
-                };
-                Complaint = renovation.Complaint;
-                RepairDate = renovation.RepairDate;
-                DeliveryDate = renovation.DeliveryDate;
-                Note = renovation.Note;
-                RenovationDetails = new ObservableCollection<RenovationDetailViewModel>(
-                    renovation.RenovationDetails.Select(x => new RenovationDetailViewModel()
-                    {
-                        Id = x.Id,
-                        Name = x.Name,
-                        Price = x.Price,
-                        Description = x.Description,
-                        Note = x.Note,
-                        TCode = x.TCode,
-                        RenovationId = x.RenovationId
-                    }));
-            }
+                    Id = x.Id,
+                    Name = x.Name,
+                    Price = x.Price,
+                    Description = x.Description,
+                    Note = x.Note,
+                    TCode = x.TCode,
+                    RenovationId = x.RenovationId
+                }));
         }
     }
 
@@ -255,10 +253,9 @@ public partial class SaveRepairDetailViewModel : ViewModelBase
             return;
         }
 
-        // You can access all the data here
         if (SelectedVehicle != null)
         {
-            if (!RenovationId.HasValue)
+            if (RenovationViewModel == null && Renovation == null)
             {
                 Renovation = new Renovation
                 {
@@ -278,23 +275,17 @@ public partial class SaveRepairDetailViewModel : ViewModelBase
                         Note = x.Note
                     })?.ToList()
                 };
-                var id = _renovationRepository.AddRenovation(Renovation);
-                if (id > 0)
-                    RenovationId = id;
+
+                _renovationRepository.AddRenovation(Renovation);
             }
             else
             {
                 // If we are updating an existing renovation, we need to ensure we set the ID
+                Renovation ??= _renovationRepository.GetRenovationById(RenovationViewModel.Id);
                 if (Renovation == null)
-                    Renovation = _renovationRepository.GetRenovationById(RenovationId.Value);
-                if (Renovation == null)
-                {
-                    await _dialogService.OkMessageBox("Güncellenecek tamir kaydı bulunamadı.",
-                        MessageTitleType.WarningTitle);
-                    return;
-                }
-
-                _renovationRepository.DeleteRenovationDetails(Renovation.RenovationDetails.ToList());
+                    throw new NullReferenceException("Renovation not found");
+                if (Renovation.RenovationDetails != null && Renovation.RenovationDetails.Count > 0)
+                    _renovationRepository.DeleteRenovationDetails(Renovation.RenovationDetails.ToList());
 
                 Renovation.Complaint = Complaint;
                 Renovation.RepairDate = RepairDate;
@@ -317,7 +308,6 @@ public partial class SaveRepairDetailViewModel : ViewModelBase
             await _unitOfWork.SaveChangesAsync();
         }
 
-        await _unitOfWork.SaveChangesAsync();
         await _dialogService.OkMessageBox("Tamir bilgileri kaydedildi.", MessageTitleType.SuccessTitle);
     }
 }

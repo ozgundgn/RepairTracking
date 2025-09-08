@@ -16,7 +16,7 @@ public interface IViewModelFactory
         string? address, int customerId);
 
     SaveRepairDetailViewModel CreateSaveRepairDetailViewModel(VehicleViewModel selectedVehicleModel,
-        int? renovationId = null);
+        RenovationViewModel? renovationViewModel=null);
 
     ChangePasswordViewModel CreateChangePasswordViewModel(string username);
 

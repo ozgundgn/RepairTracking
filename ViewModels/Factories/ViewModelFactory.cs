@@ -23,7 +23,7 @@ public class ViewModelFactory(IUnitOfWork unitOfWork, IDialogService dialogServi
 
     public AddCustomerViewModel CreateAddCustomerViewModel(IEnumerable<VehicleCustomerModel> existingCustomers)
     {
-        return new AddCustomerViewModel(unitOfWork,dialogService)
+        return new AddCustomerViewModel(unitOfWork, dialogService)
         {
             ExistingCustomers = existingCustomers.ToList()
         };
@@ -50,9 +50,9 @@ public class ViewModelFactory(IUnitOfWork unitOfWork, IDialogService dialogServi
     }
 
     public SaveRepairDetailViewModel CreateSaveRepairDetailViewModel(VehicleViewModel selectedVehicleModel,
-        int? renovationId = null)
+        RenovationViewModel? renovationViewModel = null)
     {
-        return new SaveRepairDetailViewModel(unitOfWork, selectedVehicleModel, dialogService, renovationId);
+        return new SaveRepairDetailViewModel(unitOfWork, selectedVehicleModel, dialogService, renovationViewModel);
     }
 
     public ChangePasswordViewModel CreateChangePasswordViewModel(string username)
@@ -156,7 +156,7 @@ public class ViewModelFactory(IUnitOfWork unitOfWork, IDialogService dialogServi
         };
     }
 
-    public PdfViewerViewModel CreatePdfViewerViewModel(string reportPath) => new(reportPath,dialogService);
+    public PdfViewerViewModel CreatePdfViewerViewModel(string reportPath) => new(reportPath, dialogService);
 
     public DeliveryDateViewModel CreateDeliveryDateViewModel(RenovationViewModel renovationViewModel)
     {

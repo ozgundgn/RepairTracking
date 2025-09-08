@@ -127,7 +127,7 @@ public partial class CustomerWithAllDetailsViewModel : ViewModelBase
             {
                 Email = customer.Email,
             };
-
+            
             Name = customer.Name;
             Surname = customer.Surname;
             PhoneNumber = customer.PhoneNumber;
@@ -371,11 +371,10 @@ public partial class CustomerWithAllDetailsViewModel : ViewModelBase
     [RelayCommand]
     private async Task OpenRepairDetailWindow(RenovationViewModel? repairDetailsViewModel)
     {
-        int? renovationId = repairDetailsViewModel?.Id;
         if (SelectedVehicle != null)
         {
             var vehicleDetailsViewModel =
-                _viewModelFactory.CreateSaveRepairDetailViewModel(SelectedVehicle, renovationId);
+                _viewModelFactory.CreateSaveRepairDetailViewModel(SelectedVehicle, repairDetailsViewModel);
             await _dialogService.OpenRepairDetailsDialogWindow(vehicleDetailsViewModel);
             GetCustomerDetails(Id);
         }
@@ -512,7 +511,7 @@ public partial class RenovationViewModel : ViewModelBase
     [ObservableProperty] private string? _complaint;
 
     [ObservableProperty] private string? _note;
-    [ObservableProperty] private int? _vehicleId;
+    [ObservableProperty] private int _vehicleId;
 
     [ObservableProperty] private VehicleViewModel? _vehicle;
 
