@@ -252,9 +252,12 @@ public partial class HomeViewModel : ViewModelBase
         if (string.IsNullOrWhiteSpace(renovation.ReportPath) || !File.Exists(renovation.ReportPath))
         {
             var renovationViewModel = _viewModelFactory.CreateRenovationViewModel(renovation);
+            string updatedDate=renovationViewModel.UpdatedDate != null 
+                ? renovationViewModel.UpdatedDate.Value.ToString("yyyyMMddHHmmss") 
+                : DateTime.Now.ToString("yyyyMMddHHmmss");
             var file = await _dialogService.SaveFilePickerAsync(topLevel,
                 "Araç Kabul Raporu",
-                $"{renovationViewModel.CustomerName}-{renovationViewModel.Complaint}-{renovationViewModel.UpdatedDate}");
+                $"{renovationViewModel.CustomerName}-{renovationViewModel.Complaint}-{updatedDate}");
 
             if (file is null || string.IsNullOrWhiteSpace(file.Path.AbsolutePath))
             {

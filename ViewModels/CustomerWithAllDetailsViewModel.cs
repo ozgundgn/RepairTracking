@@ -240,8 +240,11 @@ public partial class CustomerWithAllDetailsViewModel : ViewModelBase
     [RelayCommand]
     private async Task PrintRepairReport(RenovationViewModel renovationViewModel)
     {
+        string updatedDate=renovationViewModel.UpdatedDate != null 
+            ? renovationViewModel.UpdatedDate.Value.ToString("yyyyMMddHHmmss") 
+            : DateTime.Now.ToString("yyyyMMddHHmmss");
         var file = await _dialogService.SaveFilePickerAsync(View, "Araç Kabul Raporu",
-            $"{renovationViewModel.CustomerName}-{renovationViewModel.Complaint}-{renovationViewModel.UpdatedDate}"
+            $"{renovationViewModel.CustomerName}-{renovationViewModel.Complaint}-{updatedDate}"
         );
         string absolutePath = string.Empty;
         if (file is not null)
