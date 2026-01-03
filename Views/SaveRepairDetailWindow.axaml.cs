@@ -11,6 +11,16 @@ public partial class SaveRepairDetailWindow : Window
     public SaveRepairDetailWindow()
     {
         InitializeComponent();
+        Opened += (_, _) =>
+        {
+            var screen = Screens.Primary;
+
+            if (screen is not null)
+            {
+                Width = Math.Min(Width, screen.WorkingArea.Width);
+                Height = Math.Min(Height, screen.WorkingArea.Height);
+            }
+        };
     }
 
     private void RepairDateClear_Button_OnClick(object? sender, RoutedEventArgs e)

@@ -7,8 +7,12 @@
         x:DataType="vm:AddCustomerViewModel"
         Icon="/Assets/ozenir-png.png"
         Title="Yeni Müşteri Ekle"
-        Width="900" Height="380"
-        WindowStartupLocation="CenterOwner"> <!-- This is important for dialogs -->
+        Width="900"
+        Height="380"
+        MinWidth="800"
+        MinHeight="380"
+        WindowStartupLocation="CenterScreen"
+        SizeToContent="Manual"> <!-- This is important for dialogs -->
     <Window.Styles>
         <Style Selector="Button:pointerover">
             <Setter Property="Cursor" Value="Hand" />

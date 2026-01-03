@@ -4,8 +4,7 @@
              x:Class="RepairTracking.Views.LoginView"
              VerticalAlignment="Center"
              HorizontalAlignment="Center"
-             Width="550"
-             Height="450"
+      
              x:DataType="viewModels:LoginViewModel">
     <UserControl.KeyBindings>
         <KeyBinding Gesture="Enter" Command="{Binding LoginCommand}" />
