@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using RepairTracking.Helpers;
 using RepairTracking.Services;
 using RepairTracking.ViewModels.Factories;
 
@@ -24,7 +25,7 @@ public partial class UserProfileHeaderViewModel : ViewModelBase
     [RelayCommand]
     private void Logout()
     {
-        Window? owner = WindowLocator.GetActiveWindow();
+        var owner = WindowLocator.GetActiveWindow();
         if (owner != null && owner.Name != "MainRepairWindow")
             owner.Close();
         AppServices.UserSessionService.Logout();
@@ -41,6 +42,8 @@ public partial class UserProfileHeaderViewModel : ViewModelBase
     [RelayCommand]
     private async Task OpenSendMailWindow()
     {
+        if (string.IsNullOrWhiteSpace(Email))
+            await _dialogService.OkMessageBox("Kullanıcının e-posta adresi bulunamadı.", MessageTitleType.WarningTitle);
         var viewModel = _viewModelFactory.CreateSendMailViewModel(Email);
         await _dialogService.OpenSendMailWindow(viewModel);
     }

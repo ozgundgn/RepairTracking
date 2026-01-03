@@ -23,10 +23,7 @@ public class ViewModelFactory(IUnitOfWork unitOfWork, IDialogService dialogServi
 
     public AddCustomerViewModel CreateAddCustomerViewModel(IEnumerable<VehicleCustomerModel> existingCustomers)
     {
-        return new AddCustomerViewModel(unitOfWork, dialogService)
-        {
-            ExistingCustomers = existingCustomers.ToList()
-        };
+        return new AddCustomerViewModel(unitOfWork, dialogService);
     }
 
     public CustomerWithAllDetailsViewModel CreateCustomerWithAllDetailsViewModel(int customerId)

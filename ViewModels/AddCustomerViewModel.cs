@@ -27,7 +27,7 @@ public partial class AddCustomerViewModel : ViewModelBase
     private string _phoneNumber;
 
     [ObservableProperty]
-    [Required(ErrorMessage = "E-posta alanı boş bırakılamaz."), EmailAddress(ErrorMessage = "E-posta formatı geçersiz.")]
+    [EmailAddress(ErrorMessage = "E-posta formatı geçersiz.")]
     private string _email;
 
     #region Costumer Validation Properties
@@ -49,7 +49,7 @@ public partial class AddCustomerViewModel : ViewModelBase
     {
         var errors = GetErrors(propertyName) as IEnumerable;
         return string.Join(Environment.NewLine,
-            errors?.Cast<ValidationResult>().Select(e => e.ErrorMessage) ?? Enumerable.Empty<string>());
+            errors.Cast<ValidationResult>().Select(e => e.ErrorMessage));
     }
 
     partial void OnNameChanged(string value)
@@ -133,7 +133,7 @@ public partial class AddCustomerViewModel : ViewModelBase
     // }
 
     // public ReactiveCommand<Unit, CustomerViewModel?> SaveCustomerCommand { get; }
-    public List<VehicleCustomerModel> ExistingCustomers { get; set; }
+  
     private readonly IUnitOfWork _unitOfWork;
     private readonly IDialogService _dialogService;
 
@@ -154,14 +154,9 @@ public partial class AddCustomerViewModel : ViewModelBase
         if (customerExists)
             return true;
 
-        if (!string.IsNullOrWhiteSpace(ChassisNumber))
-        {
-            var vehicleExists = await _unitOfWork.VehiclesRepository.GetVehicleByChassisNo(ChassisNumber);
-            if (vehicleExists != null)
-                return true;
-        }
-
-        return false;
+        if (string.IsNullOrWhiteSpace(ChassisNumber)) return false;
+        var vehicleExists = await _unitOfWork.VehiclesRepository.GetVehicleByChassisNo(ChassisNumber);
+        return vehicleExists != null;
     }
 
     [RelayCommand]

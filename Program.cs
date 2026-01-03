@@ -1,6 +1,8 @@
 ﻿using Avalonia;
 using System;
+using System.Globalization;
 using System.IO;
+using System.Threading;
 using Avalonia.ReactiveUI;
 using RepairTracking.Data;
 using RepairTracking.ViewModels;
@@ -45,6 +47,13 @@ sealed class Program
                 Log.Fatal(e.Exception, "Unobserved task exception");
                 e.SetObserved();
             };
+            var culture = new CultureInfo("tr-TR");
+            CultureInfo.DefaultThreadCurrentCulture = culture;
+            CultureInfo.DefaultThreadCurrentUICulture = culture;
+
+            Thread.CurrentThread.CurrentCulture = culture;
+            Thread.CurrentThread.CurrentUICulture = culture;
+            culture.DateTimeFormat = CultureInfo.GetCultureInfo("tr-TR").DateTimeFormat;
             BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
         }
         catch (Exception e)
@@ -61,9 +70,16 @@ sealed class Program
 
     // Avalonia configuration, don't remove; also used by visual designer.
     private static AppBuilder BuildAvaloniaApp()
-        => AppBuilder.Configure<App>()
+    {
+        var culture = new CultureInfo("tr-TR");
+
+        CultureInfo.DefaultThreadCurrentCulture = culture;
+        CultureInfo.DefaultThreadCurrentUICulture = culture;
+        culture.DateTimeFormat = CultureInfo.GetCultureInfo("tr-TR").DateTimeFormat;
+        return AppBuilder.Configure<App>()
             .UsePlatformDetect()
             .WithInterFont()
             .UseReactiveUI()
             .LogToTrace();
+    }
 }

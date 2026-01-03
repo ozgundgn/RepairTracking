@@ -41,7 +41,7 @@ public partial class DeliveryDateViewModel(
 
         if (RenovationViewModel.RepairDate > DateOnly.FromDateTime((DateTime)DeliveryDate))
         {
-            await dialogService.OkMessageBox("Teslimat tarihi, uygulama tarihinden eski olamalı!",
+            await dialogService.OkMessageBox("Teslimat tarihi, uygulama tarihinden eski olmamalı!",
                 MessageTitleType.WarningTitle);
             return;
         }

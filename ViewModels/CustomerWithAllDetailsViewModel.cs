@@ -125,7 +125,7 @@ public partial class CustomerWithAllDetailsViewModel : ViewModelBase
             _recordedVehiclesByChassisNo = _vehicleRepository.GetAllVehicleByChassises(vehicleByChassises);
             HeaderViewModel = new UserProfileHeaderViewModel(_dialogService, _viewModelFactory)
             {
-                Email = customer.Email,
+                Email = customer.Email??"",
             };
             
             Name = customer.Name;
@@ -240,7 +240,7 @@ public partial class CustomerWithAllDetailsViewModel : ViewModelBase
     [RelayCommand]
     private async Task PrintRepairReport(RenovationViewModel renovationViewModel)
     {
-        string updatedDate=renovationViewModel.UpdatedDate != null 
+        var updatedDate=renovationViewModel.UpdatedDate != null 
             ? renovationViewModel.UpdatedDate.Value.ToString("yyyyMMddHHmmss") 
             : DateTime.Now.ToString("yyyyMMddHHmmss");
         var file = await _dialogService.SaveFilePickerAsync(View, "Araç Kabul Raporu",
@@ -262,20 +262,23 @@ public partial class CustomerWithAllDetailsViewModel : ViewModelBase
                 _viewModelFactory.CreatePdfViewerViewModel(absolutePath);
             await _dialogService.OpenPdfViewerWindow(pdfViewModel);
 
-            var sendMailToUser = await _dialogService.YesNoMessageBox(
-                $"{renovationViewModel.CustomerName} {renovationViewModel.CustomerSurname} müşterisine raporu mail ile göndermek ister misiniz?",
-                "Mail Gönder");
-
-            if (sendMailToUser)
+            if (!string.IsNullOrWhiteSpace(renovationViewModel.Email))
             {
-                var mailService =
-                    new NotificationFactory(new MailService(renovationViewModel.Email, absolutePath));
-                var mail = await _unitOfWork.MailRepository.GetMailTemplateAsync("TESLIMAT");
-                if (mail is not null)
-                    mailService.SendMessage(mail.Subject, mail.Template,
-                        $"{renovationViewModel.CustomerName} {renovationViewModel.CustomerSurname}");
-                else
-                    await _dialogService.OkMessageBox("Teslimat şablonu bulunamadı.", MessageTitleType.ErrorTitle);
+                var sendMailToUser = await _dialogService.YesNoMessageBox(
+                    $"{renovationViewModel.CustomerName} {renovationViewModel.CustomerSurname} müşterisine raporu mail ile göndermek ister misiniz?",
+                    "Mail Gönder");
+
+                if (sendMailToUser)
+                {
+                    var mailService =
+                        new NotificationFactory(new MailService(renovationViewModel.Email, absolutePath));
+                    var mail = await _unitOfWork.MailRepository.GetMailTemplateAsync("TESLIMAT");
+                    if (mail is not null)
+                        mailService.SendMessage(mail.Subject, mail.Template,
+                            $"{renovationViewModel.CustomerName} {renovationViewModel.CustomerSurname}");
+                    else
+                        await _dialogService.OkMessageBox("Teslimat şablonu bulunamadı.", MessageTitleType.ErrorTitle);
+                }
             }
         }
     }

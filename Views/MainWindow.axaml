@@ -12,8 +12,12 @@
         WindowStartupLocation="CenterScreen"
         Width="1350"
         Height="900"
+        
         Title="Tamir Takip Programı">
     <Window.Styles>
+        <Style Selector="Window[WindowState=Maximized]">
+            <Setter Property="Padding" Value="8" />
+        </Style>
         <Style Selector="Button:pointerover">
             <Setter Property="Cursor" Value="Hand" />
         </Style>
