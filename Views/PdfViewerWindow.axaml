@@ -4,7 +4,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:RepairTracking.ViewModels"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        Width="1000" Height="1000"
+        SizeToContent="Manual"
+        Width="1200"
+        MinWidth="800"
+        MinHeight="600"
+        WindowStartupLocation="CenterScreen"
+        WindowState="Maximized"
         x:Class="RepairTracking.Views.PdfViewerWindow"
         x:DataType="viewModels:PdfViewerViewModel"
         Title="Pdf Görüntüleyici">

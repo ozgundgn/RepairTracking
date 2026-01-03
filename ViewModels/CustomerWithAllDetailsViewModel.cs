@@ -344,7 +344,7 @@ public partial class CustomerWithAllDetailsViewModel : ViewModelBase
     [RelayCommand]
     public async Task OpenEditCustomerDialog()
     {
-        var store = _viewModelFactory.CreateEditCustomerViewModel(Name, Surname, PhoneNumber, Email, Address, Id);
+        var store = _viewModelFactory.CreateEditCustomerViewModel(Name, Surname, Email, PhoneNumber, Address, Id);
         var result = await _dialogService.OpenEditCustomerDialogWindow(store);
         if (result != null)
         {

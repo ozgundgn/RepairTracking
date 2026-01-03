@@ -24,6 +24,17 @@ public partial class CustomerDetailsDialogWindow : ReactiveWindow<CustomerWithAl
             //     .DisposeWith(disposables);
         });
         DataContextChanged += OnDataContextChanged;
+        
+        Opened += (_, _) =>
+        {
+            var screen = Screens.Primary;
+
+            if (screen is not null)
+            {
+                Width = Math.Min(Width, screen.WorkingArea.Width);
+                Height = Math.Min(Height, screen.WorkingArea.Height);
+            }
+        };
     }
 
     private void OnDataContextChanged(object? sender, EventArgs e)
