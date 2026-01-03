@@ -5,12 +5,12 @@ name: CI
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the "master" branch
-  push:
-     branches: [ "master" ]
-  #Trigger workflow when a tag is pushed.
   #push:
-   # tags:
-    #  - 'v*' 
+     #branches: [ "master" ]
+  #Trigger workflow when a tag is pushed.
+  push:
+    tags:
+      - 'v*' 
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -33,7 +33,7 @@ jobs:
         run: dotnet restore
 
       - name: Publish Windows x64 Executable
-        run: dotnet publish -c Release -r win-x64 --self-contained true /p:PublishSingleFile=false -o publish_output_win
+        run: dotnet publish -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true -o publish_output_win
    
       - name: Zip Windows build
         run: powershell Compress-Archive -Path publish_output_win\* -DestinationPath windows-x64-${{ github.ref_name }}.zip
@@ -59,7 +59,7 @@ jobs:
         run: dotnet restore
 
       - name: Publish macOS x64 Executable (Intel)
-        run: dotnet publish -c Release -r osx-x64 --self-contained true /p:PublishSingleFile=false -o publish_output_osx_x64
+        run: dotnet publish -c Release -r osx-x64 --self-contained true /p:PublishSingleFile=true -o publish_output_osx_x64
 
       - name: Zip macOS x64 build
         run: zip -r macos-x64-${{ github.ref_name }}.zip publish_output_osx_x64
